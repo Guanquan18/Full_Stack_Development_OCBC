@@ -1,0 +1,15 @@
+{
+  "name": "full_stack_development_ocbc",
+  "version": "1.0.0",
+  "description": "Full Stack Development Project (OCBC App Revamp - Accessible For Everyone)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
