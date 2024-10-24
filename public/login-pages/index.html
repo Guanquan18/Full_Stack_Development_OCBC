@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCBC App</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            width: 100vw;
+            height: 100vh;
+        }
+        .index-background-video-container {
+            position: absolute;
+            width: 100%;
+            height: 400px;
+            z-index: -1;
+        }
+        
+        .index-background-video-container iframe {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            object-fit:contain;
+        }
+        
+        .index-content-container{
+            width: 100%;
+            height: auto;
+            padding-top: 400px;
+            
+            position: relative;
+            background: linear-gradient(to top, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0) 100%);
+        }
+        .index-content-wrapper{
+            width: 90%;
+            height: 100%;
+            margin: 0 auto;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .index-content-container h1{
+            font-size: 4rem;
+            font-weight: 1000;
+            color: black;
+
+            text-align: center;
+        }
+
+        .index-login-button{
+            width: 100%;
+            padding: 17px 0;
+
+            font-size: 1.25rem;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            color: white;
+            background-color: #ED3F3F;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.30);
+            border-radius: 15px;
+        }
+
+        .index-login-note{
+            margin-top: 40px;
+            color: #0071E1;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <article class="index-background-video-container">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/h0rFFjyVomI?si=n7ur3Z3fBAmXxMRu&amp;autoplay=1&loop=1&controls=0&mute=1" 
+        title="YouTube video player" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <img src="" alt="">
+    </article>
+    <article class="index-content-container">
+        <section class="index-content-wrapper">
+
+            <h1>Welcome<br><span style="color: #ED3F3F;">OCBC</span> App</h1>
+            
+            <a href="#" class="index-login-button">Log In to OCBC Singapore</a>
+
+            <p class="index-login-note">Note: Have you charged you phone and wish to activate OCBC One Token? 
+                Please download the latest version of the OCBC app and allow push notification to be sent via the app
+            </p>
+        </section>
+    </article>
+    <script src="../scripts/script.js"></script>
+</body>
+</html>
