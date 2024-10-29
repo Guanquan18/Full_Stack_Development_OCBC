@@ -1,0 +1,167 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100vh;
+}
+
+.index-background-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+.index-background-image{
+    width: 200%;
+    height: 100%;
+    position: absolute;
+    object-fit:fill;
+    object-position: top;
+    z-index: -2;
+}
+
+.index-background-logo{
+    width: 50%;
+    height: fit-content;
+    margin-top: 4rem;
+
+    position: absolute;
+    object-fit: contain;
+    z-index: 1;
+}
+
+.index-content-container{
+    width: 100%;
+    height: 100%;
+    padding-top: 400px;
+    
+    position: relative;
+    background: linear-gradient(to top, rgb(255, 255, 255) 55%, rgba(255, 255, 255, 0.25) 100%);
+}
+.index-content-wrapper{
+    width: 90%;
+    height: 100%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4rem;
+}
+
+.index-content-container h1{
+    font-size: 4rem;
+    font-weight: 1000;
+    color: black;
+    margin: 4rem 0 1rem;
+
+    text-align: center;
+}
+
+.index-login-button{
+    width: 100%;
+    padding: 1.2rem 0;
+
+    font-size: 1.25rem;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    color: white;
+    background-color: #ED3F3F;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    border: none;
+}
+
+.index-login-note{
+    margin-top: 1.25rem;
+    color: #0071E1;
+    font-size: 0.8rem;
+}
+
+/* Login Form */
+#index-login-form h1{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ED3F3F;
+    margin: 1rem 0 1rem;
+
+    text-align: left;
+}
+
+/* Styling for floating form inputs */
+.form-floating{
+    margin: 15px 0;
+    padding: 0;
+}
+
+.form-control{
+    margin: 0;
+    border-radius: 15px;
+    background-color: #DCDCDC;
+}
+
+.selection-option{
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+}
+
+/* Styling for form inputs */
+.form-floating input{
+    font-weight: 600;
+    
+    transition: all 0.3s ease;
+}
+.form-floating input:focus{
+    font-weight: 600;
+    box-shadow: 0 2px 8px #DCDCDC;
+    background: #DCDCDC;
+    border: none;
+
+    transition: all 0.3s ease;
+}
+
+/* Styling for icons inside form inputs */
+.form-floating i{
+    font-size: 25px;
+    color: #ED3F3F;
+    position: absolute;
+    top: 50%;
+    left: calc(100% - (25px + 12px));
+    transform: translateY(-50%);
+}
+
+/* Border styling for error and success */
+#index-login-form input.error {
+    border: 3px solid rgb(255, 0, 0);
+}
+#index-login-form input.success {
+    border: 3px solid rgb(0, 190, 25);
+}
+
+#login-validation-error{
+    width: fit-content;
+    height: fit-content;
+    margin-bottom: 5px;
+
+    font-size: 15px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+
+    visibility: hidden;
+}

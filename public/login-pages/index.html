@@ -5,98 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCBC App</title>
     <link rel="stylesheet" href="../styles/style.css">
-    <style>
-        body{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            width: 100vw;
-            height: 100vh;
-        }
-        .index-background-video-container {
-            position: absolute;
-            width: 100%;
-            height: 400px;
-            z-index: -1;
-        }
-        
-        .index-background-video-container iframe {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            object-fit:contain;
-        }
-        
-        .index-content-container{
-            width: 100%;
-            height: auto;
-            padding-top: 400px;
-            
-            position: relative;
-            background: linear-gradient(to top, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0) 100%);
-        }
-        .index-content-wrapper{
-            width: 90%;
-            height: 100%;
-            margin: 0 auto;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        .index-content-container h1{
-            font-size: 4rem;
-            font-weight: 1000;
-            color: black;
-
-            text-align: center;
-        }
-
-        .index-login-button{
-            width: 100%;
-            padding: 17px 0;
-
-            font-size: 1.25rem;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 700;
-            color: white;
-            background-color: #ED3F3F;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.30);
-            border-radius: 15px;
-        }
-
-        .index-login-note{
-            margin-top: 40px;
-            color: #0071E1;
-            font-size: 0.75rem;
-        }
-    </style>
+    <script src="https://kit.fontawesome.com/cc3cb1dbea.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-    <article class="index-background-video-container">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/h0rFFjyVomI?si=n7ur3Z3fBAmXxMRu&amp;autoplay=1&loop=1&controls=0&mute=1" 
-        title="YouTube video player" frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <img src="" alt="">
+    <article class="index-background-container">
+        <img class="index-background-image" src="../images/OCBC Building.webp" alt=""> 
+        <img class="index-background-logo" src="../images/OCBC_Logo.png" alt="">
     </article>
     <article class="index-content-container">
-        <section class="index-content-wrapper">
+        <section id="index-information" class="index-content-wrapper">
 
             <h1>Welcome<br><span style="color: #ED3F3F;">OCBC</span> App</h1>
             
-            <a href="#" class="index-login-button">Log In to OCBC Singapore</a>
+            <button class="index-login-button" onclick="showContent('index-login');hideContent('index-information');shiftIndexBackground('index-content-container')">
+                Log In to OCBC Singapore
+            </button>
 
             <p class="index-login-note">Note: Have you charged you phone and wish to activate OCBC One Token? 
                 Please download the latest version of the OCBC app and allow push notification to be sent via the app
             </p>
         </section>
+        
+        <section id="index-login" class="index-content-wrapper" style="display: none;">
+            <form id="index-login-form">
+
+                <h1 class="">Online Banking App</h1>
+
+                <div style="height: 3px; background-color: #FFB570; margin: 2rem 0; width: 100%; border-radius: 15px; box-shadow: 0 0 7px #ffb57080;"></div>
+
+                <!-- Access Code input field -->
+                <div class="form-floating col-12">
+                    <input type="text" id="login-access-code" name="login-access-code" class="form-control"
+                    placeholder="Enter Access Code">
+                    <label for="login-access-code">Access Code</label>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+    
+                <!-- Pin input field -->
+                <div class="form-floating col-12">
+                    <input type="password" id="login-pin" name="login-pin" class="form-control"
+                    placeholder="Enter password">
+                    <label for="login-pin">Pin</label>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+    
+                <!-- Validation Error message -->
+                <p class="" id="login-validation-error">Error Message</p>
+                
+                <!-- Login button -->
+                <button type="submit" id="login-submit" class="index-login-button">Log In</button>
+    
+                <!-- Trouble link -->
+                <div class="index-login-note">
+                    <p style="text-align: center;">Trouble Logging In?</p>
+                </div>
+            </form>
+
+        </section>
     </article>
     <script src="../scripts/script.js"></script>
+    <script>
+        function showContent(contentId){
+            document.getElementById(contentId).style.display = 'block';
+        }
+
+        function hideContent(contentId){
+            document.getElementById(contentId).style.display = 'none';
+        }
+
+        function shiftIndexBackground(){
+            document.getElementsByClassName('index-content-container')[0]
+            .style.background = 'linear-gradient(to top, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0.25) 100%)';
+            document.getElementsByClassName('index-background-logo')[0]
+            .style.margin = '4rem 0 0';
+            document.getElementsByClassName('index-content-container')[0]
+            .style.padding = '400px 0 0';
+        }
+        
+        IndexLoginSubmit('index-login-form');
+    </script>
 </body>
 </html>
