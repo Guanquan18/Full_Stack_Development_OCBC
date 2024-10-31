@@ -1,3 +1,4 @@
+/*--------------------------------  Guan Quan Functions --------------------------------*/
 function IndexLoginSubmit(formId){
     // Get login form
     const loginForm = document.getElementById(formId);
@@ -23,7 +24,7 @@ function IndexLoginSubmit(formId){
         }
 
         if(authenticated){
-            window.location.href = homePage;
+            window.location.href = "../homepage/homepage.html";
         };
 
         function validateInput(){
@@ -172,3 +173,221 @@ function IndexLoginSubmit(formId){
         }
     },false)
 }
+/*--------------------------------  Sairam Functions --------------------------------*/
+const profileId = JSON.parse(sessionStorage.getItem("profileId")); // Retrieve the profile ID from the session storage
+console.log(profileId)
+const token = sessionStorage.getItem("token"); // Retrieve the token from the session storage
+
+// Retrieve profile details 
+async function fetchProfileDetails() {
+    try {
+        // Fetch account details from the server using the profile ID
+        const response = await fetch(`http://localhost:3000/profile/${profileId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
+        console.log(data)
+        document.getElementById('user-name').innerText = data.FullName;
+
+    } catch (error) {
+        console.error("Error:", error.message);
+        document.getElementById('user-name').innerHTML = "Error fetching full name";
+    }
+}
+// Retrieve account details 
+async function fetchAccountDetails() {
+    try {
+        // Fetch account details from the server using the profile ID
+        const response = await fetch(`http://localhost:3000/account/${profileId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
+        console.log(data)
+        document.getElementById('account-type').innerText = data.AccType;
+        document.getElementById('account-no').innerText = data.AccNum;
+        document.getElementById('account-balance').innerText = `$${data.Balance.toFixed(2)}`;
+
+        // Set the session storgae
+        sessionStorage.setItem('AccNum', data.AccNum);
+    } catch (error) {
+        console.error("Error fetching account details:", error);
+
+        // Display a user-friendly error message
+        let userFriendlyMessage = "An error occurred";
+        document.getElementById('account-balance').innerText = userFriendlyMessage; // Show the user-friendly message
+    }
+}
+// Retrieve card details 
+async function fetchCardDetails() {
+    //Retrieve accNum
+    const accNum = sessionStorage.getItem('AccNum');
+    try {
+        // Fetch card details from the server using the profile ID and accNum
+        const response = await fetch(`http://localhost:3000/card/${profileId}/${accNum}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
+        console.log(data)
+        document.querySelector('.card-number-title').innerText = `${data.CardType} Card No`
+        document.querySelector('.card-number').innerText = data.CardNum
+
+    } catch (error) {
+        console.error("Error:", error.message);
+        document.querySelector('.card-number-title').innerText = "An error occurred";
+        document.querySelector('.card-number').innerText = "An error occurred";
+    }
+}
+
+// Function to fetch transactions and create cards
+async function fetchTransactions() {
+    const accNum = sessionStorage.getItem('AccNum'); // Retrieve stored account number
+    const customDateRange = document.getElementById("customDateRange");
+    const selectedRangeElement = document.getElementById('selectedRange');
+    let startDate = '';
+    let endDate = '';
+    selectedRangeElement.innerText = '';
+    
+    const rangeOption = document.getElementById("rangeOption").value;
+    
+    if (rangeOption === "custom") {
+        startDate = document.getElementById('startDateInput').value;
+        endDate = document.getElementById('endDateInput').value;
+        // Reset
+        customDateRange.style.display = "none";
+        document.getElementById('startDateInput').value = '';
+        document.getElementById('endDateInput').value = '';
+        
+        // Format and set the custom date range display
+        const formattedStartDate = new Date(startDate).toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        }).replace(/ /g, ' ');
+        
+        const formattedEndDate = new Date(endDate).toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        }).replace(/ /g, ' ');
+
+        selectedRangeElement.innerText = `${formattedStartDate} - ${formattedEndDate}`;
+    } else if (rangeOption === "1month") {
+        // Today's date
+        const today = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(today.getMonth() - 1);
+
+        const formattedToday = today.toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        }).replace(/ /g, ' ');
+        
+        const formattedOneMonthAgo = oneMonthAgo.toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        }).replace(/ /g, ' ');
+
+        selectedRangeElement.innerText = `${formattedOneMonthAgo} - ${formattedToday}`;
+    } else if (rangeOption === "3months") {
+        const today = new Date();
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(today.getMonth() - 3);
+
+        const formattedToday = today.toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        }).replace(/ /g, ' ');
+        
+        const formattedThreeMonthsAgo = threeMonthsAgo.toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        }).replace(/ /g, ' ');
+
+        selectedRangeElement.innerText = `${formattedThreeMonthsAgo} - ${formattedToday}`;
+    }
+
+    // Base URL
+    let url = `http://localhost:3000/transactions/${accNum}`;
+    
+    // Append query parameters based on range option
+    if (rangeOption === "custom") {
+        url += `?rangeOption=${rangeOption}&startDate=${startDate}&endDate=${endDate}`;
+    } else {
+        url += `?rangeOption=${rangeOption}`;
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        // Clear previous transaction cards if any
+        const transactionContainer = document.querySelector('.transaction-list');
+        transactionContainer.innerHTML = '';
+
+        // Check if there are transactions
+        if (data.length > 0) {
+            selectedRangeElement.style.display = 'block';
+
+            // Loop through the transactions and create cards
+            data.forEach(transaction => {
+                let amountDisplay;
+                let amountColor;
+                if (transaction.SenderName === "You") {
+                    amountDisplay = `Amount: -$${transaction.TransactAmount}`;
+                    amountColor = 'black';
+                } else {
+                    amountDisplay = `Amount: +$${transaction.TransactAmount}`;
+                    amountColor = 'green';
+                }
+
+                const transactionCard = document.createElement('div');
+                transactionCard.className = 'transaction-card';
+
+                transactionCard.innerHTML = `
+                   <div class="transaction-title-container">
+                        <h2 class="transaction-title">Transaction No: ${transaction.TransactNo}</h2>
+                        <i class="fa fa-volume-up speaker-icon" 
+                        onclick="speak('${transaction.TransactAmount} dollars has been sent from ${transaction.SenderName} to ${transaction.ReceiverName} on ${transaction.TransactDate}')"></i>
+                    </div>
+
+                    <p class="transaction-from">
+                        <strong>From:</strong> ${transaction.SenderName}
+                    </p>
+                    <p class="transaction-to">
+                        <strong>To:</strong> ${transaction.ReceiverName}
+                    </p>
+                    <p class="transaction-date">
+                        <strong>Date:</strong> ${transaction.TransactDate}
+                    </p>
+                    <div class="transaction-amount" style="color: ${amountColor};">${amountDisplay}</div>
+                `;
+
+                transactionContainer.appendChild(transactionCard);
+            });
+        } else {
+            selectedRangeElement.style.display = 'block';
+            selectedRangeElement.innerText = 'No transactions found';
+        }
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        selectedRangeElement.style.display = 'block';
+        selectedRangeElement.innerText = 'Error fetching transactions';
+    }
+}
+
+
+
+
+

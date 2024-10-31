@@ -1,0 +1,733 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Homepage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+            background: white;
+        }
+       /* Header */
+       .homepage-header {
+            padding: 15px 20px 10px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .greeting {
+            padding: 15px 20px;
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            color: black;
+            line-height: 1.4;
+        }
+        /* Angled Strips */
+        .angled-strips {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .strip {
+            width: 140px;
+            height: 35px; 
+            background-color: #ED3F3F; 
+            position: absolute;
+            border-radius: 20px;
+            transform: rotate(45deg);
+        }
+
+        .strip:nth-child(1) {
+            left: -50px; 
+            top: 0px;
+        }
+
+        .strip:nth-child(2) {
+            width: 60px;
+            left: 30px; 
+            top: -15px;
+        }
+
+        .strip:nth-child(3) {
+            width:60px;
+            left: -30px;
+            top: 35px;
+        }
+
+        /* Icons Section */
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+        }
+
+        .header-icon:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+
+        .hamburger-icon {
+            font-size: 26px;
+            color: black;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .hamburger-icon:hover {
+            color: #00C3FF;
+        }
+
+        /* Bank Card Styles */
+        .bank-card {
+            background: #FFD68B;
+            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            width: 400px;
+            height: auto;
+            margin: 0px auto 20px auto;
+            padding-bottom: 15px;
+        }
+
+        /* Savings Account (Red Card) */
+        .account {
+            background: #ED3F3F;
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .ocbc-logo {
+            width: 141px;
+            position: absolute;
+            top: 15px;
+            left: 18px;
+        }
+
+        .account-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 30px;
+        }
+
+        /* Balance Section Styling */
+        .card-balance,.card-details,.account-number-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .balance-title,.amount-value, .card-number-title, .card-number,.account-number-title,.account-number{
+            font-size: 18px;
+            font-weight: 600;
+            text-align: left;
+            margin: 0;
+        }
+
+        /* Icon */
+        .icon-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .icon-item img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .icon-item h2 {
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+        }
+        
+        /* Feature */
+        .feature {
+            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.25);
+            background: #FFB570;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 180px;
+        }
+
+        .feature-icon {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        #insurance-icon{
+            width: 70px;
+            height: 70px;
+        }
+        .feature-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: black;
+            margin: 0;
+            text-align: center;
+        }
+        /* Menu PopUp */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; 
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: #FFD68B;
+            padding: 30px;
+            width: 100%;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 30px;
+            cursor: pointer;
+            color: black;
+        }
+
+        /* Menu Popup */
+        .homepage-menu-flex-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+        }
+
+        .homepage-menu-flex-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px; 
+            padding: 10px;
+            color: black;
+            transition: color 0.2s ease-in-out;
+        }
+        .homepage-menu-flex-item:hover {
+            color: blue;
+        }
+
+        .homepage-menu-flex-item img {
+            width: 45px;
+            height: 45px;
+            margin-right: 10px;
+        }
+
+        .homepage-menu-flex-item h2 {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: left;
+            margin: 0;
+        }
+        
+        /* Hamburger icon rotation to open */
+        .rotate-hamburger {
+            transform: rotate(180deg);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* Cross icon rotation when closing */
+        .rotate-cross {
+            transform: rotate(-180deg);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* Style for intro js*/
+        .introjs-tooltip {
+            background-color: #282c34; 
+            color: #fff;              
+            border-radius: 8px;        
+            padding: 10px;             
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .introjs-skipbutton {
+            font-size: 30px;
+            color: white;
+        }
+
+        .introjs-tooltiptext {
+            font-size: 20px;          
+            line-height: 1.6;
+            padding: 0px 20px;
+        }
+        .introjs-tooltipbuttons{
+            border-top: 0px solid #e0e0e0;
+            padding: 0px;
+        }
+        .introjs-tooltipbuttons a {
+            background-color: #ED3F3F !important;
+            box-shadow: none;
+            color: #fff !important;          
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 5px;
+            border: none !important;
+            text-shadow: none;
+            font-size:15px;
+            font-weight:700;
+        }
+        
+        .introjs-tooltip-title {
+            font-weight: bold;     
+            margin-bottom: 10px;
+            color: white;
+            font-style: italic;
+            text-decoration: underline;
+        }
+
+        .introjs-progress {
+            display: block !important; 
+            height: 4px;
+            background-color: #fff; 
+        }
+
+        .introjs-progressbar {
+            background-color: #ED3F3F; 
+        }
+        .introjs-arrow.top-middle,.introjs-arrow.top-right,.introjs-arrow.top-left {
+            color:black;
+            border-bottom-color: black;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .introjs-tooltip iframe {
+            width: 100%;
+            height: auto;
+            padding: 0px !important;
+        }
+        .tts-button {
+            background-color: #ED3F3F; 
+            color: white;         
+            border: none;         
+            border-radius: 8px;   
+            padding: 10px 15px;   
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 5px;     
+            cursor: pointer;
+            display: flex; 
+            align-items: center;      
+            transition: background-color 0.3s ease;
+        }
+
+        .tts-button:hover {
+            background-color: darkred; 
+        }
+        .tts-button img {
+            width: 20px;               
+            height: 20px;
+            margin-right: 10px !important;
+        }
+        .unstyled-link{
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <!--Header-->
+    <div class="angled-strips">
+        <div class="strip"></div>
+        <div class="strip"></div>
+        <div class="strip"></div>
+    </div>
+    <div class="homepage-header">
+        <div class="header-icons">
+            <img id = "notification-bell" class="header-icon" src="../images/homepage/notification-bell.png" alt="Bell Icon">
+            <img id = "homepage-video-walk-through" class="header-icon" src="../images/homepage/tutorial.png" onclick="startHomePegeTour()" alt="Video Tutorial Icon">
+            <i id = "menu-icon" class="fas fa-bars hamburger-icon" onclick="openMenuPopup()"></i>
+        </div>
+    </div>
+    <h2 id="greeting" class="greeting">Welcome <span id="user-name"></span> <br> Start Banking Today?</h2>
+    <!-- Big Card -->
+    <div class="bank-card">
+        <!-- (Red Card) -->
+        <div class="account">
+            <img class="ocbc-logo" src="../images/homepage/ocbc-icon.png" alt="Savings Account Logo">
+            <h2 class="account-title" id = "account-type"></h2>
+
+            <div class = "card-balance">
+                <p class="balance-title">Account Balance:</p>
+                <p id = "account-balance" class="amount-value"></p>
+            </div>
+
+            <div class = "account-number-details">
+                <p class="account-number-title">Account No:</p>
+                <p class="account-number" id ="account-no"></p>
+            </div>
+
+            <div class = "card-details">
+                <p class="card-number-title">Debit Card No:</p>
+                <p class="card-number"></p>
+            </div>
+        </div>
+
+        <!-- Icon Section -->
+        <div class="icon-section">
+            <div id = 'transfer' class="icon-item">
+                <img id="transfer-icon" src="../images/homepage/transfer-money.png" alt="Transfer Icon">
+                <h2 id="transfer-title">Transfer</h2>
+            </div>
+            <div id = 'paynow' class="icon-item">
+                <img id="paynow-icon" src="../images/homepage/paynow.png" alt="Paynow Icon">
+                <h2 id="paynow-title">Paynow</h2>
+            </div>
+            <a href="../view-transaction-pages/view-transaction-history.html" class="unstyled-link">
+                <div id="history" class="icon-item">
+                    <img id="history-icon" src="../images/homepage/view-history.png" alt="History Icon">
+                    <h2 id="history-title">View History</h2>
+                </div>
+            </a>
+        </div>
+    </div>
+    <!-- Features Section -->
+    <div class="container">
+        <div class="row">
+            <!-- Feature Cards -->
+            <div class="col-4">
+                <div id = 'paying-bill' class="feature">
+                    <img class="feature-icon" src="../images/homepage/paying-bills.png" alt="Paying Bills Icon">
+                    <h2 class="feature-title">Paying Bills</h2>
+                </div>
+            </div>
+            <div class="col-4">
+                <div id = 'insurance' class="feature">
+                    <img id = 'insurance-icon'class="feature-icon" src="../images/homepage/insurance.png" alt="Insurance Icon">
+                    <h2 class="feature-title">Insurance</h2>
+                </div>
+            </div>
+            <div class="col-4">
+                <div id = 'loan' class="feature">
+                    <img class="feature-icon" src="../images/homepage/loan.webp" alt="Loan Icon">
+                    <h2 class="feature-title">Loan</h2>
+                </div>
+            </div>
+            <div class="col-4">
+                <div id = 'investment' class="feature">
+                    <img id = 'investment-icon' class="feature-icon" src="../images/homepage/investment.png" alt="Investment Icon">
+                    <h2 class="feature-title">Investment</h2>
+                </div>
+            </div>
+            <div class="col-8">
+                <div id = 'assistance' class="feature">
+                    <img class="feature-icon" src="../images/homepage/assistance.png" alt="Assistance Icon">
+                    <h2 class="feature-title">Assistance</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Popuo -->
+    <div class="popup" id="menu-popup">
+        <div class="popup-content">
+            <span class="close-btn homepage-close-btn" onclick="closeMenuPopup()">&times;</span>
+            <div class="homepage-menu-flex-container">
+                <a href = '../homepage/homepage.html' class="homepage-menu-flex-item">
+                    <img src="../images/homepage/home.png" alt="Icon 1">
+                    <h2>Home</h2>
+                </a>
+                <a href = '' class="homepage-menu-flex-item">
+                    <img src="../images/homepage/plan.webp" alt="Icon 2">
+                    <h2>Plan</h2>
+                </a>
+                <a href = '' class="homepage-menu-flex-item">
+                    <img src="../images/homepage/rewards.webp" alt="Icon 2">
+                    <h2>Rewards</h2>
+                </a>
+                <a href = '' class="homepage-menu-flex-item">
+                    <img src="../images/homepage/more.png" alt="Icon 2">
+                    <h2>More Services</h2>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mic Icon -->
+    <div id="mic-icon" class="mic-container" onclick="startTranscription()">
+        <img src="../images/homepage/microphone.webp" alt="Microphone Icon" class="mic-image">
+    </div>
+
+    <!-- Stop Button -->
+    <div id="stop-button" class="stop-button" onclick="stopTranscription()">
+        <p>Stop</p>
+    </div>
+
+     <!-- Language Overlay -->
+     <div id="language-overlay" class="language-overlay">
+        <span class="language-popup-close-btn" onclick="closeLanguagePopup()">&times;</span>
+        <h2>Choose Your Preferred Language to Speak</h2>
+        <button class="language-button" onclick="selectLanguage('en-US')">English</button>
+        <button class="language-button" onclick="selectLanguage('zh-CN')">Chinese (中文)</button>
+        <button class="language-button" onclick="selectLanguage('ta-IN')">Tamil (தமிழ்)</button>
+        <button class="language-button" onclick="selectLanguage('ms-MY')">Malay (Bahasa Melayu)</button>
+    </div>
+    
+
+    <!-- Mic Overlay -->
+    <div id="mic-overlay" class="mic-overlay">
+        <h2>Transcribed Words:</h2>
+        <p id="transcription"></p>
+    </div>
+
+    <!-- Bootstrap JavaScript Bundle (popper.js and bootstrap.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="../scripts/script.js"></script>
+    <script src="../scripts/stt.js"></script>
+    <script>
+        // Function to retrieve profile,account details, card details
+        async function fetchAllDetails() {
+            await fetchProfileDetails(); 
+            await fetchAccountDetails();     
+            await fetchCardDetails();       
+        }
+        fetchAllDetails();
+        // Function to handle opening the popup
+        function openMenuPopup() {
+            const hamburgerIcon = document.querySelector('.hamburger-icon');
+            hamburgerIcon.classList.add('rotate-hamburger');
+            setTimeout(() => {
+                document.getElementById('menu-popup').style.display = 'flex';
+                hamburgerIcon.classList.remove('rotate-hamburger');
+            }, 500);
+        }
+    
+        // Function to handle closing the popup
+        function closeMenuPopup() {
+            const crossIcon = document.querySelector('.homepage-close-btn');
+            crossIcon.classList.add('rotate-cross');
+            setTimeout(() => {
+                document.getElementById('menu-popup').style.display = 'none';
+                crossIcon.classList.remove('rotate-cross'); // Remove the rotation after hiding
+            }, 500);
+        }
+        
+        // Function to start tour
+        function startHomePegeTour() {
+            introJs().setOptions({
+                animation: true,
+                steps: [
+                    {
+                        title: "Notifications",
+                        element: document.getElementById('notification-bell'),
+                        intro: `Tap here to check all your notifications. You'll receive important messages and alerts here.
+                        <br>
+                        <button class="tts-button" onclick="speak('Tap here to check all your notifications. You will receive important messages and alerts here')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Video Walkthrough",
+                        element: document.getElementById('homepage-video-walk-through'),
+                        intro: `Watch a helpful video walkthrough of the app features by tapping here.
+                        <br>
+                        <button class="tts-button" onclick="speak('Watch a helpful video walkthrough of the app features by tapping here')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Main Menu",
+                        element: document.getElementById('menu-icon'),
+                        intro: `This is the main menu. Tap here to explore various sections and features of the app.
+                        <br> 
+                        <button class="tts-button" onclick="speak('This is the main menu. Tap here to explore various sections and features of the app')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'left'
+                    },
+                    {
+                        title: "Card Balance",
+                        element: document.querySelector('.card-balance'),
+                        intro: `Here you can quickly view your current card balance.
+                        <br>
+                        <button class="tts-button" onclick="speak('Here you can quickly view your current card balance')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Account Number",
+                        element: document.querySelector('.account-number-details'),
+                        intro: `Your account number is displayed here for your reference.
+                        <br>
+                        <button class="tts-button" onclick="speak('Your account number is displayed here for your reference')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Card Number",
+                        element: document.querySelector('.card-details'),
+                        intro: `Your card number is displayed here for your reference.
+                        <br>
+                        <button class="tts-button" onclick="speak('Your card number is displayed here for your reference')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Money Transfer",
+                        element: document.getElementById('transfer'),
+                        intro: `Need to transfer funds? Tap here to initiate money transfers between accounts or to others.
+                        <br>
+                        <button class="tts-button" onclick="speak('Need to transfer funds? Tap here to initiate money transfers between accounts or to others')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "PayNow",
+                        element: document.getElementById('paynow'),
+                        intro: `<iframe width="560" height="315" src="https://www.youtube.com/embed/qcjAC67W3dA?si=68QasIA1iCyXRZZi" 
+                            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; 
+                            encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            Use PayNow to make instant transfers to other users using their phone number or ID
+                            <br> 
+                            <button class="tts-button" onclick="speak('Use PayNow to make instant transfers to other users using their phone number or ID')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                            </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Transaction History",
+                        element: document.getElementById('history-icon'),
+                        intro: `Review your recent transactions and account activity here in the history section.
+                        <br>
+                        <button class="tts-button" onclick="speak('Review your recent transactions and account activity here in the history section')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'left',
+                    },
+                    {
+                        title: "Bill Payment",
+                        element: document.getElementById('paying-bill'),
+                        intro: `Pay your bills easily by tapping here. You can manage and schedule bill payments.
+                        <br>
+                        <button class="tts-button" onclick="speak('Pay your bills easily by tapping here. You can manage and schedule bill payments.')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top'
+                    },
+                    {
+                        title: "Insurance",
+                        element: document.getElementById('insurance'),
+                        intro: `Check and manage your insurance policies here, or explore new insurance products.
+                        <br>
+                        <button class="tts-button" onclick="speak('Check and manage your insurance policies here, or explore new insurance products')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top-right'
+                    },
+                    {
+                        title: "Loan",
+                        element: document.getElementById('loan'),
+                        intro: `Apply for loans or manage your existing loans from this section.
+                        <br>
+                        <button class="tts-button" onclick="speak('Apply for loans or manage your existing loans from this section.')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top'
+                    },
+                    {
+                        title: "Investments",
+                        element: document.getElementById('investment'),
+                        intro: `View and manage your investments, track performance, or explore new investment options.
+                        <br>
+                        <button class="tts-button" onclick="speak('View and manage your investments, track performance, or explore new investment options')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'left'
+                    },
+                    {
+                        title: "Assistance",
+                        element: document.getElementById('assistance'),
+                        intro: `Need help? Visit this chatbot for personal assistance.
+                        <br> 
+                        <button class="tts-button" onclick="speak('Need help? Visit this chatbot for personal assistance')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top'
+                    },
+                    {
+                        title: "Voice Navigation",
+                        element: document.querySelector('.mic-image'),
+                        intro: `Struggling to navigate? Speak into the microphone to navigate through pages.
+                        <br> 
+                        <button class="tts-button" onclick="speak('Struggling to navigate? Speak into the microphone to navigate through pages')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top'
+                    },
+                ],
+                showStepNumbers: true,
+                exitOnEsc: true,
+                exitOnOverlayClick: true,
+                nextLabel: 'Next →',
+                prevLabel: '← Previous',
+                doneLabel: 'Finish',
+                showProgress: true,      
+        }).start();
+    }   
+    </script>
+</body>
+</html>

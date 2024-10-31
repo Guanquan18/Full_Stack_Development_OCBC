@@ -1,0 +1,498 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+            background: white;
+        }
+
+        .homepage-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .back-button img {
+            width: 50px;
+            height: 50px;
+            margin-right: 5px;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+
+        .view-transaction-title {
+            font-size: 24px;
+            text-align: center;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        /* Search section styling */
+        .select-button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-section {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .dropdown-section {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .dropdown-section label {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Search button with shadow */
+        .search-button {
+            background-color: red;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 5px;
+            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Styled dropdown */
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid black;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            color: #333; 
+        }
+
+        select:focus {
+            background-color: white;
+            color: black; 
+            outline: none;
+        }
+
+        select option {
+            font-weight: 600
+        }
+
+        #selectedRange{
+            font-size: 24px;
+            text-align: center;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        /* Transaction list and cards */
+        .transaction-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding:20px
+        }
+
+        .transaction-card {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            border: 1px solid black;
+            border-radius: 8px;
+            background-color: #ffd7d7;
+            margin-bottom: 15px;
+        }
+
+        .transaction-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .transaction-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .speaker-icon {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .transaction-from,
+        .transaction-to,
+        .transaction-date {
+            font-size: 20px; 
+            margin: 0; 
+        }
+
+        .transaction-amount {
+            font-size: 20px;
+            font-weight: 700; 
+            text-align: right; 
+        }
+
+        /* Custom Date */
+        .custom-date-range {
+            display: flex; 
+            flex-direction: column; 
+            width: 100%; 
+        }
+
+        .custom-date-range label {
+            font-weight: 700; 
+            margin-top: 20px; 
+        }
+
+        .custom-date-range input {
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid black; 
+            border-radius: 4px; 
+            font-size: 16px;
+        }
+        .error-message {
+            color: red; 
+            margin-top: 10px;
+            font-size:16px;
+            font-weight: 700;
+        }
+                /* Style for intro js*/
+        .introjs-tooltip {
+            background-color: #282c34; 
+            color: #fff;              
+            border-radius: 8px;        
+            padding: 10px;             
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .introjs-skipbutton {
+            font-size: 30px;
+            color: white;
+        }
+
+        .introjs-tooltiptext {
+            font-size: 20px;          
+            line-height: 1.6;
+            padding: 0px 20px;
+        }
+        .introjs-tooltipbuttons{
+            border-top: 0px solid #e0e0e0;
+            padding: 0px;
+        }
+        .introjs-tooltipbuttons a {
+            background-color: #ED3F3F !important;
+            box-shadow: none;
+            color: #fff !important;          
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 5px;
+            border: none !important;
+            text-shadow: none;
+            font-size:15px;
+            font-weight:700;
+        }
+        
+        .introjs-tooltip-title {
+            font-weight: bold;     
+            margin-bottom: 10px;
+            color: white;
+            font-style: italic;
+            text-decoration: underline;
+        }
+
+        .introjs-progress {
+            display: block !important; 
+            height: 4px;
+            background-color: #fff; 
+        }
+
+        .introjs-progressbar {
+            background-color: #ED3F3F; 
+        }
+        .introjs-arrow.top-middle,.introjs-arrow.top-right,.introjs-arrow.top-left {
+            color:black;
+            border-bottom-color: black;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .introjs-tooltip iframe {
+            width: 100%;
+            height: auto;
+            padding: 0px !important;
+        }
+        .tts-button {
+            background-color: #ED3F3F; 
+            color: white;         
+            border: none;         
+            border-radius: 8px;   
+            padding: 10px 15px;   
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 5px;     
+            cursor: pointer;
+            display: flex; 
+            align-items: center;      
+            transition: background-color 0.3s ease;
+        }
+
+        .tts-button:hover {
+            background-color: darkred; 
+        }
+        .tts-button img {
+            width: 20px;               
+            height: 20px;
+            margin-right: 10px !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="homepage-header">
+        <a href="../homepage/homepage.html" class="back-button">
+            <img src="../images/back-icon.png" alt="Back">
+            <span>Back</span>
+        </a>
+        <img id="view-transaction-walkthrough" class="header-icon" src="../images/homepage/tutorial.png" onclick="startViewTransactionTour()" alt="Video Tutorial Icon">
+    </div>
+    <h2 class="view-transaction-title">Select Time Range</h2>
+    
+    <div class="search-section">
+        <div class="dropdown-section">
+            <label for="rangeOption">Choose Range:</label>
+            <div class="select-button-container">
+                <select id="rangeOption" onchange="toggleCustomRange()">
+                    <option id = "1month" value="1month">1 Month</option>
+                    <option id = "3month" value="3months">3 Months</option>
+                    <option id = "custom" value="custom">Custom</option>
+                </select>
+                <button class="search-button" onclick="fetchTransactions()">Search</button>
+            </div>
+            <div id="customDateRange" class="custom-date-range" style="display: none;">
+                <label for="startDateInput">Start Date:</label>
+                <input type="date" id="startDateInput" max="" oninput="validateDates()">
+                <label for="endDateInput">End Date:</label>
+                <input type="date" id="endDateInput" max="" oninput="validateDates()">
+                <p id="error-message" class="error-message" style="display: none;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Selected Range Display -->
+    <p id="selectedRange" style="display: none;">01 Oct 2024 - 30 Oct 2024</p>
+
+    <!-- Transaction Cards -->
+    <div id="transactionList" class="transaction-list"></div>
+
+    <!-- Mic Icon -->
+    <div id="mic-icon" class="mic-container" onclick="startTranscription()">
+        <img src="../images/homepage/microphone.webp" alt="Microphone Icon" class="mic-image">
+    </div>
+
+    <!-- Stop Button -->
+    <div id="stop-button" class="stop-button" onclick="stopTranscription()">
+        <p>Stop</p>
+    </div>
+
+     <!-- Language Overlay -->
+     <div id="language-overlay" class="language-overlay">
+        <span class="language-popup-close-btn" onclick="closeLanguagePopup()">&times;</span>
+        <h2>Choose Your Preferred Language to Speak</h2>
+        <button class="language-button" onclick="selectLanguage('en-US')">English</button>
+        <button class="language-button" onclick="selectLanguage('zh-CN')">Chinese (中文)</button>
+        <button class="language-button" onclick="selectLanguage('ta-IN')">Tamil (தமிழ்)</button>
+        <button class="language-button" onclick="selectLanguage('ms-MY')">Malay (Bahasa Melayu)</button>
+    </div>
+    
+
+    <!-- Mic Overlay -->
+    <div id="mic-overlay" class="mic-overlay">
+        <h2>Transcribed Words:</h2>
+        <p id="transcription"></p>
+    </div>
+    <script src = "../scripts/script.js"></script>
+    <script src = "../scripts/stt.js"></script>
+    <script>
+        const searchButton = document.querySelector('.search-button');
+        // Function to toggle the custom date range visibility
+        function toggleCustomRange() {
+            // Resetting
+            const selectedRangeElement = document.getElementById('selectedRange');
+            selectedRangeElement.innerText = '';
+            const transactionContainer = document.querySelector('.transaction-list');
+            transactionContainer.innerHTML = '';
+            
+            const rangeOption = document.getElementById("rangeOption").value;
+            const customDateRange = document.getElementById("customDateRange");
+            const today = new Date();
+            const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+
+            
+            if (rangeOption === "custom") {
+                console.log(localToday)
+                customDateRange.style.display = "flex";
+                document.getElementById("startDateInput").setAttribute("max", localToday);
+                document.getElementById("endDateInput").setAttribute("max", localToday);
+                searchButton.style.display = "none";
+            } else {
+                searchButton.style.display = "block";
+                customDateRange.style.display = "none";
+                clearError();
+            }
+        }
+        // Function to validate dates
+        function validateDates() {
+            const startDate = document.getElementById("startDateInput").value;
+            const endDate = document.getElementById("endDateInput").value;
+            const today = new Date();
+            const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+            const errorMessageElement = document.getElementById("error-message");
+            searchButton.style.display = "none";
+
+            clearError(); 
+
+            if (!startDate || !endDate) { 
+                errorMessageElement.style.display = "block"; 
+                errorMessageElement.innerText = "Both dates should be provided.";
+            } else if (startDate > localToday) {
+                errorMessageElement.style.display = "block"; 
+                errorMessageElement.innerText = "Start date cannot be greater than today.";
+            } else if (endDate > localToday) {
+                errorMessageElement.style.display = "block"; 
+                errorMessageElement.innerText = "End date cannot be greater than today.";
+            } else if (endDate < startDate) {
+                errorMessageElement.style.display = "block"; 
+                errorMessageElement.innerText = "End date cannot be earlier than the start date.";
+            } else {
+                // If all validations pass, show the search button
+                searchButton.style.display = "block";
+            }
+        }
+
+        // Function to clear the error message
+        function clearError() {
+            const errorMessageElement = document.getElementById("error-message");
+            errorMessageElement.innerText = "";
+            errorMessageElement.style.display = "none";
+        }
+        // Function to start tour
+        function startViewTransactionTour() {
+            introJs().setOptions({
+                animation: true,
+                steps: [
+                    {
+                        title: "Back Button",
+                        element: document.querySelector('.back-button'),
+                        intro: `Tap here to go back to homepage.
+                        <br>
+                        <button class="tts-button" onclick="speak('Tap here to go back to homepage')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Video Walkthrough",
+                        element: document.getElementById('view-transaction-walkthrough'),
+                        intro: `Watch a helpful video walkthrough of the app features by tapping here.
+                        <br>
+                        <button class="tts-button" onclick="speak('Watch a helpful video walkthrough of the app features by tapping here')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Time Range",
+                        element: document.getElementById('rangeOption'),
+                        intro: `Select a time range to filter your transactions: choose 1 month, 3 months, or set a custom range.
+                        <br> 
+                        <button class="tts-button" onclick="speak('This is the main menu. Tap here to explore various sections and features of the app')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'left'
+                    },
+                    {
+                        title: "Search Button",
+                        element: document.querySelector('.search-button'),
+                        intro: `Press here to view your transactions based on the selected time range.
+                        <br>
+                        <button class="tts-button" onclick="speak('Here you can quickly view your current card balance')">
+                            <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                            Read Aloud
+                        </button>`,
+                        position: 'bottom'
+                    },
+                    {
+                        title: "Voice Navigation",
+                        element: document.querySelector('.mic-image'),
+                        intro: `Struggling to navigate? Speak into the microphone to navigate through pages.
+                        <br> 
+                        <button class="tts-button" onclick="speak('Struggling to navigate? Speak into the microphone to navigate through pages')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top'
+                    },
+                ],
+                showStepNumbers: true,
+                exitOnEsc: true,
+                exitOnOverlayClick: true,
+                nextLabel: 'Next →',
+                prevLabel: '← Previous',
+                doneLabel: 'Finish',
+                showProgress: true,      
+        }).start();
+    }
+    </script>
+</body>
+</html>

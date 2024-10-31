@@ -1,17 +1,23 @@
-const Account = require("../models/profile");
+const Profile = require("../models/profile");
 const bcrypt = require("bcrypt");   // Import bcrypt for password hashing
 const jwt = require("jsonwebtoken");    // Import jsonwebtoken for creating tokens
 require('dotenv').config(); // Import dotenv for environment variables
 
 const getProfileById = async (req, res) => {
-    const accountId = req.params.accountId;
-    const account = await Account.getAccountById(accountId);
-
-    if(account){
-        res.json(account);
-    }
-    else{
-        res.status(404).json({message: "Account not found."});
+    const profileId = parseInt(req.params.profileId); 
+  
+    try {
+      const profile = await Profile.getProfileById(profileId); // Attempt to fetch profile by ProfileId
+  
+      if (!profile) {
+        return res.status(404).send("Profile not found"); // Handle case where no profile is found
+      }
+  
+      res.json(profile);  // Return account details as JSON response
+  
+    } catch (error) {
+      console.error("Error retrieving profile", error.message);
+      res.status(500).send("Error retrieving profile");  
     }
 }
 
@@ -19,10 +25,10 @@ const loginProfileByAccessCode = async (req, res) => {
     const accessCode = req.body.accessCode;
     const pin = req.body.pin;
     try{
-        const profileData = await Account.getProfileByAccessCode(accessCode);
+        const profileData = await Profile.getProfileByAccessCode(accessCode);
 
         if(!profileData){
-            return res.status(404).json({message: "Account not found."});
+            return res.status(404).json({message: "Profile not found."});
         }
 
         // Check if the PIN is correct

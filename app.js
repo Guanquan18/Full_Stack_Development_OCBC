@@ -10,6 +10,9 @@ const validateProfile = require("./middlewares/validateProfile");
 
 // Import controllers
 const profileController = require("./controllers/profileController"); // Import the profile controller
+const accountController = require("./controllers/accountController"); // Import the account controller
+const cardController = require("./controllers/cardController"); // Import the card controller
+const transactionController = require("./controllers/transactionController"); // Import the transaction controller
 
 
 const app = express(); // Create an Express application
@@ -25,7 +28,11 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + "/public/login-pages/index.html");
 });
 
-app.post('/login', validateProfile.validateAccessCodePin, profileController.loginProfileByAccessCode); 
+app.post('/login', validateProfile.validateAccessCodePin, profileController.loginProfileByAccessCode);
+app.get("/account/:profileId", accountController.getAccountByProfileId); // Get profile by profile id
+app.get("/profile/:profileId", profileController.getProfileById); // Get account by profile id
+app.get("/card/:profileId/:accNum", cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
+app.get("/transactions/:accNum", transactionController.getTransactionHistory); // get trnasactions history by accNum
 
 app.listen(port, async () => {
     try {
