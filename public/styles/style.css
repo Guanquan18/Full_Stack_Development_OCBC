@@ -165,3 +165,122 @@ body{
 
     visibility: hidden;
 }
+
+/* Homepage */
+ /* Mic Icon Styles */
+ .mic-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 60px;
+    height: 60px;
+    z-index: 10;
+}
+
+.mic-image {
+    width: 100%;
+}
+
+.mic-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 15;
+    padding: 20px;
+    color: white;
+}
+
+.stop-button {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 80px;
+    height: 80px;
+    background-color:  #ED3F3F;
+    border-radius: 50%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+.stop-button p {
+    margin: 0px;
+    font-weight: 700;
+    color: white;
+    font-size: 18px;
+}
+
+.mic-overlay h2{
+    font-size: 30px;
+    font-weight: 700;
+    text-decoration: underline;
+    margin-top: 10px;
+}
+
+.mic-overlay p{
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+/* Language Overlay Styles */
+.language-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    z-index: 20;
+    color: white;
+    display: none;
+}
+
+/* Close Button Style */
+.language-popup-close-btn {
+    float: right;
+    font-size: 30px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Header Style */
+.language-overlay h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 30px;
+}
+
+/* Language Button Styles */
+.language-button {
+    display: block;
+    width: 90%;
+    padding: 15px;
+    margin: 15px auto;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #ED3F3F;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.language-button:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+

@@ -31,6 +31,7 @@ create table Profile
 create table Account
 (
 	AccNum		varchar(20)		not null,
+	AccType     varchar(30)     not null,
 	Balance		float			not null,
 	ProfileId	smallint		not null,
 	constraint PK_Account primary key (AccNum),
@@ -42,8 +43,9 @@ create table Account
 --Card Table
 create table Card
 (
-	CardNum			char(16)	not null,
+	CardNum			char(19)	not null,
 	CardName		varchar(25)	not null,
+	CardType		varchar(10) not null,
 	DateOfExpiry	date		not null,
 	CVV				char(3)		not null,
 	AccNum			varchar(20)	not null,
@@ -76,26 +78,41 @@ values
 ('Carol Lee', '4567890', '$2b$12$bcV72RGe07uEYQjUFGxrieUFDs5RCl.d3yCJD9adyK0QorwDKmiIW'),
 ('David Brown', '5678901', '$2b$12$eJmaZ7edAQ21wCHD1JGis.j.iH2dRIW/VCEPYKPVVhVnhINCd7z7W')
 
-insert into Account(AccNum, Balance, ProfileId)
+insert into Account(AccNum, AccType, Balance, ProfileId)
 values
-('10000001', 1000.00, 1),
-('10000002', 250.75, 2),
-('10000003', 500.50, 3),
-('10000004', 150.20, 4),
-('10000005', 0.00, 5);
+('123-456789-001', 'Statement Savings Account', 1000.00, 1),
+('234-567890-002', 'Statement Savings Account', 2500.75, 2),
+('345-678901-003', 'Current Account', 5000.50, 3),
+('456-789012-004', 'Statement Savings Account', 1500.20, 4),
+('567-890123-005', 'Current Account', 1000.00, 5);
 
-insert into Card (CardNum, CardName, DateOfExpiry, CVV, AccNum)	
+insert into Card (CardNum, CardName, CardType, DateOfExpiry, CVV, AccNum)	
 values
-('1234567890123456', 'Guan Quan', '2025-12-31', '123', '10000001'),
-('2345678901234567', 'Bob Smith', '2026-11-30', '456', '10000002'),
-('3456789012345678', 'Carol Lee', '2025-08-31', '789', '10000003'),
-('4567890123456789', 'David Brown', '2025-05-31', '012', '10000004'),
-('5678901234567890', 'Eve Williams', '2027-04-30', '345', '10000005');
+('1234 5678 9012 3456', 'Guan Quan', 'Debit', '2025-12-31', '123', '123-456789-001'),
+('2345 6789 0123 4567', 'Bob Smith', 'Debit','2026-11-30', '456', '234-567890-002'),
+('3456 7890 1234 5678', 'Carol Lee', 'Debit','2025-08-31', '789', '345-678901-003'),
+('4567 8901 2345 6789', 'David Brown', 'Debit','2025-05-31', '012', '456-789012-004'),
+('5678 9012 3456 7890', 'Eve Williams', 'Debit','2027-04-30', '345', '567-890123-005');
 
 insert into BankTransaction(TransactDate, TransactAmount, AccSender, AccReceiver)
 values
-('2024-10-01', 100.50, '10000002','10000001'),
-('2024-10-02', 250.00, '10000002', '10000003'),
-('2024-10-03', 75.25, '10000003', '10000001'),
-('2024-10-04', 150.00, '10000004', '10000005'),
-('2024-10-05', 300.00, '10000001', '10000004');
+('2024-10-01', 100.50, '234-567890-002','123-456789-001'),
+('2024-10-02', 250.00, '234-567890-002', '345-678901-003'),
+('2024-10-03', 75.25, '345-678901-003', '123-456789-001'),
+('2024-10-04', 150.00, '456-789012-004', '567-890123-005'),
+('2024-10-05', 300.00, '123-456789-001', '456-789012-004');
+
+   SELECT 
+		bt.TransactNo, 
+		bt.TransactDate, 
+		bt.TransactAmount, 
+		bt.AccSender, 
+		sender.AccNum AS SenderName, 
+		bt.AccReceiver, 
+		receiver.AccNum AS ReceiverName
+	FROM BankTransaction bt
+	JOIN Account sender ON bt.AccSender = sender.AccNum
+	JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
+	WHERE (bt.AccSender = '123-456789-001' OR bt.AccReceiver = '123-456789-001')
+	AND bt.TransactDate BETWEEN	'2024-10-01' AND '2024-10-03'
+	ORDER BY bt.TransactDate DESC;
