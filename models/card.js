@@ -3,11 +3,12 @@ const sql = require("mssql");
 const dbConfig = require("../configs/dbConfig");
 
 class Card{
-    constructor(CardNum, CardName,DateOfExpiry,CVV,AccNum){
+    constructor(CardNum, CardName,DateOfExpiry,CVV,CardType,AccNum){
         this.CardNum = CardNum;
         this.CardName = CardName;
         this.DateOfExpiry = DateOfExpiry;
         this.CVV = CVV;
+        this.CardType = CardType
         this.AccNum = AccNum;
     }
     // Static method to fetch profile id and accNum
@@ -17,7 +18,7 @@ class Card{
         try {
             // SQL query to  profile id and accNum
             const sqlQuery = `
-                SELECT c.CardNum, c.CardName, c.DateOfExpiry, c.CVV
+                SELECT c.CardNum, c.CardName, c.DateOfExpiry, c.CVV, c.CardType
                 FROM Card c
                 INNER JOIN Account a ON c.AccNum = a.AccNum
                 WHERE a.ProfileId = @ProfileId AND a.AccNum = @AccNum`;; // Parameterized query
@@ -31,7 +32,7 @@ class Card{
                 }
                 // Return the first card found
                 const row = result.recordset[0];
-                return new Card(row.CardNum, row.CardName, row.DateOfExpiry, row.CVV, accNum);
+                return new Card(row.CardNum, row.CardName, row.DateOfExpiry, row.CVV, row.CardType,accNum);
         }
         catch (error) {
             console.error("Error retrieving cards by profile ID and account number:", error);
