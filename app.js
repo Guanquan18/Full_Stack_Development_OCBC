@@ -4,6 +4,8 @@ const dbConfig = require("./configs/dbConfig"); // Import the database configura
 const bodyParser = require("body-parser"); // Import body-parser for parsing request bodies
 const staticMiddleware = express.static("public"); // Middleware to serve static files from the public folder
 
+const OpenAI = require('openai');
+
 // Imoort middlewares
 const verifyJWT = require("./middlewares/verifyJWT.js");
 const validateProfile = require("./middlewares/validateProfile");
@@ -22,6 +24,13 @@ const port = process.env.PORT || 3000; // Use environment variable or default po
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // For form data handling
 app.use(staticMiddleware); // Mount the static middleware
+app.use(express.json()); // Middleware to parse JSON bodies
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
 
 // Route to serve the login page HTML file (login page)
 app.get('/', (req, res) => {
@@ -34,6 +43,29 @@ app.get("/profile/:profileId", profileController.getProfileById); // Get account
 app.get("/card/:profileId/:accNum", cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
 app.get("/transactions/:accNum", transactionController.getTransactionHistory); // get trnasactions history by accNum
 
+// Endpoint to handle chat requests
+app.post('/api/chat', async (req, res) => {
+  const { message } = req.body;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "meta/llama3-70b-instruct",
+      messages: [{ "role": "user", "content": message }],
+      temperature: 0.2,
+      top_p: 0.7,
+      max_tokens: 1024,
+      stream: false, // Change to false to get complete response in one go
+    });
+
+    // Extract and send the response back to frontend
+    const responseText = completion.choices[0]?.message?.content || '';
+    res.json({ response: responseText });
+  } catch (error) {
+    console.error('Error during completion:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.listen(port, async () => {
     try {
       // Connect to the database
@@ -45,7 +77,7 @@ app.listen(port, async () => {
       process.exit(1); // Exit with code 1 indicating an error
     }
   
-    console.log(`Server listening on port ${port}`);
+    console.log(`Server listening on port http://localhost:${port}`);
   
 });
 
