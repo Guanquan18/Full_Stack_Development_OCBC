@@ -1,9 +1,10 @@
+
 body{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    font-family: 'Open Sans', sans-serif;
+    background: white;
     width: 100%;
     height: 100vh;
 }
@@ -41,11 +42,12 @@ body{
 .index-content-container{
     width: 100%;
     height: 100%;
-    padding-top: 400px;
+    padding-top: 340px;
     
     position: relative;
     background: linear-gradient(to top, rgb(255, 255, 255) 55%, rgba(255, 255, 255, 0.25) 100%);
 }
+
 .index-content-wrapper{
     width: 90%;
     height: 100%;
@@ -55,16 +57,38 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 4rem;
 }
 
 .index-content-container h1{
     font-size: 4rem;
     font-weight: 1000;
     color: black;
-    margin: 4rem 0 1rem;
-
+    margin: 4rem 0 2rem;
     text-align: center;
+}
+
+.image-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.quick-access-icon   {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+}
+
+.image-caption {
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 10px;
 }
 
 .index-login-button{
@@ -165,7 +189,6 @@ body{
 
     visibility: hidden;
 }
-
 /* Homepage */
  /* Mic Icon Styles */
  .mic-container {

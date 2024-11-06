@@ -16,16 +16,41 @@
     </article>
     <article class="index-content-container">
         <section id="index-information" class="index-content-wrapper">
-
             <h1>Welcome<br><span style="color: #ED3F3F;">OCBC</span> App</h1>
             
+            <div class="row image-row">
+                <div class="col-4 text-center">
+                    <img id="check-balance-icon" class="quick-access-icon" src="../images/check-balance-icon.webp" alt="Check Balance" data-link="../homepage/homepage.html">
+                    <p class="image-caption">Check Balance</p>
+                </div>
+                <div class="col-4 text-center">
+                    <img id="transfer-funds" class="quick-access-icon" src="../images/homepage/transfer-money.png" alt="Transfer Funds" data-link="../transaction/transaction.html" >
+                    <p class="image-caption">Transfer Funds</p>
+                </div>
+                <div class="col-4 text-center">
+                    <img id="view-history" class="quick-access-icon" src="../images/homepage/view-history.png" alt="View Transaction History" data-link="../view-transaction-pages/view-transaction-history.html">
+                    <p class="image-caption">View History</p>
+                </div>
+            </div>
+            <div class="row image-row">
+                <div class="col-4 text-center">
+                    <img id="paying-bills" class="quick-access-icon" src="../images/homepage/paying-bills.png" alt="Paying Bills" data-link="../paying-bill-pages/paying-bill.html">
+                    <p class="image-caption">Paying Bills</p>
+                </div>
+                <div class="col-4 text-center">
+                    <img id="scan-n-pay" class="quick-access-icon" src="../images/xcan-n-pay.webp" alt="Scan & Pay" data-link="../scan-n-pay/scan-n-pay.html">
+                    <p class="image-caption">Scan & Pay</p>
+                </div>
+                <div class="col-4 text-center">
+                    <img id="chatbot" class="quick-access-icon" src="../images/homepage/assistance.png" alt="assistance" data-link="../chatbot/chatbot.html">
+                    <p class="image-caption">Assistance</p>
+                </div>
+            </div>
+
+
             <button class="index-login-button" onclick="showContent('index-login');hideContent('index-information');shiftIndexBackground('index-content-container')">
                 Log In to OCBC Singapore
             </button>
-
-            <p class="index-login-note">Note: Have you charged you phone and wish to activate OCBC One Token? 
-                Please download the latest version of the OCBC app and allow push notification to be sent via the app
-            </p>
         </section>
         
         <section id="index-login" class="index-content-wrapper" style="display: none;">
@@ -85,6 +110,29 @@
         }
         
         IndexLoginSubmit('index-login-form');
+        // Login based on feature selection
+        document.addEventListener("DOMContentLoaded", function () {
+            const icons = document.querySelectorAll(".quick-access-icon");
+            icons.forEach(icon => {
+                icon.addEventListener("click", () => {
+                    const link = icon.getAttribute("data-link");
+
+                    if (icon.id === "chatbot") {
+                        // If the icon is the chatbot, open the link directly
+                        window.location.href = link;
+                    } else {
+                        // Otherwise, show login and hide other content
+                        showContent('index-login');
+                        hideContent('index-information');
+                        shiftIndexBackground('index-content-container');
+
+                        // Store the link in local storage
+                        localStorage.setItem("selectedLink", link);
+                    }
+                });
+            });
+        });
+
     </script>
 </body>
 </html>

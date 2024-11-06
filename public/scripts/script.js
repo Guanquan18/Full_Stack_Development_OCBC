@@ -24,7 +24,15 @@ function IndexLoginSubmit(formId){
         }
 
         if(authenticated){
-            window.location.href = "../homepage/homepage.html";
+            const selectedLink = localStorage.getItem("selectedLink");
+            if (selectedLink === null) {
+                // If no link is stored, redirect to the default homepage
+                window.location.href = "../homepage/homepage.html";
+            } else {
+                // Otherwise, redirect to the stored link
+                window.location.href = selectedLink;
+            }
+            localStorage.removeItem("selectedLink");
         };
 
         function validateInput(){

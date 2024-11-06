@@ -50,7 +50,11 @@ function stopTranscription() {
              window.location.href = '../homepage/homepage.html'
         } else if (lastTranscript.toLowerCase().includes('view transaction history')) {
            window.location.href = '../view-transaction-pages/view-transaction-history.html'
-        }
+        } else if (lastTranscript.toLowerCase().includes('chatbot')) {
+            window.location.href = '.../chatbot/chatbot.html'
+        } else if (lastTranscript.toLowerCase().includes('transfer')) {
+            window.location.href = ''
+        } 
 
         document.getElementById("mic-overlay").style.display = "none";
         document.getElementById("stop-button").style.display = "none";
