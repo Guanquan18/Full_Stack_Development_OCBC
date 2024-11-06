@@ -96,8 +96,8 @@
 
         /* Bank Card Styles */
         .bank-card {
-            background: #FFD68B;
-            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(45deg, rgba(254,234,227,1) 0%, rgba(242,240,243,1) 39%, rgba(242,240,243,1) 57%, rgba(250,250,252,1) 100%);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
             border-radius: 20px;
             width: 400px;
             height: auto;
@@ -113,6 +113,7 @@
             color: white;
             margin-bottom: 20px;
             position: relative;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .ocbc-logo {
@@ -171,8 +172,8 @@
         
         /* Feature */
         .feature {
-            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.25);
-            background: #FFB570;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            background: #FFFFFF;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -188,10 +189,6 @@
             width: 100px;
             height: 100px;
             margin-bottom: 10px;
-        }
-        #insurance-icon{
-            width: 70px;
-            height: 70px;
         }
         .feature-title {
             font-size: 16px;
@@ -212,7 +209,7 @@
         }
 
         .popup-content {
-            background: #FFD68B;
+            background: #fbfaf8;
             padding: 30px;
             width: 100%;
         }
@@ -228,12 +225,12 @@
         .homepage-menu-flex-container {
             display: flex;
             flex-direction: column; 
-            align-items: center;
+            align-items: left;
         }
 
         .homepage-menu-flex-item {
             display: flex;
-            align-items: center;
+            align-items: left;
             margin-bottom: 20px; 
             padding: 10px;
             color: black;
@@ -244,8 +241,8 @@
         }
 
         .homepage-menu-flex-item img {
-            width: 45px;
-            height: 45px;
+            width: 30px;
+            height: 30px;
             margin-right: 10px;
         }
 
@@ -253,6 +250,7 @@
             font-size: 20px;
             font-weight: 700;
             text-align: left;
+            padding-top: 4px;
             margin: 0;
         }
         
@@ -378,7 +376,7 @@
     <div class="homepage-header">
         <div class="header-icons">
             <img id = "notification-bell" class="header-icon" src="../images/homepage/notification-bell.png" alt="Bell Icon">
-            <img id = "homepage-video-walk-through" class="header-icon" src="../images/homepage/tutorial.png" onclick="startHomePegeTour()" alt="Video Tutorial Icon">
+            <img id = "homepage-video-walk-through" class="header-icon" src="../images/homepage/tutorial_simple.png" onclick="startHomePegeTour()" alt="Video Tutorial Icon" style="transform: scale(0.8);">
             <i id = "menu-icon" class="fas fa-bars hamburger-icon" onclick="openMenuPopup()"></i>
         </div>
     </div>
@@ -413,12 +411,12 @@
                 <h2 id="transfer-title">Transfer</h2>
             </div>
             <div id = 'paynow' class="icon-item">
-                <img id="paynow-icon" src="../images/homepage/paynow.png" alt="Paynow Icon">
+                <img id="paynow-icon" src="../images/homepage/paynow.png" alt="Paynow Icon" style="transform: scale(1.8);">
                 <h2 id="paynow-title">Paynow</h2>
             </div>
             <a href="../view-transaction-pages/view-transaction-history.html" class="unstyled-link">
                 <div id="history" class="icon-item">
-                    <img id="history-icon" src="../images/homepage/view-history.png" alt="History Icon">
+                    <img id="history-icon" src="../images/homepage/view-history.png" alt="History Icon" style="transform: scale(0.8);">
                     <h2 id="history-title">View History</h2>
                 </div>
             </a>
@@ -430,19 +428,19 @@
             <!-- Feature Cards -->
             <div class="col-4">
                 <div id = 'paying-bill' class="feature">
-                    <img class="feature-icon" src="../images/homepage/paying-bills.png" alt="Paying Bills Icon">
-                    <h2 class="feature-title">Paying Bills</h2>
+                    <img class="feature-icon" src="../images/homepage/bill.png" alt="Paying Bills Icon" style="transform: scale(0.5);">
+                    <h2 class="feature-title">Bills</h2>
                 </div>
             </div>
             <div class="col-4">
                 <div id = 'insurance' class="feature">
-                    <img id = 'insurance-icon'class="feature-icon" src="../images/homepage/insurance.png" alt="Insurance Icon">
+                    <img class="feature-icon" src="../images/homepage/insurance.png" alt="Insurance Icon">
                     <h2 class="feature-title">Insurance</h2>
                 </div>
             </div>
             <div class="col-4">
                 <div id = 'loan' class="feature">
-                    <img class="feature-icon" src="../images/homepage/loan.webp" alt="Loan Icon">
+                    <img class="feature-icon" src="../images/homepage/loan.png" alt="Loan Icon">
                     <h2 class="feature-title">Loan</h2>
                 </div>
             </div>
@@ -453,10 +451,12 @@
                 </div>
             </div>
             <div class="col-8">
+                <a href="../chatbot/chatbot.html">
                 <div id = 'assistance' class="feature">
-                    <img class="feature-icon" src="../images/homepage/assistance.png" alt="Assistance Icon">
+                    <img class="feature-icon" src="../images/homepage/assistance.png" alt="Assistance Icon" style="transform: scale(0.8);">
                     <h2 class="feature-title">Assistance</h2>
                 </div>
+                </a>
             </div>
         </div>
     </div>
@@ -466,19 +466,19 @@
             <span class="close-btn homepage-close-btn" onclick="closeMenuPopup()">&times;</span>
             <div class="homepage-menu-flex-container">
                 <a href = '../homepage/homepage.html' class="homepage-menu-flex-item">
-                    <img src="../images/homepage/home.png" alt="Icon 1">
+                    <img src="../images/homepage/home.png" alt="Home">
                     <h2>Home</h2>
                 </a>
                 <a href = '' class="homepage-menu-flex-item">
-                    <img src="../images/homepage/plan.webp" alt="Icon 2">
+                    <img src="../images/homepage/plan.png" alt="Plan">
                     <h2>Plan</h2>
                 </a>
                 <a href = '' class="homepage-menu-flex-item">
-                    <img src="../images/homepage/rewards.webp" alt="Icon 2">
+                    <img src="../images/homepage/gift.png" alt="Rewards">
                     <h2>Rewards</h2>
                 </a>
                 <a href = '' class="homepage-menu-flex-item">
-                    <img src="../images/homepage/more.png" alt="Icon 2">
+                    <img src="../images/homepage/more_other.png" alt="More">
                     <h2>More Services</h2>
                 </a>
             </div>

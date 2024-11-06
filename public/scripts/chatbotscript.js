@@ -61,7 +61,7 @@ function appendMessage(text, type, isUser = false, timestamp = null) {
         messageContainer.appendChild(messageDiv);
     } else {
         // Bot message with profile picture
-        const profilePic = '<img src="img/ocbc.png" alt="Bot" class="profile-pic">';
+        const profilePic = '<img src="../images/OCBC_Logo.png" alt="Bot" class="profile-pic">';
         messageDiv.appendChild(textDiv);
         messageDiv.appendChild(timestampDiv);
         messageContainer.innerHTML = profilePic; // Add profile picture
@@ -89,7 +89,7 @@ async function sendMessage() {
         autoResizeTextarea();
 
         // Add context to the message
-        const contextMessage = `${messageText} (give very simple step by step answer that is professional)`;
+        const contextMessage = `${messageText} (you are a chatbot within the OCBC app. you are helping someone navigate the OCBC mobile app, give step by step instructions which are simple and clear)`;
 
         try {
             // Send the message to the backend
@@ -125,9 +125,9 @@ function showButtons() {
 
     // Array of button data (images and text)
     const buttonsData = [
-        { class: 'login', image: 'img/login.png', text: 'Login' },
-        { class: 'bank', image: 'img/bank.jpg', text: 'Bank Account' },
-        { class: 'transfer', image: 'img/transfer.png', text: 'Transfer' }
+        { class: 'login', image: '../images/chatbot/login.png', text: 'Login' },
+        { class: 'bank', image: '../images/chatbot/bank.jpg', text: 'Bank Account' },
+        { class: 'transfer', image: '../images/chatbot/transfer.png', text: 'Transfer' }
     ];
 
     // Create buttons dynamically

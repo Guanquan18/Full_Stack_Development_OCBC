@@ -8,12 +8,9 @@
 }
 
 .chatbot {
-    max-width: 400px;
-    margin: 20px auto;
     border: 1px solid #ccc;
-    border-radius: 5px;
     overflow: hidden;
-    height: 95vh;
+    height: 100vh;
     display: flex;
     flex-direction: column; /* Ensure vertical layout */
 }
@@ -102,7 +99,7 @@ margin-top: auto;
     text-align: left;
     margin-left: auto; /* Aligns the user message to the right */
     max-width: 70%; /* Limit the width of the user message */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Shadow for the pop-out effect */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
 }
 
 .bot-message {
@@ -110,7 +107,7 @@ margin-top: auto;
     text-align: left;
     margin-right: auto; /* Aligns the bot message to the left */
     max-width: 70%; /* Limit the width of the bot message */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Shadow for the pop-out effect */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
 }
 
 .profile-pic {
@@ -118,7 +115,7 @@ margin-top: auto;
     height: 40px; /* Size of the profile picture */
     border-radius: 50%; /* Make it circular */
     margin-right: 10px; /* Space between the profile pic and text */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Shadow for the pop-out effect */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
 }
 
 .message-container {
@@ -153,7 +150,7 @@ margin-top: auto;
     flex-shrink: 1;
     min-width: 100px; /* Set a minimum width for the buttons */
     border-radius: 25px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Shadow for the pop-out effect */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
 }
 
 .button:hover {
