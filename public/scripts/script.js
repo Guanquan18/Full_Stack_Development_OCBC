@@ -25,6 +25,7 @@ function IndexLoginSubmit(formId){
 
         if(authenticated){
             const selectedLink = localStorage.getItem("selectedLink");
+            localStorage.removeItem("selectedLink");
             if (selectedLink === null) {
                 // If no link is stored, redirect to the default homepage
                 window.location.href = "../homepage/homepage.html";
@@ -32,7 +33,6 @@ function IndexLoginSubmit(formId){
                 // Otherwise, redirect to the stored link
                 window.location.href = selectedLink;
             }
-            localStorage.removeItem("selectedLink");
         };
 
         function validateInput(){
