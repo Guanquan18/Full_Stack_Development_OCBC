@@ -1,0 +1,164 @@
+.chatbot-useraction {
+    margin-bottom: 0rem !important;
+}
+
+.chatbot-exit {
+    margin-right: -1rem;
+    font-size: x-large;
+}
+
+.chatbot {
+    border: 1px solid #ccc;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Ensure vertical layout */
+}
+
+.chatbot-header {
+    background-color: #e30713;
+    color: #ffffff;
+    font-weight: bolder;
+    font-size: larger;
+}
+
+.chatbot-exit:hover {
+    opacity: 0.7;
+}
+
+.chatbot-convo {
+    flex: 1; /* Allow this area to take up available space */
+    overflow-y: auto; /* Enable scrolling */
+    padding: 15px;
+    background-color: #fff9f9;
+    position: relative; /* Set position to relative */
+}
+
+.chatbot-useraction {
+    display: flex; /* Flexbox for buttons and textarea */
+    align-items: center; /* Center items vertically */
+    background-color: #fff9f9;
+}
+
+.input-group-append {
+margin-top: auto;
+}
+
+.form-control {
+    resize: none; /* Disable default resize */
+    overflow-y: auto; /* Enable scrolling for the textarea */
+    max-height: 100px; /* Set a max height for textarea */
+    line-height: 1.5; /* Line height adjustment */
+    margin-left: 8px;
+    margin-right: 8px;
+    flex: 1; /* Make textarea take available space */
+}
+
+.chatbot-useraction-send {
+    background-color: #e30713;
+    height: 50px;
+    width: 50px;
+}
+
+.chatbot-useraction-mic {
+    background-color: #ff2727;
+    height: 50px;
+    width: 50px;
+    opacity: 0.7;
+}
+
+.chatbot-useraction-send:hover {
+    background-color: #ff2a36;
+}
+
+.chatbot-useraction-mic:hover {
+    background-color: #ff4040;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 15px;
+    position: relative;
+    min-width: 120px;
+}
+
+.message .message-text {
+    padding-bottom: 15px;
+}
+
+.message .timestamp {
+    font-size: 0.8rem; /* Adjust the font size as needed */
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+}
+
+.user-message {
+    background-color: #ffc8c2;
+    text-align: left;
+    margin-left: auto; /* Aligns the user message to the right */
+    max-width: 70%; /* Limit the width of the user message */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
+}
+
+.bot-message {
+    background-color: #ffd4d1;
+    text-align: left;
+    margin-right: auto; /* Aligns the bot message to the left */
+    max-width: 70%; /* Limit the width of the bot message */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
+}
+
+.profile-pic {
+    width: 40px; /* Size of the profile picture */
+    height: 40px; /* Size of the profile picture */
+    border-radius: 50%; /* Make it circular */
+    margin-right: 10px; /* Space between the profile pic and text */
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
+}
+
+.message-container {
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: 10px; /* Space between messages */
+}
+
+.outer-container {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    gap: 25px;
+}
+
+.button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFFFFF;
+    color: #3d525d;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 100px; /* Set a minimum width for the buttons */
+    border-radius: 25px;
+    box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
+}
+
+.button:hover {
+    opacity: 0.7;
+}
+
+.button img {
+    width: 50px; /* Adjust the image size as needed */
+    height: 50px;
+}
+
