@@ -13,6 +13,160 @@ class Transaction {
         this.ReceiverName = ReceiverName;
     }
 
+    // Method to retrieve existing recipients for a profile (kesh)
+    static async getRecipients(profileId) {
+        const connection = await sql.connect(dbConfig);
+        try {
+            const query = `
+                SELECT RecipientId, RecipientName, BankName, AccNum
+                FROM Recipient
+                WHERE ProfileId = @ProfileId
+            `;
+            const result = await connection.request()
+                .input("ProfileId", sql.SmallInt, profileId)
+                .query(query);
+            return result.recordset;
+        } catch (error) {
+            console.error("Error retrieving recipients:", error);
+            throw error;
+        } finally {
+            connection.close();
+        }
+    }
+
+    // Method to add a new recipient (kesh)
+    static async addRecipient(profileId, recipientName, bankName, accNum) {
+    const connection = await sql.connect(dbConfig);
+    try {
+        // Check if accNum exists in Account table
+        const accountCheckQuery = `
+            SELECT COUNT(*) AS count FROM Account 
+            WHERE AccNum = @AccNum
+        `;
+        const accountCheckRequest = connection.request();
+        accountCheckRequest.input("AccNum", sql.VarChar(20), accNum);
+        const accountCheckResult = await accountCheckRequest.query(accountCheckQuery);
+
+        // If accNum does not exist, throw an error
+        if (accountCheckResult.recordset[0].count === 0) {
+            throw new Error("Account number does not exist.");
+        }
+
+        // Check if recipient already exists for this profile and account number
+        const checkQuery = `
+            SELECT COUNT(*) AS count FROM Recipient 
+            WHERE ProfileId = @ProfileId AND AccNum = @AccNum
+        `;
+        const checkRequest = connection.request();
+        checkRequest.input("ProfileId", sql.SmallInt, profileId);
+        checkRequest.input("AccNum", sql.VarChar(20), accNum);
+        const checkResult = await checkRequest.query(checkQuery);
+
+        // If recipient exists, throw an error
+        if (checkResult.recordset[0].count > 0) {
+            throw new Error("Recipient already exists.");
+        }
+
+        // Proceed with inserting the new recipient
+        const query = `
+            INSERT INTO Recipient (RecipientName, BankName, AccNum, ProfileId)
+            VALUES (@RecipientName, @BankName, @AccNum, @ProfileId)
+        `;
+        const request = connection.request();
+        request.input("ProfileId", sql.SmallInt, profileId);
+        request.input("RecipientName", sql.VarChar(25), recipientName);
+        request.input("BankName", sql.VarChar(50), bankName);
+        request.input("AccNum", sql.VarChar(20), accNum);
+        await request.query(query);
+
+        return { message: "Recipient added successfully" };
+    } catch (error) {
+        console.error("Error adding recipient:", error);
+        if (error.message === "Recipient already exists.") {
+            return { error: "Recipient already exists with this profile and account number." };
+        }
+        if (error.message === "Account number does not exist.") {
+            return { error: "The specified account number does not exist." };
+        }
+        throw error;
+    } finally {
+        connection.close();
+    }
+}
+
+    
+
+    // Method to perform a transfer to the recipient (kesh)
+    static async performTransfer(accSender, accReceiver, amount) {
+        const connection = await sql.connect(dbConfig);
+        let transaction; // Declare transaction outside the try block
+        try {
+            transaction = new sql.Transaction(connection);
+            await transaction.begin();
+    
+            // Check sender's balance
+            const senderBalanceQuery = `
+                SELECT Balance FROM Account WHERE AccNum = @AccSender
+            `;
+            const senderBalanceResult = await transaction.request()
+                .input("AccSender", sql.VarChar(20), accSender)
+                .query(senderBalanceQuery);
+            const senderBalance = senderBalanceResult.recordset[0]?.Balance;
+    
+            if (senderBalance < amount) {
+                throw new Error("Insufficient balance for transfer.");
+            }
+    
+            // Deduct amount from sender's account
+            const deductQuery = `
+                UPDATE Account
+                SET Balance = Balance - @Amount
+                WHERE AccNum = @AccSender
+            `;
+            await transaction.request()
+                .input("Amount", sql.Float, amount)
+                .input("AccSender", sql.VarChar(20), accSender)
+                .query(deductQuery);
+    
+            // Add amount to receiver's account
+            const addQuery = `
+                UPDATE Account
+                SET Balance = Balance + @Amount
+                WHERE AccNum = @AccReceiver
+            `;
+            await transaction.request()
+                .input("Amount", sql.Float, amount)
+                .input("AccReceiver", sql.VarChar(20), accReceiver)
+                .query(addQuery);
+    
+            // Create transaction record with TransactDate as the current date
+            const transactionQuery = `
+                INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver)
+                VALUES (@TransactDate, @Amount, @AccSender, @AccReceiver)
+            `;
+            await transaction.request()
+                .input("TransactDate", sql.DateTime, new Date())  // Set the current date
+                .input("Amount", sql.Float, amount)
+                .input("AccSender", sql.VarChar(20), accSender)
+                .input("AccReceiver", sql.VarChar(20), accReceiver)
+                .query(transactionQuery);
+    
+            await transaction.commit();
+            return { message: "Transfer successful" };
+        } catch (error) {
+            console.error("Error performing transfer:", error);
+            if (transaction) { // Check if transaction is defined before rolling back
+                await transaction.rollback();
+            }
+            throw error;
+        } finally {
+            connection.close();
+        }
+    }
+    
+    
+    
+
     // Static method to fetch transaction history based on account number and time range
     static async getTransactionHistory(accNum, rangeOption, startDate, endDate) {
         const connection = await sql.connect(dbConfig); // Connect to the database

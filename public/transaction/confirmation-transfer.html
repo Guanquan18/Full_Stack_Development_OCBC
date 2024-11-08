@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <title>Transfer Confirmation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #000;
+            height: 100%;
+            margin: 0;
+            padding: 20px;
+            display: block;
+        }
+        .balance-section {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .balance-amount {
+            font-size: 20px;
+            color: #333;
+            margin-top: 8px;
+        }
+        .confirmation-icon-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .confirmation-icon {
+            width: 120px;
+            height: 120px;
+        }
+        .confirmation-message {
+            font-size: 22px;
+            font-weight: bold;
+            color: #27ae60;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .amount-details-section {
+            background-color:  #ffd7d7;
+            color: #333;
+            border-radius: 20px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Added shadow */
+        }
+        .amount-section, .details-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        .amount-section {
+            font-size: 18px;
+            background-color: #333;
+            color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .details-section {
+            font-size: 16px;
+            color: #555;
+        }
+        .next-button, .back-button {
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 0;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Added shadow */
+        }
+        .next-button {
+            border: 2px solid #e74c3c;
+            color: black;
+        }
+        .back-button {
+            background-color: #e74c3c;
+        }
+        .next-button:hover, .back-button:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Hover shadow effect */
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="balance-section">
+            Balance
+            <div class="balance-amount" id="newBalance">$0.00</div>
+        </div>
+
+        <div class="confirmation-icon-container">
+            <dotlottie-player src="https://lottie.host/b371ae55-1d94-4756-af60-2d215b29d319/PYHdabwx7M.json" background="transparent" speed="1" loop autoplay class="confirmation-icon"></dotlottie-player>
+        </div>
+
+        <div class="confirmation-message">TRANSFERRED</div>
+
+        <div class="amount-details-section">
+            <div class="amount-section">
+                <span>Amount</span>
+                <span>SGD</span>
+                <span id="transferAmount">0.00</span>
+            </div>
+            <div class="details-section">
+                <span>From:</span>
+                <span id="senderName"></span> 
+            </div>
+            <div class="details-section">
+                <span>To:</span>
+                <span id="recipientName"></span> 
+            </div>
+            <div class="details-section">
+                <span>Recipient No:</span>
+                <span id="accountNumber"></span>
+            </div>
+        </div>
+
+        <button class="next-button" onclick="makeAnotherTransfer()">MAKE ANOTHER TRANSFER</button>
+        <button class="back-button" onclick="goBack()">GO BACK TO HOMEPAGE</button>
+    </div>
+
+    <script>
+        function makeAnotherTransfer() {
+            window.location.href = "transaction.html";
+        }
+        function goBack() {
+            window.location.href = "../homepage/homepage.html"; 
+        }
+        document.addEventListener("DOMContentLoaded", async function() {
+            const transferAmount = parseFloat(sessionStorage.getItem("transferAmount"));
+            const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+
+            try {
+                const response = await fetch(`/account/${profileId}`);
+                if (response.ok) {
+                    const accountData = await response.json();
+                    document.getElementById("newBalance").textContent = `$${accountData.Balance.toFixed(2)}`;
+                    document.getElementById("senderName").textContent = accountData.AccNum;
+                } else {
+                    console.error("Failed to fetch balance.");
+                }
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+            
+            document.getElementById("transferAmount").textContent = transferAmount.toFixed(2);
+            if (recipientData) {
+                document.getElementById("recipientName").textContent = recipientData.recipientName;
+                document.getElementById("accountNumber").textContent = recipientData.accNum;
+            } else {
+                console.error("No recipient data found in sessionStorage.");
+            }
+            sessionStorage.removeItem("recipientData");
+        });
+    </script>
+</body>
+</html>
