@@ -42,6 +42,9 @@ app.get("/account/:profileId", accountController.getAccountByProfileId); // Get 
 app.get("/profile/:profileId", profileController.getProfileById); // Get account by profile id
 app.get("/card/:profileId/:accNum", cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
 app.get("/transactions/:accNum", transactionController.getTransactionHistory); // get trnasactions history by accNum
+app.get("/recipients/:profileId", transactionController.getRecipients); // Get recipients for a profile from the recipients table (kesh)
+app.post("/recipients", transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
+app.post("/transfer", transactionController.performTransfer); // Perform a fund transfer (kesh)
 
 // Endpoint to handle chat requests
 app.post('/api/chat', async (req, res) => {

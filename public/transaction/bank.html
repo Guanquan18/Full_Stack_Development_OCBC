@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Account Transfer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .app {
+            max-width: 430px;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-button {
+            font-size: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: left;
+            padding: 0;
+        }
+
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+            background-color: #ffd7d7;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .label-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .input-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            color: #555;
+            cursor: pointer;
+            margin-left: 10px;
+            align-self: flex-start;
+        }
+
+        .input-section input {
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            top: -60px;
+            right: 0;
+            background-color: #282c34;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            max-width: 250px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .tooltip p {
+            font-size: 18px;
+            color: #fff;
+            margin: 0 0 10px 0;
+        }
+
+        .tooltip .tts-button {
+            background-color: #ED3F3F; 
+            color: white;         
+            border: none;         
+            border-radius: 8px;   
+            padding: 10px 15px;   
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 5px;     
+            cursor: pointer;
+            display: flex; 
+            align-items: center;      
+            transition: background-color 0.3s ease;
+        }
+
+        .tooltip .tts-button:hover {
+            background-color: darkred; 
+        }
+
+        .tooltip .tts-button img {
+            width: 20px;               
+            height: 20px;
+            margin-right: 10px !important;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #282c34 transparent transparent transparent;
+        }
+
+
+        .next-button {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #e74c3c;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 60px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: auto;
+            align-self: center;
+            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+        }
+
+        .error {
+            color: red;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Custom Dropdown */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .dropdown-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-size: 18px;
+            background-color: #fff;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid black;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+            font-size: 18px;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .error {
+            color: red;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="appContainer">
+        <button class="back-button" onclick="goBack()">Back</button>
+        <div class="balance" id="balance">Balance<br>$0.00</div>
+
+        <div class="input-section">
+            <div class="label-container">
+                <span class="input-label">Enter Recipient’s Name</span>
+                <span class="info-icon" onclick="toggleTooltip('recipientNameTooltip')">ℹ️</span>
+            </div>
+            <input type="text" id="recipientName" placeholder="Recipient's Name" required>
+            <div class="tooltip" id="recipientNameTooltip">
+                <p>Enter the full name of the person you want to send money to. Please ensure the name is accurate to avoid delays.</p>
+                <button class="tts-button" onclick="speak('Enter the full name of the person you want to send money to. Please ensure the name is accurate to avoid delays.')">
+                    <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
+                    Read Aloud
+                </button>
+            </div>
+            <div class="error" id="recipientNameError">Please enter the recipient's name.</div>
+        </div>
+
+        <div class="input-section" id="selectBankSection">
+            <div class="label-container">
+                <label class="input-label" id="selectedBank">Select Bank</label>
+                <span class="info-icon" onclick="toggleTooltip('selectBankTooltip')">ℹ️</span>
+            </div>
+            <div class="tooltip" id="selectBankTooltip">
+                <p>Choose the bank where the recipient's account is held.</p>
+                <button class="tts-button" onclick="speak('Choose the bank where the recipient\'s account is held.')">
+                    <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
+                    Read Aloud
+                </button>
+            </div>
+            <!-- Custom Dropdown -->
+            <div class="custom-dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown()">Select Bank</button>
+                <div class="dropdown-list" id="dropdownList">
+                    <div class="dropdown-item" onclick="selectBank('Development Bank of Singapore (DBS)')">Development Bank of Singapore (DBS)</div>
+                    <div class="dropdown-item" onclick="selectBank('Overseas-Chinese Bank (OCBC)')">Overseas-Chinese Bank (OCBC)</div>
+                    <div class="dropdown-item" onclick="selectBank('United Overseas Bank (UOB)')">United Overseas Bank (UOB)</div>
+                    <div class="dropdown-item" onclick="selectBank('Standard Chartered Bank')">Standard Chartered Bank</div>
+                    <div class="dropdown-item" onclick="selectBank('Citibank')">Citibank</div>
+                </div>
+            </div>
+            <div class="error" id="selectBankError">Please select a bank.</div>
+        </div>
+
+        <div class="input-section">
+            <div class="label-container">
+                <span class="input-label">Enter Account Number</span>
+                <span class="info-icon" onclick="toggleTooltip('accountNumberTooltip')">ℹ️</span>
+            </div>
+            <input type="text" id="accountNumber" placeholder="Account Number" required>
+            <div class="tooltip" id="accountNumberTooltip">
+                <p>Enter the recipient's account number. Double-check to ensure accuracy.</p>
+                <button class="tts-button" onclick="speak('Enter the recipient\'s account number. Double-check to ensure accuracy.')">
+                    <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
+                    Read Aloud
+                </button>
+            </div>
+            <div class="error" id="accountNumberError">Please enter the account number.</div>
+        </div>
+
+        <button class="next-button" onclick="handleNext()">NEXT</button>
+    </div>
+    <script src="../scripts/stt.js"></script>
+    <script>
+        function goBack() {
+            window.location.href = "addRecipient.html";
+        }
+
+        function handleNext() {
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+            // Validate Recipient's Name
+            const recipientName = document.getElementById("recipientName").value.trim();
+            if (!recipientName) {
+                document.getElementById("recipientNameError").style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Selected Bank
+            const selectedBank = document.querySelector(".dropdown-btn").innerText;
+            if (selectedBank === "Select Bank") {
+                document.getElementById("selectBankError").style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Account Number
+            const accountNumber = document.getElementById("accountNumber").value.trim();
+            if (!accountNumber) {
+                document.getElementById("accountNumberError").style.display = 'block';
+                isValid = false;
+            }
+
+            // If all inputs are valid, proceed
+            if (isValid) {
+                sessionStorage.setItem("recipientData", JSON.stringify({
+                    recipientName: recipientName,
+                    bankName: selectedBank,
+                    accNum: accountNumber
+                }));
+                window.location.href = "transaction-review-details.html";
+            }
+        }
+
+        function toggleTooltip(tooltipId) {
+            document.querySelectorAll('.tooltip').forEach(tooltip => tooltip.style.display = 'none');
+            const tooltip = document.getElementById(tooltipId);
+            tooltip.style.display = (tooltip.style.display === 'none' || tooltip.style.display === '') ? 'block' : 'none';
+        }
+
+        // Custom Dropdown Functions
+        function toggleDropdown() {
+            const dropdownList = document.getElementById('dropdownList');
+            dropdownList.style.display = (dropdownList.style.display === 'none' || dropdownList.style.display === '') ? 'block' : 'none';
+        }
+
+        function selectBank(bankName) {
+            const selectedBank = document.querySelector('.dropdown-btn');
+            selectedBank.innerText = bankName;
+            document.getElementById('dropdownList').style.display = 'none'; // Hide dropdown
+        }
+
+        // Close the tooltip if the click happens outside of it
+        document.addEventListener('click', function(event) {
+                if (!event.target.classList.contains('info-icon') && !event.target.classList.contains('tooltip')) {
+                    document.querySelectorAll('.tooltip').forEach(tooltip => tooltip.style.display = 'none');
+                }
+            });
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+            // Fetch and display account balance
+            try {
+                const response = await fetch(`/account/${profileId}`);
+                if (response.ok) {
+                    const accountData = await response.json();
+                    document.getElementById("balance").textContent = `Balance\n$${accountData.Balance.toFixed(2)}`;
+                } else {
+                    console.error("Failed to fetch balance.");
+                }
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+        });
+    </script>
+</body>
+</html>

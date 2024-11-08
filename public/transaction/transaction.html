@@ -3,18 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Banking App - Local Transfer</title>
-    <link rel="stylesheet" href="transaction.css">
+    <title>Local Transfer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .app {
+            max-width: 430px;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        .back-button {
+            font-size: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: left;
+            padding: 0;
+        }
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .local-transfer {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .add-recipient {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .add-recipient span {
+            font-weight: bold;
+            color: #555;
+        }
+        .add-button {
+            font-size: 24px;
+            border: none;
+            background: none;
+            margin-right: 10px;
+            cursor: pointer;
+            color: #555;
+        }
+        .add-recipient-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .section-title {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+        .recipients {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .recipient {
+            display: flex;
+            align-items: center;
+            background-color: #ffd7d7;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        }
+        .recipient-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .recipient-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .recipient-name {
+            font-weight: bold;
+        }
+        .recipient-phone {
+            color: #555;
+        }
+        @media (max-width: 430px) {
+            .app {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Local Transfer</h1>
-        </header>
-        <button class="add-recipient" onclick="goToAddRecipient()">+ Add Local Recipient</button>
+    <div class="app">
+        <button class="back-button" onclick="goBack()">Back</button>
+        <div class="balance" id="balance">Balance<br>$0.00</div>
+        <div class="local-transfer">Local Transfer</div>
+        <a href="addRecipient.html" class="add-recipient-link">
+            <div class="add-recipient">
+                <button class="add-button">+</button>
+                <span>Add Recipient</span>
+            </div>
+        </a>
+        <div class="section-title">Saved recipients</div>
+        <div class="recipients" id="recipients-list">
+            <!-- Dynamic list of recipients will be inserted here -->
+        </div>
     </div>
-    <script src="transaction.js"></script>
+    <script>
+        function goBack() {
+            window.location.href = "../homepage/homepage.html";
+        }
+        document.addEventListener('DOMContentLoaded', async function() {
+            sessionStorage.removeItem("recipientData");
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+            try {
+                // Fetch account balance
+                const balanceResponse = await fetch(`/account/${profileId}`);
+                if (balanceResponse.ok) {
+                    const accountData = await balanceResponse.json();
+                    console.log(accountData);
+                    document.getElementById("balance").textContent = `Balance\n$${accountData.Balance.toFixed(2)}`;
+                } else {
+                    console.error("Failed to fetch balance.");
+                }
+
+                // Fetch saved recipients
+                const recipientsResponse = await fetch(`/recipients/${profileId}`);
+                if (recipientsResponse.ok) {
+                    const recipients = await recipientsResponse.json();
+                    const recipientsList = document.getElementById("recipients-list");
+
+                    // Clear the existing recipient list
+                    recipientsList.innerHTML = "";
+
+                    recipients.forEach(recipient => {
+                        const recipientDiv = document.createElement("div");
+                        recipientDiv.classList.add("recipient");
+
+                        const iconDiv = document.createElement("div");
+                        iconDiv.classList.add("recipient-icon");
+                        iconDiv.style.backgroundColor = "#ED3F3F"; // Set a background color
+                        iconDiv.textContent = recipient.RecipientName[0].toUpperCase(); // First letter of name
+
+                        const infoDiv = document.createElement("div");
+                        infoDiv.classList.add("recipient-info");
+
+                        const nameDiv = document.createElement("div");
+                        nameDiv.classList.add("recipient-name");
+                        nameDiv.textContent = recipient.RecipientName;
+
+                        const bankDiv = document.createElement("div");
+                        bankDiv.classList.add("recipient-phone");
+                        bankDiv.textContent = recipient.BankName;
+
+                        infoDiv.appendChild(nameDiv);
+                        infoDiv.appendChild(bankDiv);
+
+                        recipientDiv.appendChild(iconDiv);
+                        recipientDiv.appendChild(infoDiv);
+
+                        // Add click event listener to each recipientDiv
+                        recipientDiv.addEventListener("click", function() {
+                            // Store selected recipient in sessionStorage
+                            sessionStorage.setItem("recipientData", JSON.stringify({
+                                recipientName: recipient.RecipientName,
+                                bankName: recipient.BankName,
+                                accNum: recipient.AccNum
+                            }));
+
+                            console.log("Recipient data saved to sessionStorage");
+
+                            // Redirect to addRecipient.html
+                            window.location.href = "addRecipient.html";
+                        });
+
+                        recipientsList.appendChild(recipientDiv);
+                    });
+                } else {
+                    console.error("Failed to fetch recipients.");
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        });
+
+    </script>
 </body>
 </html>
-
-

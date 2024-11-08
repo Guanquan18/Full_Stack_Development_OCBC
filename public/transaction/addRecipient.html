@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipient</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .app {
+            max-width: 430px;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        .back-button {
+            font-size: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: left;
+            padding: 0;
+        }
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .transfer-to {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .transfer-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #ffd7d7;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+        }
+        .transfer-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .transfer-icon img {
+            width: 100%;
+            height: 100%;
+        }
+        .transfer-text {
+            font-weight: bold;
+            color: #333;
+        }
+        @media (max-width: 430px) {
+            .app {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <button class="back-button" onclick="goBack()">Back</button>
+        <div class="balance" id="balance">Balance<br>$0.00</div>
+        <div class="transfer-to">Transfer By</div>
+
+        <!-- Link to bank.html for "Bank Account" option -->
+        <a href="bank.html" class="transfer-option">
+            <div class="transfer-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/bank-building.png" alt="Bank Account Icon">
+            </div>
+            <div class="transfer-text">Bank Account</div>
+        </a>
+
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/phone.png" alt="PayNow to Mobile Icon">
+            </div>
+            <div class="transfer-text">PayNow to Mobile</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/id-not-verified.png" alt="PayNow to NRIC/FIN Icon">
+            </div>
+            <div class="transfer-text">PayNow to NRIC/FIN</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/card-security-code.png" alt="PayNow to UEN Icon">
+            </div>
+            <div class="transfer-text">PayNow to UEN</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/card-in-use.png" alt="PayNow to VPA Icon">
+            </div>
+            <div class="transfer-text">PayNow to VPA</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/money-box.png" alt="Foreign Currency Corporate Account Icon">
+            </div>
+            <div class="transfer-text">OCBC Foreign Currency Corporate Account</div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'transaction.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+
+            // Fetch and display account balance
+            try {
+                const response = await fetch(`/account/${profileId}`);
+                if (response.ok) {
+                    const accountData = await response.json();
+                    document.getElementById("balance").textContent = `Balance\n$${accountData.Balance.toFixed(2)}`;
+                } else {
+                    console.error("Failed to fetch balance.");
+                }
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+
+            const transferOptions = document.querySelectorAll('.transfer-option');
+            transferOptions.forEach(option => {
+                option.addEventListener('click', event => {
+                    const transferType = option.querySelector('.transfer-text').innerText;
+                    if (transferType === "Bank Account") {
+                        event.preventDefault();
+
+                        // Check if recipientData exists in sessionStorage
+                        const recipientData = sessionStorage.getItem("recipientData");
+
+                        if (recipientData === null) {
+                            // Redirect to bank.html if recipientData is not set
+                            window.location.href = "bank.html";
+                        } else {
+                            // Redirect to transaction-review-details.html if recipientData is present
+                            window.location.href = "transfer.html";
+                        }
+                    } else {
+                        alert('Selected transfer type: ' + transferType + "not available");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
