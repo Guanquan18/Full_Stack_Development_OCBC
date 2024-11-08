@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot</title>
+    <!-- Bootstrap CSS -->
+    <link href="../styles/bootstrap/bootstrap.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="../styles/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            height: 100vh;           /* Full viewport height, adjust as needed */
+        }
+
+        .terminate{
+            padding: 10%;
+            text-align: center;      /* Center text inside the element */
+            display: flex;
+            flex-direction: column;  /* Stack items vertically */
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+        }
+
+        .button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #FFFFFF;
+            color: #3d525d;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            flex-grow: 1;
+            flex-shrink: 1;
+            min-width: 100px; /* Set a minimum width for the buttons */
+            border-radius: 25px;
+            box-shadow: 0 4px 20px rgba(217, 197, 197, 0.4); /* Shadow for the pop-out effect */
+        }
+
+        .button:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="terminate" style="display: none;">
+        <h2>Are you sure you want to terminate session?</h2>
+        <div class="button-container">
+            <button class="button" onclick="restartAndGoBack()">Yes</button>
+            <button class="button" onclick="openChatBot()">No</button>
+        </div>
+    </div>
+
+    <script>
+        window.watsonAssistantChatOptions = {
+            integrationID: "9ef3057f-a2cb-414e-9859-c70216dd3c85", // The ID of this integration.
+            region: "us-south", // The region your integration is hosted in.
+            serviceInstanceID: "dd762ac3-8156-4f36-89e0-74101a9dc428", // The ID of your service instance.
+            onLoad: async (instance) => {
+                // The instance returned here has many methods on it that are documented on this page. You can assign it to any
+                // global window variable you like if you need to access it in other functions in your application. This instance
+                // is also passed as an argument to all event handlers when web chat fires an event.
+                window.webChatInstance = instance;
+
+                await instance.render();
+                instance.openWindow(); // Automatically open the chat window
+
+
+                // Delay the display of the terminate prompt
+                setTimeout(function() {
+                    document.querySelector('.terminate').style.display = 'block';
+                }, 1000);
+            }
+        };
+
+        setTimeout(function(){
+            const t = document.createElement('script');
+            t.src = 'https://web-chat.global.assistant.watson.appdomain.cloud/versions/' + (window.watsonAssistantChatOptions.clientVersion || 'latest') + '/WatsonAssistantChatEntry.js';
+            document.head.appendChild(t);
+        });
+
+        function restartAndGoBack() {
+            const instance = window.webChatInstance; // Access the Watson Assistant instance
+            if (instance) {
+                instance.restartConversation(); // Restart the conversation
+            }
+            window.history.back(); // Go back to the previous page
+        }
+
+        function openChatBot() {
+            const instance = window.webChatInstance; // Access the Watson Assistant instance
+            if (instance) {
+                instance.openWindow(); // Open the chat window
+            }
+        }
+    </script>
+</body>
+</html>

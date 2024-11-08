@@ -56,6 +56,22 @@
     <!-- Custom Script for Creating Posts -->
     <script src="../scripts/chatbotscript.js"></script>
     <script src="../scripts/speechtotext.js"></script>
+    <script>
+        window.watsonAssistantChatOptions = {
+          integrationID: "9ef3057f-a2cb-414e-9859-c70216dd3c85", // The ID of this integration.
+          region: "us-south", // The region your integration is hosted in.
+          serviceInstanceID: "dd762ac3-8156-4f36-89e0-74101a9dc428", // The ID of your service instance.
+          onLoad: async (instance) => {
+            await instance.render();
+            instance.openWindow(); // Automatically opens the chat window
+        }    
+        };
+        setTimeout(function(){
+          const t=document.createElement('script');
+          t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+          document.head.appendChild(t);
+        });
+      </script>
 </body>
 
 </html>
