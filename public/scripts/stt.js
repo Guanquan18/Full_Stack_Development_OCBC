@@ -53,7 +53,7 @@ function stopTranscription() {
         } else if (lastTranscript.toLowerCase().includes('chatbot')) {
             window.location.href = '../chatbot/chatbot.html'
         } else if (lastTranscript.toLowerCase().includes('transfer')) {
-            window.location.href = ''
+            window.location.href = '../transaction/transaction.html'
         } 
 
         document.getElementById("mic-overlay").style.display = "none";
