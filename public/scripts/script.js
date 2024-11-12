@@ -123,6 +123,17 @@ function IndexLoginSubmit(formId){
 
                 sessionStorage.setItem("token", data.token);   // Store user data in session storage
                 sessionStorage.setItem("profileId", data.profileId);
+                const profileId = data.profileId
+                const response = await fetch(`http://localhost:3000/account/${profileId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const details = await response.json();
+                console.log(details)
+                // Set the session storgae
+                sessionStorage.setItem('AccNum', details.AccNum);
 
                 alert("User Authenticated successfully");
                 console.log("User Authenticated successfully");
@@ -185,7 +196,6 @@ function IndexLoginSubmit(formId){
 const profileId = JSON.parse(sessionStorage.getItem("profileId")); // Retrieve the profile ID from the session storage
 console.log(profileId)
 const token = sessionStorage.getItem("token"); // Retrieve the token from the session storage
-
 // Retrieve profile details 
 async function fetchProfileDetails() {
     try {
@@ -221,8 +231,7 @@ async function fetchAccountDetails() {
         document.getElementById('account-no').innerText = data.AccNum;
         document.getElementById('account-balance').innerText = `$${data.Balance.toFixed(2)}`;
 
-        // Set the session storgae
-        sessionStorage.setItem('AccNum', data.AccNum);
+        
     } catch (error) {
         console.error("Error fetching account details:", error);
 
