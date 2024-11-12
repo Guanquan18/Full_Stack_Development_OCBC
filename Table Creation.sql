@@ -1,12 +1,13 @@
-/*
+/
 
 --For resetting tables--
 
+drop table Recipient
 drop table BankTransaction
 drop table Card
 drop table Account
 drop table Profile
-*/
+/
 
 
 /*--------------------- Start Below Here ---------------------*/
@@ -16,6 +17,7 @@ go
 
 use OCBC_DB
 go
+
 
 --Profile Table
 create table Profile
@@ -68,6 +70,17 @@ create table BankTransaction
 	constraint FK_BankTransaction_AccReceiver foreign key (AccReceiver)
 		references Account (AccNum)
 )
+--Recipient Table
+create table Recipient (
+    RecipientId     smallint identity(1,1) not null,
+    RecipientName   varchar(25)            not null,
+    BankName        varchar(50)            not null,
+    AccNum          varchar(20)            not null,
+    ProfileId       smallint               not null,
+    constraint PK_Recipient primary key (RecipientId),
+    constraint FK_Recipient_ProfileId foreign key (ProfileId)
+        references Profile (ProfileId)
+)
 
 --Insert sample values
 insert into Profile(FullName, AccessCode, PinHash)
@@ -102,17 +115,30 @@ values
 ('2024-10-04', 150.00, '456-789012-004', '567-890123-005'),
 ('2024-10-05', 300.00, '123-456789-001', '456-789012-004');
 
-   SELECT 
-		bt.TransactNo, 
-		bt.TransactDate, 
-		bt.TransactAmount, 
-		bt.AccSender, 
-		sender.AccNum AS SenderName, 
-		bt.AccReceiver, 
-		receiver.AccNum AS ReceiverName
-	FROM BankTransaction bt
-	JOIN Account sender ON bt.AccSender = sender.AccNum
-	JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
-	WHERE (bt.AccSender = '123-456789-001' OR bt.AccReceiver = '123-456789-001')
-	AND bt.TransactDate BETWEEN	'2024-10-01' AND '2024-10-03'
-	ORDER BY bt.TransactDate DESC;
+insert into Recipient (RecipientName, BankName, AccNum, ProfileId)
+values
+-- Recipients for ProfileId 1 (Ben Johnson)
+('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 1),
+('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 1),
+('Carol Lee', 'Development Bank of Singapore (DBS)', '456-789012-004', 1),
+
+-- Recipients for ProfileId 2 (Alice Johnson)
+('Ben Johnson', 'Overseas-Chinese Bank (OCBC)', '123-456789-001', 2),
+('David Brown', 'Standard Chartered Bank', '567-890123-005', 2),
+('Carol Lee', 'Development Bank of Singapore (DBS)', '456-789012-004', 2),
+
+-- Recipients for ProfileId 3 (Bob Smith)
+('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 3),
+('Ben Johnson', 'Overseas-Chinese Bank (OCBC)', '123-456789-001', 3),
+('David Brown', 'Standard Chartered Bank', '567-890123-005', 3),
+
+-- Recipients for ProfileId 4 (Carol Lee)
+('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 4),
+('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 4),
+('Ben Johnson', 'Overseas-Chinese Bank (OCBC)', '123-456789-001', 4),
+
+-- Recipients for ProfileId 5 (David Brown)
+('Carol Lee', 'Development Bank of Singapore (DBS)', '456-789012-004', 5),
+('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 5),
+('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 5);
+

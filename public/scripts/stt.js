@@ -52,7 +52,7 @@ function stopTranscription() {
            window.location.href = '../view-transaction-pages/view-transaction-history.html'
         } else if (lastTranscript.toLowerCase().includes('chatbot')) {
             window.location.href = '../chatbot/chatbot.html'
-        } else if (lastTranscript.toLowerCase().includes('transfer')) {
+        } else if (lastTranscript.toLowerCase().includes('transfer') || lastTranscript.toLowerCase().includes('lakukan transaksi')) {
             window.location.href = '../transaction/transaction.html'
         } 
 
