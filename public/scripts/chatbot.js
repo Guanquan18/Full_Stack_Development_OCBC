@@ -33,9 +33,15 @@ function restartAndGoBack() {
     window.history.back(); // Go back to the previous page
 }
 
+function saveAndGoBack() {
+    const instance = window.webChatInstance; // Access the Watson Assistant instance
+    window.history.back(); // Go back to the previous page
+}
+
 function openChatBot() {
     const instance = window.webChatInstance; // Access the Watson Assistant instance
     if (instance) {
         instance.openWindow(); // Open the chat window
     }
 }
+
