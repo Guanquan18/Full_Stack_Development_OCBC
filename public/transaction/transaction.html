@@ -14,27 +14,44 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: #3f4347;
         }
+
+        #transaction-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+            padding: 20px;
+        }
+
         .app {
             max-width: 430px;
             width: 100%;
             min-height: 100vh;
             background-color: #fff;
-            padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
         }
-        .back-button {
-            font-size: 18px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: left;
-            padding: 0;
+
+        #recipient-section {
+            padding: 20px;
         }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
         .balance {
             font-size: 24px;
             font-weight: bold;
@@ -50,9 +67,11 @@
             display: flex;
             align-items: center;
             padding: 10px;
-            background-color: #e0e0e0;
             border-radius: 10px;
             margin-bottom: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.20);
+            border: none;
+            background-color: white;
         }
         .add-recipient span {
             font-weight: bold;
@@ -72,7 +91,6 @@
         }
         .section-title {
             font-size: 20px;
-            margin-top: 20px;
             margin-bottom: 20px;
             color: #333;
             font-weight: bold;
@@ -85,11 +103,11 @@
         .recipient {
             display: flex;
             align-items: center;
-            background-color: #ffd7d7;
+            background-color: #ffffff;
             padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
         .recipient-icon {
             width: 40px;
@@ -108,6 +126,7 @@
         }
         .recipient-name {
             font-weight: bold;
+            padding-bottom: 5px;
         }
         .recipient-phone {
             color: #555;
@@ -121,18 +140,24 @@
 </head>
 <body>
     <div class="app">
-        <button class="back-button" onclick="goBack()">Back</button>
-        <div class="balance" id="balance">Balance<br>$0.00</div>
-        <div class="local-transfer">Local Transfer</div>
-        <a href="addRecipient.html" class="add-recipient-link">
-            <div class="add-recipient">
-                <button class="add-button">+</button>
-                <span>Add Recipient</span>
-            </div>
-        </a>
-        <div class="section-title">Saved recipients</div>
-        <div class="recipients" id="recipients-list">
-            <!-- Dynamic list of recipients will be inserted here -->
+        <div id="transaction-header">
+            <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+                <img src="../images/back-icon.png" alt="Back">
+            </a>
+            <div class="balance" id="balance">Balance<br>$0.00</div>
+            <div class="local-transfer">Local Transfer</div>
+            <a href="addRecipient.html" class="add-recipient-link">
+                <div class="add-recipient">
+                    <button class="add-button">+</button>
+                    <span>Add Recipient</span>
+                </div>
+            </a>
+        </div>
+        <div id="recipient-section">
+            <div class="section-title">Saved recipients</div>
+            <div class="recipients" id="recipients-list">
+                <!-- Dynamic list of recipients will be inserted here -->
+        </div>
         </div>
     </div>
     <script>
@@ -168,7 +193,7 @@
 
                         const iconDiv = document.createElement("div");
                         iconDiv.classList.add("recipient-icon");
-                        iconDiv.style.backgroundColor = "#ED3F3F"; // Set a background color
+                        iconDiv.style.backgroundColor = "#f03c3c"; // Set a background color
                         iconDiv.textContent = recipient.RecipientName[0].toUpperCase(); // First letter of name
 
                         const infoDiv = document.createElement("div");

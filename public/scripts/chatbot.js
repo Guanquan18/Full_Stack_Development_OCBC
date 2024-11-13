@@ -1,3 +1,4 @@
+// Created By: Cheong Zhi Xun (S10260423C)
 window.watsonAssistantChatOptions = {
     integrationID: "9ef3057f-a2cb-414e-9859-c70216dd3c85", // The ID of this integration.
     region: "us-south", // The region your integration is hosted in.

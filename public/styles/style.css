@@ -13,7 +13,6 @@ body{
     position: absolute;
     width: 100%;
     height: 100%;
-
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -33,7 +32,6 @@ body{
     width: 50%;
     height: fit-content;
     margin-top: 4rem;
-
     position: absolute;
     object-fit: contain;
     z-index: 1;
@@ -43,7 +41,6 @@ body{
     width: 100%;
     height: 100%;
     padding-top: 340px;
-    
     position: relative;
     background: linear-gradient(to top, rgb(255, 255, 255) 55%, rgba(255, 255, 255, 0.25) 100%);
 }
@@ -52,7 +49,6 @@ body{
     width: 90%;
     height: 100%;
     margin: 0 auto;
-
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -62,9 +58,9 @@ body{
 .index-content-container h1{
     font-size: 4rem;
     font-weight: 1000;
-    color: black;
-    margin: 4rem 0 2rem;
+    margin: 2rem 0 2rem;
     text-align: center;
+    color: #3f4347;
 }
 
 .image-row {
@@ -75,26 +71,24 @@ body{
 }
 
 .quick-access-icon   {
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
     display: block;
     margin: 0 auto;
 }
 
 .image-caption {
-    font-size: 14px;
-    color: black;
+    font-size: 16px;
     font-weight: 600;
     text-align: center;
     margin-top: 10px;
+    color: #3f4347;
 }
 
 .index-login-button{
     width: 100%;
     padding: 1.2rem 0;
-
     font-size: 1.25rem;
     text-align: center;
     text-decoration: none;
@@ -118,8 +112,19 @@ body{
     font-weight: 700;
     color: #ED3F3F;
     margin: 1rem 0 1rem;
-
     text-align: left;
+}
+
+#index-login-header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#index-login-header img{
+    height: 30px; /* Sets the image height to 50% of the container */
+    padding-right: 10px;
+    padding-left: 5px;
 }
 
 /* Styling for floating form inputs */
@@ -131,14 +136,19 @@ body{
 .form-control{
     margin: 0;
     border-radius: 15px;
-    background-color: #DCDCDC;
+    background-color: #ffffff;
+}
+
+.form-control:-webkit-autofill {
+    background-color: #ffffff !important; /* Set your desired background color */
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset; /* Ensures the color fills the entire field */
+    color: #000; /* Adjust text color if needed */
 }
 
 .selection-option{
     width: fit-content;
     height: fit-content;
     margin: 0;
-    
     font-size: 18px;
     font-weight: 600;
     color: black;
@@ -153,9 +163,8 @@ body{
 .form-floating input:focus{
     font-weight: 600;
     box-shadow: 0 2px 8px #DCDCDC;
-    background: #DCDCDC;
+    background: #ffffff;
     border: none;
-
     transition: all 0.3s ease;
 }
 
@@ -171,10 +180,12 @@ body{
 
 /* Border styling for error and success */
 #index-login-form input.error {
-    border: 3px solid rgb(255, 0, 0);
+    box-shadow: 0px 0px 12px 4px rgb(228,4,20, 0.2);
+    border: 0px;
 }
 #index-login-form input.success {
-    border: 3px solid rgb(0, 190, 25);
+    box-shadow: 0px 0px 12px 4px rgb(52,156,136, 0.2);
+    border: 0px;
 }
 
 #login-validation-error{

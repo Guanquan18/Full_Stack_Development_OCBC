@@ -14,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            color: #3f4347;
         }
 
         .app {
@@ -31,14 +32,18 @@
         }
 
         .back-button {
-            font-size: 18px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: left;
-            padding: 0;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
         }
 
         .balance {
@@ -53,10 +58,10 @@
             flex-direction: column;
             align-items: flex-start;
             padding: 15px;
-            background-color: #ffd7d7;
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             position: relative;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .label-container {
@@ -83,8 +88,8 @@
             width: 100%;
             margin-top: 5px;
             padding: 10px;
-            border: 1px solid black;
-            border-radius: 5px;
+            border: none;
+            border-bottom: 1px solid #c0c5cb; /* Single line underneath */
             box-sizing: border-box;
             font-size: 16px;
             background-color: #fff;
@@ -152,21 +157,21 @@
             font-size: 18px;
             font-weight: bold;
             color: #fff;
-            background-color: #e74c3c;
+            background-color: #f03c3c;
             border: none;
-            border-radius: 25px;
+            border-radius: 10px;
             padding: 15px 60px;
             cursor: pointer;
             text-align: center;
             margin-top: auto;
             align-self: center;
-            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .error {
-            color: red;
-            font-size: 18px;
-            font-weight: 700;
+            color: #f03c3c;
+            font-size: 16px;
+            font-weight: 500;
             margin-top: 5px;
             display: none;
         }
@@ -181,12 +186,13 @@
         .dropdown-btn {
             width: 100%;
             padding: 10px;
-            border: 1px solid black;
+            border: 1px solid #3f4347;
             border-radius: 5px;
-            font-size: 18px;
+            font-size: 16px;
             background-color: #fff;
             cursor: pointer;
             text-align: left;
+            color: #3f4347;
         }
 
         .dropdown-list {
@@ -195,12 +201,13 @@
             left: 0;
             right: 0;
             background-color: #fff;
-            border: 1px solid black;
+            border: 1px solid #3f4347;
             border-radius: 5px;
             display: none;
             z-index: 10;
-            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
-            font-size: 18px;
+            font-size: 16px;
+            color: #3f4347;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .dropdown-item {
@@ -212,18 +219,13 @@
             background-color: #f0f0f0;
         }
 
-        .error {
-            color: red;
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 5px;
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div class="app" id="appContainer">
-        <button class="back-button" onclick="goBack()">Back</button>
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>
         <div class="balance" id="balance">Balance<br>$0.00</div>
 
         <div class="input-section">
