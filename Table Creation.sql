@@ -1,19 +1,26 @@
-/
-
---For resetting tables--
-
-drop table Recipient
-drop table BankTransaction
-drop table Card
-drop table Account
-drop table Profile
-/
-
-
 /*--------------------- Start Below Here ---------------------*/
 
-create database OCBC_DB
-go
+IF NOT EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = 'OCBC_DB')
+BEGIN
+    CREATE DATABASE OCBC_DB;
+    PRINT 'Database OCBC_DB created successfully.';
+END
+ELSE
+BEGIN
+    PRINT 'Database OCBC_DB already exists.';
+    USE OCBC_DB;
+    IF OBJECT_ID('Recipient', 'U') IS NOT NULL DROP TABLE Recipient;
+    IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
+    IF OBJECT_ID('Card', 'U') IS NOT NULL DROP TABLE Card;
+    IF OBJECT_ID('Account', 'U') IS NOT NULL DROP TABLE Account;
+    IF OBJECT_ID('Profile', 'U') IS NOT NULL DROP TABLE Profile;
+    PRINT 'Existing tables dropped successfully.';
+END
+GO
+
+/*--------------------- Don't touch anything above ---------------------*/
+
+/*--------------------- If you need to reset database, just run the whole file. :) ---------------------*/
 
 use OCBC_DB
 go
