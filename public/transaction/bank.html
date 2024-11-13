@@ -22,7 +22,6 @@
             width: 100%;
             height: 100%;
             background-color: #fff;
-            padding: 20px;
             box-sizing: border-box;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             display: flex;
@@ -44,6 +43,16 @@
         .back-button img {
             height: 30px;
             margin-right: 5px;
+        }
+
+        #bank-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+            padding: 20px;
+        }
+
+        #details-section {
+            padding: 20px;
         }
 
         .balance {
@@ -164,6 +173,7 @@
             cursor: pointer;
             text-align: center;
             margin-top: auto;
+            margin-bottom: 20px;
             align-self: center;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
@@ -223,11 +233,13 @@
 </head>
 <body>
     <div class="app" id="appContainer">
+        <div id="bank-header">
         <a href="javascript:void(0);" class="back-button" onclick="goBack()">
             <img src="../images/back-icon.png" alt="Back">
         </a>
         <div class="balance" id="balance">Balance<br>$0.00</div>
-
+        </div>
+        <div id="details-section">
         <div class="input-section">
             <div class="label-container">
                 <span class="input-label">Enter Recipient’s Name</span>
@@ -284,6 +296,7 @@
                 </button>
             </div>
             <div class="error" id="accountNumberError">Please enter the account number.</div>
+        </div>
         </div>
 
         <button class="next-button" onclick="handleNext()">NEXT</button>

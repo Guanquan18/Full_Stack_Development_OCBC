@@ -21,6 +21,19 @@
             background: white;
             color: #3f4347;
         }
+        a {
+            text-decoration: none; /* Remove underline */
+        }
+
+        /* Additional states to prevent underlining */
+        a:link,
+        a:visited,
+        a:hover,
+        a:focus,
+        a:active {
+            text-decoration: none;
+            color: #3f4347;
+        }
        /* Header */
        .homepage-header {
             padding: 15px 20px 10px 20px;
@@ -196,6 +209,7 @@
             text-align: center;
             color: #3f4347;
         }
+
         /* Menu PopUp */
         .popup {
             position: fixed;

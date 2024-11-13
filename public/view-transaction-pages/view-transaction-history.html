@@ -72,7 +72,7 @@
         }
 
         #rangeOption {
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.20);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
             border: none;
             background-color: white;
         }
@@ -100,8 +100,17 @@
             font-size: 16px;
             font-weight: 700;
             border-radius: 5px;
+            outline: none;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
+        .search-button:focus {
+            outline: none;
+        }
+
+        .search-button:active {
+            background-color: #e40414;
+        }
         /* Styled dropdown */
         select {
             width: 100%;
@@ -206,15 +215,21 @@
         .custom-date-range input {
             width: 100%; 
             padding: 10px; 
-            border: 1px solid black; 
-            border-radius: 4px; 
+            border-radius: 10px; 
             font-size: 16px;
+            border: none;
         }
+        
+        .custom-date-range input:focus {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            outline: none;
+        }
+
         .error-message {
-            color: red; 
+            color: #f03c3c; 
             margin-top: 10px;
             font-size:16px;
-            font-weight: 700;
+            font-weight: 600;
         }
                 /* Style for intro js*/
         .introjs-tooltip {
