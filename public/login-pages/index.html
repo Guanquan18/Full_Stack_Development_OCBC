@@ -16,33 +16,33 @@
     </article>
     <article class="index-content-container">
         <section id="index-information" class="index-content-wrapper">
-            <h1>Welcome<br><span style="color: #ED3F3F;">OCBC</span> App</h1>
+            <h1><span style="font-size: 3rem;">Welcome</span><br><span style="color: #ED3F3F;">OCBC</span> App</h1>
             
             <div class="row image-row">
                 <div class="col-4 text-center">
-                    <img id="check-balance-icon" class="quick-access-icon" src="../images/check-balance-icon.webp" alt="Check Balance" data-link="../homepage/homepage.html">
-                    <p class="image-caption">Check Balance</p>
+                    <img id="check-balance-icon" class="quick-access-icon" src="../images/homepage/paynow.png" alt="PayNow" data-link="../homepage/homepage.html" style="transform: scale(1.9);">
+                    <p class="image-caption">PayNow</p>
                 </div>
                 <div class="col-4 text-center">
                     <img id="transfer-funds" class="quick-access-icon" src="../images/homepage/transfer-money.png" alt="Transfer Funds" data-link="../transaction/transaction.html" >
                     <p class="image-caption">Transfer Funds</p>
                 </div>
                 <div class="col-4 text-center">
-                    <img id="view-history" class="quick-access-icon" src="../images/homepage/view-history.png" alt="View Transaction History" data-link="../view-transaction-pages/view-transaction-history.html">
+                    <img id="view-history" class="quick-access-icon" src="../images/homepage/view-history.png" alt="View Transaction History" data-link="../view-transaction-pages/view-transaction-history.html" style="transform: scale(0.9);">
                     <p class="image-caption">View History</p>
                 </div>
             </div>
             <div class="row image-row">
                 <div class="col-4 text-center">
-                    <img id="paying-bills" class="quick-access-icon" src="../images/homepage/paying-bills.png" alt="Paying Bills" data-link="../paying-bill-pages/paying-bill.html">
+                    <img id="paying-bills" class="quick-access-icon" src="../images/homepage/bill.png" alt="Paying Bills" data-link="../homepage/homepage.html">
                     <p class="image-caption">Paying Bills</p>
                 </div>
                 <div class="col-4 text-center">
-                    <img id="scan-n-pay" class="quick-access-icon" src="../images/xcan-n-pay.webp" alt="Scan & Pay" data-link="../scan-n-pay/scan-n-pay.html">
+                    <img id="scan-n-pay" class="quick-access-icon" src="../images/scan.png" alt="Scan & Pay" data-link="../homepage/homepage.html" style="transform: scale(0.7);">
                     <p class="image-caption">Scan & Pay</p>
                 </div>
                 <div class="col-4 text-center">
-                    <img id="chatbot" class="quick-access-icon" src="../images/homepage/assistance.png" alt="assistance" data-link="../chatbot/chatbot.html">
+                    <img id="chatbot" class="quick-access-icon" src="../images/homepage/assistance.png" alt="assistance" data-link="../chatbot/ibm-chatbot.html">
                     <p class="image-caption">Assistance</p>
                 </div>
             </div>
@@ -55,8 +55,13 @@
         
         <section id="index-login" class="index-content-wrapper" style="display: none;">
             <form id="index-login-form">
+                <div id="index-login-header">
+                    <a class="back-button" onclick="showContent('index-information');hideContent('index-login');shiftIndexBackground('index-content-container')">
+                        <img src="../images/back-icon.png" alt="Back">
+                    </a>
+                    <h1 class="">Online Banking App</h1>
+                </div>
 
-                <h1 class="">Online Banking App</h1>
 
                 <div style="height: 3px; background-color: #FFB570; margin: 2rem 0; width: 100%; border-radius: 15px; box-shadow: 0 0 7px #ffb57080;"></div>
 

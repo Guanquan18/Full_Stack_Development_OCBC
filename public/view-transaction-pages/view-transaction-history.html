@@ -16,6 +16,12 @@
             margin: 0;
             font-family: 'Open Sans', sans-serif;
             background: white;
+            color: #3f4347;
+        }
+
+        #transaction-history-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
         }
 
         .homepage-header {
@@ -36,8 +42,7 @@
         }
 
         .back-button img {
-            width: 50px;
-            height: 50px;
+            height: 30px;
             margin-right: 5px;
         }
 
@@ -66,6 +71,12 @@
             padding: 20px;
         }
 
+        #rangeOption {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.20);
+            border: none;
+            background-color: white;
+        }
+
         .dropdown-section {
             display: flex;
             flex-direction: column;
@@ -73,14 +84,15 @@
         }
 
         .dropdown-section label {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 600;
             margin-bottom: 10px;
+            color: #6d6f72;
         }
 
-        /* Search button with shadow */
+        /* Search button */
         .search-button {
-            background-color: red;
+            background-color: #f03c3c;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -88,8 +100,6 @@
             font-size: 16px;
             font-weight: 700;
             border-radius: 5px;
-            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
-            transition: box-shadow 0.3s ease, transform 0.2s ease;
         }
 
         /* Styled dropdown */
@@ -98,7 +108,6 @@
             padding: 10px;
             font-size: 16px;
             font-weight: 600;
-            border: 1px solid black;
             border-radius: 10px;
             background-color: #f1f1f1;
             transition: background-color 0.3s ease;
@@ -119,7 +128,7 @@
         #selectedRange{
             font-size: 24px;
             text-align: center;
-            font-weight: 500;
+            font-weight: 600;
             margin-top: 10px;
         }
 
@@ -128,48 +137,57 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            padding:20px
+            padding: 20px;
+            padding-bottom: 50px;
         }
 
         .transaction-card {
             display: flex;
             flex-direction: column;
             padding: 15px;
-            border: 1px solid black;
             border-radius: 8px;
-            background-color: #ffd7d7;
             margin-bottom: 15px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.20);
         }
 
         .transaction-title-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
         }
 
         .transaction-title {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             margin: 0;
+            color: #6d6f72;
         }
 
         .speaker-icon {
             font-size: 24px;
-            color: #333;
             cursor: pointer;
         }
 
         .transaction-from,
         .transaction-to,
         .transaction-date {
-            font-size: 20px; 
             margin: 0; 
+            font-weight: 600;
+        }
+
+        .transaction-date{
+            font-size: 18px; 
+            padding-bottom: 10px;
+        }
+
+        .transaction-to,
+        .transaction-from {
+            font-size: 16px; 
         }
 
         .transaction-amount {
-            font-size: 20px;
-            font-weight: 700; 
+            font-size: 18px;
+            font-weight: 600; 
             text-align: right; 
         }
 
@@ -296,12 +314,12 @@
     </style>
 </head>
 <body>
+    <div id="transaction-history-header">
     <div class="homepage-header">
         <a href="../homepage/homepage.html" class="back-button">
             <img src="../images/back-icon.png" alt="Back">
-            <span>Back</span>
         </a>
-        <img id="view-transaction-walkthrough" class="header-icon" src="../images/homepage/tutorial.png" onclick="startViewTransactionTour()" alt="Video Tutorial Icon">
+        <img id="view-transaction-walkthrough" class="header-icon" src="../images/homepage/tutorial_simple.png" onclick="startViewTransactionTour()" alt="Video Tutorial Icon"  style="transform: scale(0.8);">
     </div>
     <h2 class="view-transaction-title">Select Time Range</h2>
     
@@ -324,6 +342,7 @@
                 <p id="error-message" class="error-message" style="display: none;"></p>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Selected Range Display -->

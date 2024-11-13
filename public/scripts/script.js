@@ -353,11 +353,11 @@ async function fetchTransactions() {
                 let amountDisplay;
                 let amountColor;
                 if (transaction.SenderName === "You") {
-                    amountDisplay = `Amount: -$${transaction.TransactAmount}`;
-                    amountColor = 'black';
+                    amountDisplay = `-$${transaction.TransactAmount}`;
+                    amountColor = '#e40414';
                 } else {
-                    amountDisplay = `Amount: +$${transaction.TransactAmount}`;
-                    amountColor = 'green';
+                    amountDisplay = `+$${transaction.TransactAmount}`;
+                    amountColor = '#349c88';
                 }
 
                 const transactionCard = document.createElement('div');
@@ -370,16 +370,16 @@ async function fetchTransactions() {
                         onclick="speak('${transaction.TransactAmount} dollars has been sent from ${transaction.SenderName} to ${transaction.ReceiverName} on ${transaction.TransactDate}')"></i>
                     </div>
 
+                    <p class="transaction-date">
+                        ${transaction.TransactDate}
+                    </p>
                     <p class="transaction-from">
-                        <strong>From:</strong> ${transaction.SenderName}
+                        From: ${transaction.SenderName}
                     </p>
                     <p class="transaction-to">
-                        <strong>To:</strong> ${transaction.ReceiverName}
+                        To: ${transaction.ReceiverName}
                     </p>
-                    <p class="transaction-date">
-                        <strong>Date:</strong> ${transaction.TransactDate}
-                    </p>
-                    <div class="transaction-amount" style="color: ${amountColor};">${amountDisplay}</div>
+                    <div class="transaction-amount">Amount: <span style="color: ${amountColor};">${amountDisplay}</span></div>
                 `;
 
                 transactionContainer.appendChild(transactionCard);

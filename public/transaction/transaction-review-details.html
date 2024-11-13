@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: #333;
+            color: #3f4347;
         }
         .app {
             max-width: 430px;
@@ -29,41 +29,49 @@
             align-items: center;
             position: relative;
         }
+
         .back-button {
-            align-self: flex-start;
-            font-size: 18px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+            align-self: flex-start; /* Aligns to the left */
         }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
         .header {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
             text-align: center;
         }
         .details-section {
             width: 90%;
-            background-color: #ffd7d7;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgb(247, 239, 250) 0%, rgba(252,251,249,1) 100%);
         }
         .detail {
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 15px;
         }
         .label {
-            font-weight: bold;
-            color: #555;
+            color: #6d6f72;
+            font-weight: 500;
             display: block;
-            font-size: 14px;
+            font-size: 16px;
+            padding-bottom: 5px;
         }
         .value {
-            color: #000;
             font-size: 16px;
             font-weight: bold;
         }
@@ -71,14 +79,14 @@
             font-size: 18px;
             font-weight: bold;
             color: #fff;
-            background-color: #e74c3c;
+            background-color: #f03c3c;
             border: none;
-            border-radius: 25px;
+            border-radius: 10px;
             padding: 15px 60px;
             cursor: pointer;
             text-align: center;
             margin-top: auto;
-            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
         @media (max-width: 430px) {
             .app {
@@ -91,7 +99,9 @@
 </head>
 <body>
     <div class="app">
-        <button class="back-button" onclick="goBack()">Back</button>
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>
         <div class="header">Review Details</div>
         <div class="details-section">
             <div class="detail">

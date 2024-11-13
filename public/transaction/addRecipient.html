@@ -9,32 +9,47 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: #3f4347;
         }
         .app {
             max-width: 430px;
             width: 100%;
             min-height: 100vh;
             background-color: #fff;
-            padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
         }
-        .back-button {
-            font-size: 18px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: left;
-            padding: 0;
+
+        #add-recipient-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+            padding: 20px;
         }
+
+        #options-section {
+            padding: 20px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
         .balance {
             font-size: 24px;
             font-weight: bold;
@@ -50,13 +65,12 @@
             display: flex;
             align-items: center;
             padding: 15px;
-            background-color: #ffd7d7;
             border-radius: 10px;
             margin-bottom: 20px;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
-            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
         .transfer-icon {
             width: 40px;
@@ -72,7 +86,7 @@
         }
         .transfer-text {
             font-weight: bold;
-            color: #333;
+            color: #3f4347;
         }
         @media (max-width: 430px) {
             .app {
@@ -83,10 +97,15 @@
 </head>
 <body>
     <div class="app">
-        <button class="back-button" onclick="goBack()">Back</button>
-        <div class="balance" id="balance">Balance<br>$0.00</div>
-        <div class="transfer-to">Transfer By</div>
+        <div id="add-recipient-header">
+            <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+                <img src="../images/back-icon.png" alt="Back">
+            </a>
+            <div class="balance" id="balance">Balance<br>$0.00</div>
+            <div class="transfer-to">Transfer By</div>
+        </div>
 
+        <div id="options-section">
         <!-- Link to bank.html for "Bank Account" option -->
         <a href="bank.html" class="transfer-option">
             <div class="transfer-icon">
@@ -125,6 +144,7 @@
             </div>
             <div class="transfer-text">OCBC Foreign Currency Corporate Account</div>
         </div>
+    </div>
     </div>
 
     <script>
