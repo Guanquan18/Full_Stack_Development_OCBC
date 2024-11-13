@@ -465,10 +465,10 @@
                 </div>
             </div>
             <div class="col-8">
-                <a href="../chatbot/ibm-chatbot.html">
-                <div id = 'assistance' class="feature">
-                    <img class="feature-icon" src="../images/homepage/assistance.png" alt="Assistance Icon" style="transform: scale(0.8);">
-                    <h2 class="feature-title">Assistance</h2>
+                <a>
+                <div id='videoCall' class="feature">
+                    <img class="feature-icon" src="../images/homepage/assistance.png" alt="Video Call Icon" style="transform: scale(0.8);">
+                    <h2 class="feature-title">Help Line</h2>
                 </div>
                 </a>
             </div>
@@ -557,6 +557,27 @@
                 crossIcon.classList.remove('rotate-cross'); // Remove the rotation after hiding
             }, 500);
         }
+
+        document.getElementById('videoCall').onclick = async function() {
+            try {
+                const response = await fetch('/create-room', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                console.log(data);
+
+                // Open the video call page in a new tab
+                if (response.ok) {
+                    window.open(data, '_blank');
+                } else {
+                    console.log(data.message);
+                    alert('Failed to create video calling room. Try again later.');
+                }
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        }
+
         
         // Function to start tour
         function startHomePegeTour() {
