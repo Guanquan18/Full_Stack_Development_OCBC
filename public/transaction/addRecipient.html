@@ -81,8 +81,8 @@
             justify-content: center;
         }
         .transfer-icon img {
-            width: 100%;
-            height: 100%;
+            width: 70%;
+            height: 70%;
         }
         .transfer-text {
             font-weight: bold;
@@ -109,40 +109,34 @@
         <!-- Link to bank.html for "Bank Account" option -->
         <a href="bank.html" class="transfer-option">
             <div class="transfer-icon">
-                <img src="https://img.icons8.com/ios-filled/50/000000/bank-building.png" alt="Bank Account Icon">
+                <img src="../images/transfer/bank.png" alt="Bank Account Icon">
             </div>
             <div class="transfer-text">Bank Account</div>
         </a>
 
         <div class="transfer-option">
             <div class="transfer-icon">
-                <img src="https://img.icons8.com/ios-filled/50/000000/phone.png" alt="PayNow to Mobile Icon">
+                <img src="../images/transfer/phone.png" alt="PayNow to Mobile Icon">
             </div>
             <div class="transfer-text">PayNow to Mobile</div>
         </div>
         <div class="transfer-option">
             <div class="transfer-icon">
-                <img src="https://img.icons8.com/ios-filled/50/000000/id-not-verified.png" alt="PayNow to NRIC/FIN Icon">
+                <img src="../images/transfer/id.png" alt="PayNow to NRIC/FIN Icon">
             </div>
             <div class="transfer-text">PayNow to NRIC/FIN</div>
         </div>
         <div class="transfer-option">
             <div class="transfer-icon">
-                <img src="https://img.icons8.com/ios-filled/50/000000/card-security-code.png" alt="PayNow to UEN Icon">
+                <img src="../images/transfer/uen.png" alt="PayNow to UEN Icon">
             </div>
-            <div class="transfer-text">PayNow to UEN</div>
+            <div class="transfer-text">PayNow to UEN/VPA</div>
         </div>
         <div class="transfer-option">
             <div class="transfer-icon">
-                <img src="https://img.icons8.com/ios-filled/50/000000/card-in-use.png" alt="PayNow to VPA Icon">
+                <img src="../images/transfer/globe.png" alt="Overseas">
             </div>
-            <div class="transfer-text">PayNow to VPA</div>
-        </div>
-        <div class="transfer-option">
-            <div class="transfer-icon">
-                <img src="https://img.icons8.com/ios-filled/50/000000/money-box.png" alt="Foreign Currency Corporate Account Icon">
-            </div>
-            <div class="transfer-text">OCBC Foreign Currency Corporate Account</div>
+            <div class="transfer-text">Overseas</div>
         </div>
     </div>
     </div>
@@ -186,7 +180,7 @@
                             window.location.href = "transfer.html";
                         }
                     } else {
-                        alert('Selected transfer type: ' + transferType + "not available");
+                        alert('Selected transfer type: ' + transferType + " not available");
                     }
                 });
             });
