@@ -48,7 +48,7 @@ function stopTranscription() {
         const lastTranscript = document.getElementById('transcription').innerText.trim();
         if (lastTranscript.toLowerCase().includes('homepage') || lastTranscript.toLowerCase().includes('home page'))  {
              window.location.href = '../homepage/homepage.html'
-        } else if (lastTranscript.toLowerCase().includes('view transaction history')) {
+        } else if (lastTranscript.toLowerCase().includes('history')) {
            window.location.href = '../view-transaction-pages/view-transaction-history.html'
         } else if (lastTranscript.toLowerCase().includes('chatbot') || lastTranscript.toLowerCase().includes('chat bot')) {
             window.location.href = '../chatbot/ibm-chatbot.html'
