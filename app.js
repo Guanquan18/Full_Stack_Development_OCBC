@@ -3,8 +3,7 @@ const sql = require("mssql"); // Import the mssql module
 const dbConfig = require("./configs/dbConfig"); // Import the database configuration
 const bodyParser = require("body-parser"); // Import body-parser for parsing request bodies
 const staticMiddleware = express.static("public"); // Middleware to serve static files from the public folder
-
-const OpenAI = require('openai');
+const OpenAI = require('openai'); // Import the OpenAI module
 
 // Imoort middlewares
 const verifyJWT = require("./middlewares/verifyJWT.js");
@@ -46,8 +45,8 @@ app.get("/transactions/:accNum", transactionController.getTransactionHistory); /
 app.get("/recipients/:profileId", transactionController.getRecipients); // Get recipients for a profile from the recipients table (kesh)
 app.post("/recipients", transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
 app.post("/transfer", transactionController.performTransfer); // Perform a fund transfer (kesh)
-
-app.post('/create-room', videoCallingController.createRoom, videoCallingController.sendUrl); // Create a room and send an OTP
+app.post('/video-calling/create-room', videoCallingController.createRoom); // Create a room and send an OTP
+app.post('/video-calling/send-host-url', videoCallingController.sendUrl); // Send the host room URL to the admin
 
 app.listen(port, async () => {
     try {
@@ -61,7 +60,6 @@ app.listen(port, async () => {
     }
   
     console.log(`Server listening on port http://localhost:${port}`);
-  
 });
 
 // Close the connection pool on SIGINT signal
