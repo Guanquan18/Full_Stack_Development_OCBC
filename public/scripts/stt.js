@@ -46,12 +46,12 @@ function stopTranscription() {
 
         // Perform actions based on the last command or state
         const lastTranscript = document.getElementById('transcription').innerText.trim();
-        if (lastTranscript.toLowerCase().includes('homepage'))  {
+        if (lastTranscript.toLowerCase().includes('homepage') || lastTranscript.toLowerCase().includes('home page'))  {
              window.location.href = '../homepage/homepage.html'
         } else if (lastTranscript.toLowerCase().includes('view transaction history')) {
            window.location.href = '../view-transaction-pages/view-transaction-history.html'
-        } else if (lastTranscript.toLowerCase().includes('chatbot')) {
-            window.location.href = '../chatbot/chatbot.html'
+        } else if (lastTranscript.toLowerCase().includes('chatbot') || lastTranscript.toLowerCase().includes('chat bot')) {
+            window.location.href = '../chatbot/ibm-chatbot.html'
         } else if (lastTranscript.toLowerCase().includes('transfer') || lastTranscript.toLowerCase().includes('lakukan transaksi')) {
             window.location.href = '../transaction/transaction.html'
         } 
