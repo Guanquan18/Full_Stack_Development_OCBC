@@ -201,6 +201,28 @@ body{
     visibility: hidden;
 }
 /* Homepage */
+
+/* Chatbot Styles */
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 10px;
+    width: 60px;
+    height: 60px;
+    z-index: 10;
+    background-color: #f03c3c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.chatbot-icon{
+    width: 50%;
+    height: 50%;
+    margin-bottom: 5px;
+}
+
  /* Mic Icon Styles */
  .mic-container {
     position: fixed;
