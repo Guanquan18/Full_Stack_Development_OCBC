@@ -15,6 +15,7 @@ const profileController = require("./controllers/profileController"); // Import 
 const accountController = require("./controllers/accountController"); // Import the account controller
 const cardController = require("./controllers/cardController"); // Import the card controller
 const transactionController = require("./controllers/transactionController"); // Import the transaction controller
+const videoCallingController = require("./controllers/videoCallingController"); // Import the video calling controller
 
 
 const app = express(); // Create an Express application
@@ -46,28 +47,7 @@ app.get("/recipients/:profileId", transactionController.getRecipients); // Get r
 app.post("/recipients", transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
 app.post("/transfer", transactionController.performTransfer); // Perform a fund transfer (kesh)
 
-// Endpoint to handle chat requests
-app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
-
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "meta/llama3-70b-instruct",
-      messages: [{ "role": "user", "content": message }],
-      temperature: 0.2,
-      top_p: 0.7,
-      max_tokens: 1024,
-      stream: false, // Change to false to get complete response in one go
-    });
-
-    // Extract and send the response back to frontend
-    const responseText = completion.choices[0]?.message?.content || '';
-    res.json({ response: responseText });
-  } catch (error) {
-    console.error('Error during completion:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+app.post('/create-room', videoCallingController.createRoom, videoCallingController.sendUrl); // Create a room and send an OTP
 
 app.listen(port, async () => {
     try {
