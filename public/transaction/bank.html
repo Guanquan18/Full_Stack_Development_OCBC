@@ -229,6 +229,27 @@
             background-color: #f0f0f0;
         }
 
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        .chatbot-icon{
+            width: 50%;
+            height: 50%;
+            margin-bottom: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -298,6 +319,13 @@
             <div class="error" id="accountNumberError">Please enter the account number.</div>
         </div>
         </div>
+
+        <!-- Chatbot -->
+        <a href="../chatbot/ibm-chatbot.html">
+            <div class="chatbot-container">
+                <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
+            </div>
+        </a>
 
         <button class="next-button" onclick="handleNext()">NEXT</button>
     </div>

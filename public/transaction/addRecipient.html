@@ -88,6 +88,28 @@
             font-weight: bold;
             color: #3f4347;
         }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        .chatbot-icon{
+            width: 50%;
+            height: 50%;
+            margin-bottom: 5px;
+        }
+
         @media (max-width: 430px) {
             .app {
                 width: 100%;
@@ -138,6 +160,13 @@
             </div>
             <div class="transfer-text">Overseas</div>
         </div>
+
+        <!-- Chatbot -->
+        <a href="../chatbot/ibm-chatbot.html">
+            <div class="chatbot-container">
+                <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
+            </div>
+        </a>
     </div>
     </div>
 

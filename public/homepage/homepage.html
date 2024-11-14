@@ -499,6 +499,13 @@
         </div>
     </div>
 
+    <!-- Chatbot -->
+    <a href="../chatbot/ibm-chatbot.html">
+        <div class="chatbot-container">
+            <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
+        </div>
+    </a>
+
     <!-- Mic Icon -->
     <div id="mic-icon" class="mic-container" onclick="startTranscription()">
         <img src="../images/homepage/microphone.webp" alt="Microphone Icon" class="mic-image">
@@ -748,6 +755,17 @@
                         intro: `Struggling to navigate? Speak into the microphone to navigate through pages.
                         <br> 
                         <button class="tts-button" onclick="speak('Struggling to navigate? Speak into the microphone to navigate through pages')">
+                                <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+                                Read Aloud
+                        </button>`,
+                        position: 'top'
+                    },
+                    {
+                        title: "Chatbot Assistant",
+                        element: document.querySelector('.chatbot-container'),
+                        intro: `Confused on what to do? Click here to chat with our chatbot assistant for step-by-step guidance.
+                        <br> 
+                        <button class="tts-button" onclick="speak('Confused on what to do? Click here to chat with our chatbot assistant for step-by-step guidance.')">
                                 <img src="../images/homepage/speaker.jpg" alt="Read Aloud" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
                                 Read Aloud
                         </button>`,

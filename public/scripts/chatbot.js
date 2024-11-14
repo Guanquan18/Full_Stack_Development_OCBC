@@ -15,8 +15,8 @@ window.watsonAssistantChatOptions = {
 
         // Delay the display of the terminate prompt
         setTimeout(function() {
-            document.querySelector('.terminate').style.display = 'block';
-        }, 1000);
+            document.querySelector('.terminate').style.display = 'flex';
+        }, 2000);
     }
 };
 
