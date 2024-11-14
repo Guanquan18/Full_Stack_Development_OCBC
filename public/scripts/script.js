@@ -52,14 +52,14 @@ function IndexLoginSubmit(formId){
                 
                 inputFields[0].classList.add("error");
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "red";
+                errorMessage.style.color = "#f03c3c";
                 errorList.push("Access Code is required");
             }
             else if (accessCode.length != 7){
                 
                 inputFields[0].classList.add("error");
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "red";
+                errorMessage.style.color = "#f03c3c";
                 errorList.push("Access Code must be 7 digits");
             }
             else{
@@ -70,13 +70,13 @@ function IndexLoginSubmit(formId){
             if (pin === "") {
                 inputFields[1].classList.add("error");
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "red";
+                errorMessage.style.color = "#f03c3c";
                 errorList.push("Pin is required");
             }
             else if (pin.length != 6){
                 inputFields[1].classList.add("error");
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "red";
+                errorMessage.style.color = "#f03c3c";
                 errorList.push("Pin must be 6 digits");
             }
             else{
@@ -118,7 +118,7 @@ function IndexLoginSubmit(formId){
 
                 // Display success message
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "green";
+                errorMessage.style.color = "#349c88";
                 errorMessage.textContent = "Authenticated successfully";
 
                 sessionStorage.setItem("token", data.token);   // Store user data in session storage
@@ -158,7 +158,7 @@ function IndexLoginSubmit(formId){
 
                 // Display error message
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "red";
+                errorMessage.style.color = "#f03c3c";
                 if (data.errors){
                     errorMessage.textContent = data.errors;
                 }
@@ -179,7 +179,7 @@ function IndexLoginSubmit(formId){
 
                 // Display error message
                 errorMessage.style.visibility = "visible";
-                errorMessage.style.color = "red";
+                errorMessage.style.color = "#f03c3c";
                 errorMessage.textContent = data.message;
                 console.log(errorMessage.textContent);
 

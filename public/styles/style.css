@@ -56,7 +56,7 @@ body{
 }
 
 .index-content-container h1{
-    font-size: 4rem;
+    font-size: 3.2rem;
     font-weight: 1000;
     margin: 2rem 0 2rem;
     text-align: center;
@@ -94,7 +94,7 @@ body{
     text-decoration: none;
     font-weight: 700;
     color: white;
-    background-color: #ED3F3F;
+    background-color: #f03c3c;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
     border-radius: 15px;
     border: none;
@@ -195,7 +195,7 @@ body{
 
     font-size: 15px;
     font-weight: bold;
-    color: red;
+    color: #e40414;
     text-align: center;
 
     visibility: hidden;
