@@ -21,9 +21,7 @@ const createRoom = async (req, res, next) => {
         const data = await response.json();
         console.log('Whereby room created:', data);
 
-        req.body.data = data; // Set the room URL in the request body
-        next();
-
+        res.status(200).json(data);
     } catch (error) {
         console.log('Error creating Whereby room:', error);
         res.status(500).json({ message: 'Unable to create room' });
@@ -34,12 +32,10 @@ const createRoom = async (req, res, next) => {
 const sendUrl = async (req, res) => {
   try{
     const email = 'Staff@gmail.com'; // Get the email from the user object
-    const roomUrl = req.body.data.roomUrl; // Get the room URL from the request body
     const hostRoomUrl = req.body.data.hostRoomUrl; // Get the host room URL from the request body
     
     await nodeMailer.sendUrl(email, hostRoomUrl); // Send the OTP email
-
-    res.status(200).json(roomUrl)
+    res.status(200)
   }catch(error){
     await fetch('https://api.whereby.dev/v1/meetings', { method: 'DELETE'});  // Delete the room if an error occurs
 

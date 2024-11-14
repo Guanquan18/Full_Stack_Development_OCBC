@@ -567,15 +567,28 @@
 
         document.getElementById('videoCall').onclick = async function() {
             try {
-                const response = await fetch('/create-room', {
+                const response = await fetch('/video-calling/create-room', {
                     method: 'POST'
                 });
                 const data = await response.json();
-                console.log(data);
+                console.log('room data: ', data);
 
-                // Open the video call page in a new tab
+                window.open(data.roomUrl, '_blank');    // Open the video call page in a new tab
+                
                 if (response.ok) {
-                    window.open(data, '_blank');
+                    try{
+                        await fetch('/video-calling/send-host-url', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                data: data
+                            })
+                        });
+                    }catch(error){
+                        console.log('Error:', error);
+                    }
                 } else {
                     console.log(data.message);
                     alert('Failed to create video calling room. Try again later.');
@@ -585,7 +598,6 @@
             }
         }
 
-        
         // Function to start tour
         function startHomePegeTour() {
             introJs().setOptions({
