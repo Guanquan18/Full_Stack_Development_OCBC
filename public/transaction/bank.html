@@ -108,8 +108,7 @@
         .tooltip {
             display: none;
             position: absolute;
-            top: -60px;
-            right: 0;
+            right: -3%;
             background-color: #282c34;
             color: #fff;
             padding: 15px;
@@ -118,6 +117,14 @@
             max-width: 250px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 10;
+        }
+
+        .top {
+            bottom: 100%;
+        }
+
+        .bottom {
+            top: 50%;
         }
 
         .tooltip p {
@@ -151,7 +158,7 @@
             margin-right: 10px !important;
         }
 
-        .tooltip::after {
+        .tooltip.top::after {
             content: '';
             position: absolute;
             top: 100%;
@@ -161,6 +168,15 @@
             border-color: #282c34 transparent transparent transparent;
         }
 
+        .tooltip.bottom::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            right: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: transparent transparent #282c34 transparent;
+        }
 
         .next-button {
             font-size: 18px;
@@ -267,7 +283,7 @@
                 <span class="info-icon" onclick="toggleTooltip('recipientNameTooltip')">ℹ️</span>
             </div>
             <input type="text" id="recipientName" placeholder="Recipient's Name" required>
-            <div class="tooltip" id="recipientNameTooltip">
+            <div class="tooltip bottom" id="recipientNameTooltip">
                 <p>Enter the full name of the person you want to send money to. Please ensure the name is accurate to avoid delays.</p>
                 <button class="tts-button" onclick="speak('Enter the full name of the person you want to send money to. Please ensure the name is accurate to avoid delays.')">
                     <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
@@ -282,7 +298,7 @@
                 <label class="input-label" id="selectedBank">Select Bank</label>
                 <span class="info-icon" onclick="toggleTooltip('selectBankTooltip')">ℹ️</span>
             </div>
-            <div class="tooltip" id="selectBankTooltip">
+            <div class="tooltip top" id="selectBankTooltip">
                 <p>Choose the bank where the recipient's account is held.</p>
                 <button class="tts-button" onclick="speak('Choose the bank where the recipient\'s account is held.')">
                     <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
@@ -309,7 +325,7 @@
                 <span class="info-icon" onclick="toggleTooltip('accountNumberTooltip')">ℹ️</span>
             </div>
             <input type="text" id="accountNumber" placeholder="Account Number" required>
-            <div class="tooltip" id="accountNumberTooltip">
+            <div class="tooltip top" id="accountNumberTooltip">
                 <p>Enter the recipient's account number. Double-check to ensure accuracy.</p>
                 <button class="tts-button" onclick="speak('Enter the recipient\'s account number. Double-check to ensure accuracy.')">
                     <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
