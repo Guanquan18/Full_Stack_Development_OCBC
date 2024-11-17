@@ -197,7 +197,12 @@
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
             try {
                 // Fetch account balance
-                const balanceResponse = await fetch(`/account/${profileId}`);
+                const balanceResponse = await fetch(`/account/${profileId}`,{
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+                    }
+                });
                 if (balanceResponse.ok) {
                     const accountData = await balanceResponse.json();
                     console.log(accountData);
@@ -207,7 +212,12 @@
                 }
 
                 // Fetch saved recipients
-                const recipientsResponse = await fetch(`/recipients/${profileId}`);
+                const recipientsResponse = await fetch(`/recipients/${profileId}`,{
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+                    }
+                });
                 if (recipientsResponse.ok) {
                     const recipients = await recipientsResponse.json();
                     const recipientsList = document.getElementById("recipients-list");

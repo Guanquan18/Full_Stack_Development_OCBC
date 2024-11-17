@@ -7,40 +7,47 @@ function verifyJWT(req, res, next) {
 
     // If the token is not present, return an error
     if (!token) {
-        return res.status(401).send("Access denied. Missing token.");
+        console.log("No token provided.");
+        return res.status(401).json({ message: "Unauthorized" }); // Unauthorized if no token
     }
 
     // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(403).send("Access denied. Invalid token.");
+            console.log("Invalid token.");
+            return res.status(403).json({ message: "Forbidden" });  // Forbidden if token is invalid
         }
         
-        // Check if the user has access to the requested endpoint
-        const authorizedEndpoints = {
-            "/profile": ["admin", "user"],
-            "/profile/:profileId": ["admin"],
-        };
+        // Define allowed endpoints with placeholders for dynamic parameters
+        const authorizedEndpoints = [
+            "/account/:profileId",
+            "/profile/:profileId",
+            "/card/:profileId/:accNum",
+            "/transactions/:accNum",
+            "/recipients/:profileId",
+            "/recipients",
+            "/transfer",
+            "/video-calling/create-room",
+            "/video-calling/send-host-url"
+        ];
 
-        const requestedEndpoint = req.url;  // Get the requested endpoint
-        const profileId = decoded.profileId;  // Get the profile ID from the token payload
+        // Get the requested endpoint without query parameters
+        const requestedEndpoint = req.path; // This gives the URL path without query parameters
 
-        // Check if the requested endpoint is allowed for the user
-        const authorizedRole = Object.entries(authorizedRoles).find(
-            ([endpoint, roles]) => {
-              const regex = new RegExp(`^${endpoint}$`); // Create RegExp from endpoint
-              return regex.test(requestedEndpoint) && roles.includes(accountRole);
-            }
-        );
+        // Check if the requested endpoint is allowed
+        const isAuthorized = authorizedEndpoints.some(endpoint => {
+            // Convert endpoint with placeholders into a regex for matching URLs
+            const regex = new RegExp(`^${endpoint.replace(/:\w+/g, "[a-zA-Z0-9-_]+")}$`);
+            return regex.test(requestedEndpoint);
+        });
 
-        if (!authorizedRole) {
-            return res.status(403).send("Access denied. You do not have permission to access this resource.");
+        if (!isAuthorized) {
+            console.log("Endpoint is unauthorized.");
+            return res.status(403).json({ message: "Forbidden" });
         }
 
-        // Pass the profile ID to the next middleware
-        req.params = profileId;
-
         next();
- 
     });
 }
+
+module.exports = { verifyJWT };

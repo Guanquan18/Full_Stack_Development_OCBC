@@ -150,7 +150,12 @@
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
 
             try {
-                const response = await fetch(`/account/${profileId}`);
+                const response = await fetch(`/account/${profileId}`,{
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    }
+                });
                 if (response.ok) {
                     const accountData = await response.json();
                     document.getElementById("newBalance").textContent = `$${accountData.Balance.toFixed(2)}`;

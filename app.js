@@ -6,7 +6,7 @@ const staticMiddleware = express.static("public"); // Middleware to serve static
 const OpenAI = require('openai'); // Import the OpenAI module
 
 // Imoort middlewares
-const verifyJWT = require("./middlewares/verifyJWT.js");
+const verifyJWT = require("./middlewares/verifyJWT");
 const validateProfile = require("./middlewares/validateProfile");
 
 // Import controllers
@@ -38,15 +38,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', validateProfile.validateAccessCodePin, profileController.loginProfileByAccessCode);
-app.get("/account/:profileId", accountController.getAccountByProfileId); // Get profile by profile id
-app.get("/profile/:profileId", profileController.getProfileById); // Get account by profile id
-app.get("/card/:profileId/:accNum", cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
-app.get("/transactions/:accNum", transactionController.getTransactionHistory); // get trnasactions history by accNum
-app.get("/recipients/:profileId", transactionController.getRecipients); // Get recipients for a profile from the recipients table (kesh)
-app.post("/recipients", transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
-app.post("/transfer", transactionController.performTransfer); // Perform a fund transfer (kesh)
-app.post('/video-calling/create-room', videoCallingController.createRoom); // Create a room and send an OTP
-app.post('/video-calling/send-host-url', videoCallingController.sendUrl); // Send the host room URL to the admin
+app.get("/account/:profileId",verifyJWT.verifyJWT, accountController.getAccountByProfileId); // Get profile by profile id
+app.get("/profile/:profileId",verifyJWT.verifyJWT, profileController.getProfileById); // Get account by profile id
+app.get("/card/:profileId/:accNum",verifyJWT.verifyJWT, cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
+app.get("/transactions/:accNum",verifyJWT.verifyJWT, transactionController.getTransactionHistory); // get trnasactions history by accNum
+app.get("/recipients/:profileId",verifyJWT.verifyJWT, transactionController.getRecipients); // Get recipients for a profile from the recipients table (kesh)
+app.post("/recipients",verifyJWT.verifyJWT, transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
+app.post("/transfer",verifyJWT.verifyJWT, transactionController.performTransfer); // Perform a fund transfer (kesh)
+app.post("/video-calling/create-room",verifyJWT.verifyJWT, videoCallingController.createRoom); // Create a room and send an OTP
+app.post("/video-calling/send-host-url", videoCallingController.sendUrl); // Send the host room URL to the admin
 
 app.listen(port, async () => {
     try {
