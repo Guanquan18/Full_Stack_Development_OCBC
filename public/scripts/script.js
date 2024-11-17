@@ -25,6 +25,7 @@ function IndexLoginSubmit(formId){
 
         if(authenticated){
             const selectedLink = sessionStorage.getItem("selectedLink");
+            console.log(selectedLink)
             sessionStorage.removeItem("selectedLink");
             if (selectedLink === null) {
                 // If no link is stored, redirect to the default homepage
