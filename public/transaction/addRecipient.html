@@ -180,7 +180,12 @@
 
             // Fetch and display account balance
             try {
-                const response = await fetch(`/account/${profileId}`);
+                const response = await fetch(`/account/${profileId}`,{
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    }
+                });
                 if (response.ok) {
                     const accountData = await response.json();
                     document.getElementById("balance").textContent = `Balance\n$${accountData.Balance.toFixed(2)}`;

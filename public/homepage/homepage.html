@@ -568,7 +568,10 @@
         document.getElementById('videoCall').onclick = async function() {
             try {
                 const response = await fetch('/video-calling/create-room', {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
                 });
                 const data = await response.json();
                 console.log('room data: ', data);
@@ -580,7 +583,8 @@
                         await fetch('/video-calling/send-host-url', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                             },
                             body: JSON.stringify({
                                 data: data

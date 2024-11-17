@@ -24,8 +24,8 @@ function IndexLoginSubmit(formId){
         }
 
         if(authenticated){
-            const selectedLink = localStorage.getItem("selectedLink");
-            localStorage.removeItem("selectedLink");
+            const selectedLink = sessionStorage.getItem("selectedLink");
+            sessionStorage.removeItem("selectedLink");
             if (selectedLink === null) {
                 // If no link is stored, redirect to the default homepage
                 window.location.href = "../homepage/homepage.html";
@@ -97,7 +97,7 @@ function IndexLoginSubmit(formId){
             const response = await fetch("/login",{
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     accessCode: accessCode,
@@ -128,22 +128,20 @@ function IndexLoginSubmit(formId){
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     },
                 });
                 const details = await response.json();
+                if (!response.ok){
+                    alert(details.message);
+                    return false;
+                }
                 console.log(details)
-                // Set the session storgae
-                sessionStorage.setItem('AccNum', details.AccNum);
+                
+                sessionStorage.setItem('AccNum', details.AccNum);   // Set the session storgae
 
                 alert("User Authenticated successfully");
                 console.log("User Authenticated successfully");
-
-                /*
-                // Accessing Email property of the user object stored in session storage
-
-                const storedUser = JSON.parse(sessionStorage.getItem("Account"));
-                console.log(storedUser.Email);
-                */
 
                 return true 
             }
@@ -204,6 +202,7 @@ async function fetchProfileDetails() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
             },
         });
         const data = await response.json();
@@ -223,6 +222,7 @@ async function fetchAccountDetails() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
             },
         });
         const data = await response.json();
@@ -250,6 +250,7 @@ async function fetchCardDetails() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
             },
         });
         const data = await response.json();
@@ -339,6 +340,7 @@ async function fetchTransactions() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
             },
         });
 
