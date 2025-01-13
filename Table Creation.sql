@@ -88,6 +88,33 @@ create table Recipient (
     constraint FK_Recipient_ProfileId foreign key (ProfileId)
         references Profile (ProfileId)
 )
+--Billing Table
+CREATE TABLE Biller (
+    BillerID       INT           IDENTITY(1,1) NOT NULL,
+    BillerName     VARCHAR(50)   NOT NULL,
+    BillerAccNum   VARCHAR(20)   NOT NULL,
+    BankName       VARCHAR(50)   NOT NULL,
+    Category       VARCHAR(30)   NOT NULL,  -- e.g., 'Utilities', 'Telecom', 'Insurance'
+    CreatedDate    DATETIME      NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT PK_Biller PRIMARY KEY (BillerID)
+);
+
+-- Bills Table
+CREATE TABLE Bills (
+    BillID         INT           IDENTITY(1,1) NOT NULL,
+    BillerID       INT           NOT NULL,              
+    ProfileID      SMALLINT      NOT NULL,              
+    BillAmount     FLOAT         NOT NULL,              
+    DueDate        DATETIME      NOT NULL,              
+    Status         VARCHAR(20)   NOT NULL DEFAULT 'Unpaid', -- e.g., 'Unpaid', 'Paid', 'Overdue'
+    CreatedDate    DATETIME      NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT PK_Bills PRIMARY KEY (BillID),
+    CONSTRAINT FK_Bills_BillerID FOREIGN KEY (BillerID) REFERENCES Biller (BillerID),
+    CONSTRAINT FK_Bills_ProfileID FOREIGN KEY (ProfileID) REFERENCES Profile (ProfileID)
+);
+
+
+
 
 --Insert sample values
 insert into Profile(FullName, AccessCode, PinHash)
@@ -113,6 +140,16 @@ values
 ('3456 7890 1234 5678', 'Carol Lee', 'Debit','2025-08-31', '789', '345-678901-003'),
 ('4567 8901 2345 6789', 'David Brown', 'Debit','2025-05-31', '012', '456-789012-004'),
 ('5678 9012 3456 7890', 'Eve Williams', 'Debit','2027-04-30', '345', '567-890123-005');
+
+INSERT INTO Biller (BillerName, BillerAccNum, BankName, Category)
+VALUES 
+('SP Services', '123-456789-ABC', 'Overseas-Chinese Bank (OCBC)', 'Utilities'),
+('StarHub Telecom', '111-222333-XYZ', 'Overseas-Chinese Bank (OCBC)', 'Telecom');
+
+INSERT INTO Bills (BillerID, ProfileID, BillAmount, DueDate)
+VALUES 
+(1, 1, 120.50, '2025-01-15'),
+(2, 1, 89.90, '2025-03-10');
 
 insert into BankTransaction(TransactDate, TransactAmount, AccSender, AccReceiver)
 values
