@@ -10,9 +10,9 @@ BEGIN
     PRINT 'Database OCBC_DB already exists.';
     USE OCBC_DB;
 	IF OBJECT_ID('Bills', 'U') IS NOT NULL DROP TABLE Bills;
+	IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
 	IF OBJECT_ID('Biller', 'U') IS NOT NULL DROP TABLE Biller;
     IF OBJECT_ID('Recipient', 'U') IS NOT NULL DROP TABLE Recipient;
-    IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
     IF OBJECT_ID('Card', 'U') IS NOT NULL DROP TABLE Card;
     IF OBJECT_ID('Account', 'U') IS NOT NULL DROP TABLE Account;
     IF OBJECT_ID('Profile', 'U') IS NOT NULL DROP TABLE Profile;

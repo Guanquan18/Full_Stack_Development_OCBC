@@ -51,6 +51,7 @@ app.post("/video-calling/send-host-url", videoCallingController.sendUrl); // Sen
 app.get("/unpaid-bills/:profileId", billController.getUnpaidBills); // Get unpaid bills by profile id
 app.get("/paid-bills/:profileId", billController.getPaidBills); // Get paid bills by profile id
 app.post("/pay-bill/:billID", billController.payBills); // Pay bills by billing id
+app.get("/bill/:billID", billController.getBillById); // Get bill by bill id
 
 app.listen(port, async () => {
     try {

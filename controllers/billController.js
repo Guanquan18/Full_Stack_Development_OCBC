@@ -37,6 +37,24 @@ const getPaidBills = async (req, res) => {
       res.status(500).send("Error retrieving paid bills");  
     }
   };
+//Controller function to get bills by billId
+const getBillById = async (req, res) => {
+    const billID = parseInt(req.params.billID); // Parse the billID from the request parameters
+  
+    try {
+      const bill = await Bill.getBillDetails(billID); // Attempt to fetch bill by billID
+  
+      if (!bill) {
+        return res.status(404).send("Bill not found"); // Handle case where bill is not found
+      }
+  
+      res.json(bill);  // Return bill as JSON response
+  
+    } catch (error) {
+      console.error("Error retrieving bill:", error.message);
+      res.status(500).send("Error retrieving bill");  
+    }
+  };
 
  // Controller function to handle bill payment
 const payBills = async (req, res) => {
@@ -65,5 +83,6 @@ const payBills = async (req, res) => {
   module.exports = {
     getUnpaidBills,
     getPaidBills,
-    payBills
+    payBills,
+    getBillById
   };

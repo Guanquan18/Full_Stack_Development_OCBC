@@ -4,13 +4,16 @@ const dbConfig = require("../configs/dbConfig");
 
 // BillID, BillerID, ProfileID, BillAmount, DueDate, Status
 class Bill{
-    constructor(BillID, BillerID, ProfileID, BillAmount, DueDate, Status){
+    constructor(BillID, BillerID, ProfileID, BillAmount, DueDate, Status, BillerName, Category, BillerAccNum) {
         this.BillID = BillID;
         this.BillerID = BillerID;
         this.ProfileID = ProfileID;
         this.BillAmount = BillAmount;
         this.DueDate = DueDate;
         this.Status = Status;
+        this.BillerName = BillerName;
+        this.Category = Category;
+        this.BillerAccNum = BillerAccNum;
     }
     // Static method to fetch bill details of that are not paid nad sort by due date 
     static async getUnpaidBills(profileID) {
@@ -18,7 +21,22 @@ class Bill{
     
         try {
             // SQL query to get unpaid bills
-            const sqlQuery = `SELECT * FROM Bills WHERE ProfileID = @ProfileID AND Status = 'Unpaid' ORDER BY DueDate ASC`; // Parameterized query
+            const sqlQuery = `
+               SELECT 
+                    Bills.BillID, 
+                    Bills.BillerID, 
+                    Bills.ProfileID, 
+                    Bills.BillAmount, 
+                    FORMAT(Bills.DueDate, 'dd MMMM yyyy') AS DueDate, 
+                    Bills.Status, 
+                    Biller.BillerName, 
+                    Biller.Category
+                FROM Bills
+                INNER JOIN Biller ON Bills.BillerID = Biller.BillerID
+                WHERE Bills.ProfileID = @ProfileID AND Bills.Status = 'Unpaid'
+                ORDER BY Bills.DueDate ASC;
+            `;
+
             const request = connection.request();
             request.input("ProfileID", sql.SmallInt, profileID); 
             const result = await request.query(sqlQuery);
@@ -30,7 +48,10 @@ class Bill{
                 row.ProfileID,
                 row.BillAmount,
                 row.DueDate,
-                row.Status
+                row.Status,
+                row.BillerName,
+                row.Category
+                
             ));
 
         } catch (error) {
@@ -46,7 +67,21 @@ class Bill{
     
         try {
             // SQL query to get paid bills
-            const sqlQuery = `SELECT * FROM Bills WHERE ProfileID = @ProfileID AND Status = 'Paid' ORDER BY DueDate ASC `; // Parameterized query
+            const sqlQuery = `
+               SELECT 
+                    Bills.BillID, 
+                    Bills.BillerID, 
+                    Bills.ProfileID, 
+                    Bills.BillAmount, 
+                    FORMAT(Bills.DueDate, 'dd MMMM yyyy') AS DueDate, 
+                    Bills.Status, 
+                    Biller.BillerName, 
+                    Biller.Category
+                FROM Bills
+                INNER JOIN Biller ON Bills.BillerID = Biller.BillerID
+                WHERE Bills.ProfileID = @ProfileID AND Bills.Status = 'Paid'
+                ORDER BY Bills.DueDate ASC;
+            `;
             const request = connection.request();
             request.input("ProfileID", sql.SmallInt, profileID); 
             const result = await request.query(sqlQuery);
@@ -58,11 +93,62 @@ class Bill{
                 row.ProfileID,
                 row.BillAmount,
                 row.DueDate,
-                row.Status
+                row.Status,
+                row.BillerName,
+                row.Category
             ));
 
         } catch (error) {
             console.log('Error retrieving paid bills:', error);
+            throw error;
+        } finally {
+            connection.close(); // Close the connection
+        }
+    }
+    // Static to fetch bill details by BillID
+    static async getBillDetails(billID) {
+        const connection = await sql.connect(dbConfig); // Connect to the database
+    
+        try {
+            // SQL query to get bill details
+            const sqlQuery = `
+               SELECT 
+                    Bills.BillID, 
+                    Bills.BillerID, 
+                    Bills.ProfileID, 
+                    Bills.BillAmount, 
+                    FORMAT(Bills.DueDate, 'dd MMMM yyyy') AS DueDate, 
+                    Bills.Status, 
+                    Biller.BillerName, 
+                    Biller.Category,
+                    Biller.BillerAccNum
+                FROM Bills
+                INNER JOIN Biller ON Bills.BillerID = Biller.BillerID
+                WHERE Bills.BillID = @BillID;
+            `;
+            const request = connection.request();
+            request.input("BillID", sql.Int, billID); 
+            const result = await request.query(sqlQuery);
+            const row = result.recordset[0];
+
+            if (!row) {
+                throw new Error("Bill not found.");
+            }
+
+            return new Bill(
+                row.BillID,
+                row.BillerID,
+                row.ProfileID,
+                row.BillAmount,
+                row.DueDate,
+                row.Status,
+                row.BillerName,
+                row.Category,
+                row.BillerAccNum
+            );
+
+        } catch (error) {
+            console.log('Error retrieving bill details:', error);
             throw error;
         } finally {
             connection.close(); // Close the connection
