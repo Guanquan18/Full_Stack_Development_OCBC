@@ -388,8 +388,8 @@ async function fetchTransactions() {
                     <p class="transaction-from">
                         From: ${transaction.SenderName}
                     </p>
-                    <p class="transaction-to">
-                        To: ${transaction.ReceiverName}
+                   <p class="transaction-to">
+                        To: ${transaction.AccReceiver ? transaction.ReceiverName : transaction.BillerName}
                     </p>
                     <div class="transaction-amount">Amount: <span style="color: ${amountColor};">${amountDisplay}</span></div>
                 `;

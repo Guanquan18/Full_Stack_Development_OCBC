@@ -201,15 +201,18 @@ class Transaction {
                 bt.AccSender, 
                 senderProfile.FullName AS SenderName, 
                 bt.AccReceiver, 
-                receiverProfile.FullName AS ReceiverName
+                receiverProfile.FullName AS ReceiverName,
+                bt.BillerAccNum, 
+                biller.BillerName AS BillerName
             FROM BankTransaction bt
-            INNER JOIN Account sender ON bt.AccSender = sender.AccNum
-            INNER JOIN Profile senderProfile ON sender.ProfileId = senderProfile.ProfileId
-            INNER JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
-            INNER JOIN Profile receiverProfile ON receiver.ProfileId = receiverProfile.ProfileId
-            WHERE (bt.AccSender = @AccNum OR bt.AccReceiver = @AccNum)
+            LEFT JOIN Account sender ON bt.AccSender = sender.AccNum
+            LEFT JOIN Profile senderProfile ON sender.ProfileId = senderProfile.ProfileId
+            LEFT JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
+            LEFT JOIN Profile receiverProfile ON receiver.ProfileId = receiverProfile.ProfileId
+            LEFT JOIN Biller biller ON bt.BillerAccNum = biller.BillerAccNum
+            WHERE (bt.AccSender = @AccNum OR bt.AccReceiver = @AccNum OR bt.BillerAccNum IS NOT NULL)
             AND bt.TransactDate BETWEEN @StartDate AND @EndDate
-            ORDER BY bt.TransactDate DESC`; // Parameterized query
+            ORDER BY bt.TransactDate DESC;`; // Parameterized query
 
             const request = connection.request();
             request.input("AccNum", accNum);
@@ -230,10 +233,10 @@ class Transaction {
                 row.TransactAmount,
                 row.AccSender,
                 row.AccSender === accNum ? "You" : row.SenderName,
-                row.AccReceiver,
-                row.AccReceiver === accNum ? "You" : row.ReceiverName
+                row.AccReceiver || row.BillerAccNum, // Handle both receiver and biller
+                row.AccReceiver === accNum ? "You" : row.ReceiverName || row.BillerName
             ));
-
+            
             return transactions; // Return the array of Transaction objects
         } catch (error) {
             console.error("Error retrieving transaction history:", error);

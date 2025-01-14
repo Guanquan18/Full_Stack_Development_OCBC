@@ -1,0 +1,455 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Bills</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+            background: white;
+            color: #3f4347;
+        }
+
+        #pay-bills-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+            padding-bottom: 10px;
+        }
+
+        .homepage-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+
+        .pay-bills-title {
+            font-size: 24px;
+            text-align: center;
+            font-weight: 700;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Toggle Container to Center the Buttons */
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Toggle Buttons Wrapper */
+        .toggle-buttons {
+            display: flex;
+            position: relative;
+            width: 300px;
+            height: 50px;
+            border: 2px solid #f03c3c;
+            border-radius: 30px;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        /* Sliding Background */
+        .toggle-buttons::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: var(--slide-position, 0%);
+            width: 50%;
+            height: 100%;
+            background-color: #f03c3c;
+            border-radius: 30px;
+            transition: left 0.4s ease-in-out;
+        }
+
+
+        /* Toggle Buttons */
+        .toggle-buttons button {
+            flex: 1;
+            border: none;
+            background: none;
+            color: #f03c3c;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1;
+            outline: none;
+            transition: color 0.3s ease;
+        }
+
+        /* Active Button Styling */
+        .toggle-buttons button.active {
+            color: white;
+        }
+
+        .tts-button {
+            background-color: #ED3F3F; 
+            color: white;         
+            border: none;         
+            border-radius: 8px;   
+            padding: 10px 15px;   
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 5px;     
+            cursor: pointer;
+            display: flex; 
+            align-items: center;      
+            transition: background-color 0.3s ease;
+        }
+
+        .tts-button:hover {
+            background-color: darkred; 
+        }
+        .tts-button img {
+            width: 20px;               
+            height: 20px;
+            margin-right: 10px !important;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        .chatbot-icon{
+            width: 50%;
+            height: 50%;
+            margin-bottom: 5px;
+        }
+
+        /* Transaction list and cards */
+        .bills-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            padding-bottom: 50px;
+        }
+
+        .billing-card {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.20);
+        }
+
+        .billing-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .billing-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            color: #6d6f72;
+        }
+
+        .speaker-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .billing-biller,
+        .billing-due-date,
+        .billing-category{
+            margin: 0; 
+            font-weight: 600;
+        }
+
+        .billing-biller{
+            font-size: 18px; 
+            padding-bottom: 10px;
+        }
+
+        .billing-biller,
+        .billing-due-date {
+            font-size: 16px; 
+        }
+
+        .billing-amount {
+            font-size: 18px;
+            font-weight: 600; 
+            text-align: right; 
+        }
+
+        #billing-error-message{
+            font-size: 24px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="pay-bills-header">
+        <div class="homepage-header">
+            <a href="../homepage/homepage.html" class="back-button">
+                <img src="../images/back-icon.png" alt="Back">
+            </a>
+            <img id="pay-bills-walkthrough" class="header-icon" src="../images/homepage/tutorial_simple.png" onclick="startViewTransactionTour()" alt="Video Tutorial Icon" style="transform: scale(0.8);">
+        </div>
+        <h2 class="pay-bills-title">Pay Bills</h2>
+
+        <!-- Toggle Container -->
+        <div class="toggle-container">
+            <div class="toggle-buttons" id="toggleButtons">
+                <button id="unpaid-toggle" class="active">Unpaid</button>
+                <button id="paid-toggle">Paid</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- billsList -->
+    <div id="billsList" class="bills-list"></div>
+
+    <!-- Error Message -->
+    <p id="billing-error-message" style="display: none;">Error</p>
+
+    <!-- Chatbot -->
+    <a href="../chatbot/ibm-chatbot.html">
+        <div class="chatbot-container">
+            <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
+        </div>
+    </a>
+
+    <!-- Mic Icon -->
+    <div id="mic-icon" class="mic-container" onclick="startTranscription()">
+        <img src="../images/homepage/microphone.webp" alt="Microphone Icon" class="mic-image">
+    </div>
+
+    <!-- Stop Button -->
+    <div id="stop-button" class="stop-button" onclick="stopTranscription()">
+        <p>Stop</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../scripts/stt.js"></script>
+    <script>
+        const unpaidToggle = document.getElementById('unpaid-toggle');
+        const paidToggle = document.getElementById('paid-toggle');
+        const toggleButtons = document.getElementById('toggleButtons');
+
+        // Function to handle the toggle effect
+        function toggleStatus(activeButton, inactiveButton) {
+            activeButton.classList.add('active');
+            inactiveButton.classList.remove('active');
+
+            // Slide the background
+            if (activeButton.id === 'unpaid-toggle') {
+                toggleButtons.style.setProperty('--slide-position', '0%');
+            } else {
+                toggleButtons.style.setProperty('--slide-position', '50%');
+            }
+        }
+
+        // Event listeners for toggling buttons
+        unpaidToggle.addEventListener('click', () => {
+            toggleStatus(unpaidToggle, paidToggle);
+            fetchUnpaidBills();
+        });
+
+        paidToggle.addEventListener('click', () => {
+            toggleStatus(paidToggle, unpaidToggle);
+            fetchpaidBills();
+        });
+        
+
+
+        const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+        fetchUnpaidBills();
+        // Get bills list that are not paid and display them in the billsList
+        async function fetchUnpaidBills() {
+            const errorMessage = document.getElementById('billing-error-message');
+            const billContainer = document.querySelector('.bills-list');
+
+            // Check if the container exists
+            if (!billContainer) {
+                console.error('Bill container not found');
+                return;
+            }
+
+            // Clear previous billing cards
+            billContainer.innerHTML = '';
+            console.log('Bill container cleared');
+
+            // error message display none
+            errorMessage.style.display = 'none';
+
+            const url = `http://localhost:3000/unpaid-bills/${profileId}`;
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                });
+
+                if (response.status === 404) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = 'No billing found';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log('Unpaid Bills Data:', data);
+
+                if (data.length > 0) {
+                    data.forEach(billing => {
+                        const billingCard = document.createElement('div');
+                        billingCard.className = 'billing-card';
+                        billingCard.id = billing.BillID;
+                        billingCard.innerHTML = `
+                            <div class="billing-title-container">
+                                <h2 class="billing-title">Billing ID: ${billing.BillID}</h2>
+                                <i class="fa fa-volume-up speaker-icon" 
+                                onclick="speak('Your bill for ${billing.BillerName}, under the category ${billing.Category}, is due by ${billing.DueDate}. The amount due is ${billing.BillAmount} dollars.')">
+                                </i>
+                            </div>
+                            <p class="billing-biller">Biller: ${billing.BillerName}</p>
+                            <p class="billing-category">Category: ${billing.Category}</p>
+                            <p class="billing-due-date">Due Date: ${billing.DueDate}</p>
+                            <div class="billing-amount">Amount: <span>$${billing.BillAmount}</span></div>
+                        `;
+
+                        billContainer.appendChild(billingCard);
+                    });
+
+                    // Attach click event to billing cards
+                    billContainer.querySelectorAll('.billing-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            const billingId = card.id;
+                            console.log(`Billing ID: ${billingId}`);
+                            sessionStorage.setItem('billingId', billingId);
+                            window.location.href = '../pay-bills/confirm-bill.html';
+                        });
+                    });
+                } else {
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = 'No billing found';
+                }
+            } catch (error) {
+                console.error('Error fetching billing:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Error fetching billing';
+            }
+        }
+
+
+        // Function to get paid bills
+        async function fetchpaidBills() {
+            const errorMessage = document.getElementById('billing-error-message');
+            // Clear previous billing cards if any
+            const billContainer = document.querySelector('.bills-list');
+            billContainer.innerHTML = '';
+            const url = `http://localhost:3000/paid-bills/${profileId}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                });
+
+                // Check for 404 response before throwing a generic error
+                if (response.status === 404) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = 'No billing found';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                // Check if there are billing
+                if (data.length > 0) {
+                    data.forEach(billing => {
+                        const billingCard = document.createElement('div');
+                        billingCard.className = 'billing-card';
+                        billingCard.id = billing.BillID;
+                        billingCard.innerHTML = `
+                        <div class="billing-title-container">
+                                <h2 class="billing-title">Billing ID: ${billing.BillID}</h2>
+                                <i class="fa fa-volume-up speaker-icon" 
+                                onclick="speak('Your bill for ${billing.BillerName}, under the category ${billing.Category}, is due by ${billing.DueDate}. The amount due is ${billing.BillAmount} dollars.')">
+                                </i>
+                            </div>
+                            <p class="billing-biller">Biller: ${billing.BillerName}</p>
+                            <p class="billing-category">Category: ${billing.Category}</p>
+                            <p class="billing-due-date">Due Date: ${billing.DueDate}</p>
+                            <div class="billing-amount">Amount: <span>$${billing.BillAmount}</span></div>
+                        `;
+
+                        billContainer.appendChild(billingCard);
+                    });
+                } else {
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = 'No billing found';
+                }
+            } catch (error) {
+                console.error('Error fetching billing:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Error fetching billing';
+            }
+        }
+                      
+    </script>
+</body>
+</html>

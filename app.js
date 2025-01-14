@@ -15,6 +15,7 @@ const accountController = require("./controllers/accountController"); // Import 
 const cardController = require("./controllers/cardController"); // Import the card controller
 const transactionController = require("./controllers/transactionController"); // Import the transaction controller
 const videoCallingController = require("./controllers/videoCallingController"); // Import the video calling controller
+const billController = require("./controllers/billController"); // Import the bill controller
 
 
 const app = express(); // Create an Express application
@@ -47,6 +48,10 @@ app.post("/recipients",verifyJWT.verifyJWT, transactionController.addRecipient);
 app.post("/transfer",verifyJWT.verifyJWT, transactionController.performTransfer); // Perform a fund transfer (kesh)
 app.post("/video-calling/create-room",verifyJWT.verifyJWT, videoCallingController.createRoom); // Create a room and send an OTP
 app.post("/video-calling/send-host-url", videoCallingController.sendUrl); // Send the host room URL to the admin
+app.get("/unpaid-bills/:profileId", billController.getUnpaidBills); // Get unpaid bills by profile id
+app.get("/paid-bills/:profileId", billController.getPaidBills); // Get paid bills by profile id
+app.post("/pay-bill/:billID", billController.payBills); // Pay bills by billing id
+app.get("/bill/:billID", billController.getBillById); // Get bill by bill id
 
 app.listen(port, async () => {
     try {

@@ -1,0 +1,170 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <title> Billing Successfull </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #3f4347;
+            height: 100%;
+            margin: 0;
+            padding: 20px;
+            display: block;
+        }
+        .confirmation-icon-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .confirmation-icon {
+            width: 120px;
+            height: 120px;
+        }
+        .confirmation-message {
+            font-size: 22px;
+            font-weight: bold;
+            color: #27ae60;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .amount-details-section {
+            border-radius: 10px;
+            overflow: hidden;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .amount-section, .details-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        .amount-section {
+            padding: 22px 15px;
+            font-size: 18px;
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 32%, rgba(249,243,247,1) 100%);
+        }
+        .details-section {
+            font-size: 16px;
+        }
+        .next-button, .back-button {
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 0;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .next-button {
+            background-color: #ffffff;
+            color:#3f4347;
+        }
+        .back-button {
+            background-color: #f03c3c;
+            color: #ffffff;
+        }
+        .next-button:hover, .back-button:hover {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="confirmation-icon-container">
+            <dotlottie-player src="https://lottie.host/b371ae55-1d94-4756-af60-2d215b29d319/PYHdabwx7M.json" background="transparent" speed="1" loop autoplay class="confirmation-icon"></dotlottie-player>
+        </div>
+
+        <div class="confirmation-message">TRANSFERRED</div>
+
+        <div class="amount-details-section">
+            <div class="amount-section">
+                <span>Amount</span>
+                <span>SGD</span>
+                <span id="successAmount">0.00</span>
+            </div>
+            <div class="details-section">
+                <span>From:</span>
+                <span id="successSenderName"></span> 
+            </div>
+            <div class="details-section">
+                <span>To:</span>
+                <span id="successRecipientName"></span> 
+            </div>
+            <div class="details-section">
+                <span>Category:</span>
+                <span id="successCategory"></span>
+            </div>
+            <div class="details-section">
+                <span>Recipient No:</span>
+                <span id="successRecipientNo"></span>
+            </div>
+        </div>
+
+        <button class="next-button" onclick="makeAnotherTransfer()">MAKE ANOTHER TRANSFER</button>
+        <button class="back-button" onclick="goBack()">GO BACK TO HOMEPAGE</button>
+    </div>
+
+    <script>
+        function makeAnotherTransfer() {
+            window.location.href = "view-bills.html";
+        }
+        function goBack() {
+            window.location.href = "../homepage/homepage.html"; 
+        }
+        document.addEventListener("DOMContentLoaded", async function() {
+            const billingId = sessionStorage.getItem("billingId");
+            const AccNum = sessionStorage.getItem("AccNum");
+            const url = `http://localhost:3000/bill/${billingId}`; // Corrected variable name
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                // Updating UI with fetched data
+                document.getElementById("successAmount").textContent = data.BillAmount;
+                document.getElementById("successSenderName").textContent = AccNum;
+                document.getElementById("successRecipientName").textContent = data.BillerName;
+                document.getElementById("successCategory").textContent = data.Category;
+                document.getElementById("successRecipientNo").textContent = data.BillerAccNum;
+
+            } catch (error) {
+                console.error('Error fetching billing data:', error);
+            }
+        });
+
+    </script>
+</body>
+</html>

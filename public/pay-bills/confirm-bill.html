@@ -1,0 +1,249 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Billing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #3f4347;
+        }
+        .app {
+            max-width: 430px;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .confirm-pay-bill-title {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .amount-details-section {
+            border-radius: 10px;
+            overflow: hidden;
+            font-weight: bold;
+            margin-bottom: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .amount-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 15px;
+            font-size: 18px;
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 32%, rgba(249,243,247,1) 100%);
+        }
+
+        .details-section {
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+        .details-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px; 
+        }
+
+        .label {
+            color: #3f4347;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 15px; 
+        }
+
+        .value {
+            color: #3f4347;
+            font-weight: bold;
+            font-size: 16px; 
+            text-align: left;
+            word-wrap: break-word; 
+        }
+
+        .details-item:last-child {
+            border-bottom: none; 
+        }
+        .next-button {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #f03c3c;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 60px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: auto;
+            align-self: center;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 430px) {
+            .app {
+                max-width: 100%;
+                height: 100%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>
+        <!-- <h1>Confirm Transfer</h1> -->
+        <h1 class = "confirm-pay-bill-title">Confirmation Details</h1>
+
+        <div class="amount-details-section">
+            <div class="amount-section">
+                <span class="amount-label">Amount</span>
+                <span>SGD</span>
+                <span id="billAmount">0.00</span>
+            </div>
+            <div class="details-section">
+                <div class="details-item">
+                    <span class="label">Recipient:</span>
+                    <span class="value" id="billerName">Andy</span>
+                </div>
+                <div class="details-item">
+                    <span class="label">Category:</span>
+                    <span class="value" id="billerCategory"></span>
+                </div>
+                <div class="details-item">
+                    <span class="label">Recipient No:</span>
+                    <span class="value" id="billerAccNum"></span>
+                </div>
+                <div class="details-item">
+                    <span class="label">When:</span>
+                    <span class="value" id="transactionDate"></span>
+                </div>
+            </div>
+        </div>
+
+        <button class="next-button" onclick="confirmTransfer()">CONFIRM PAYMENT</button>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        const billID = sessionStorage.getItem('billingId');
+        const AccNum = sessionStorage.getItem('AccNum');
+        fetchBillingDetails();
+        // Fetch billing details by billingID
+        async function fetchBillingDetails() {
+           const url = `http://localhost:3000/bill/${billID}`;
+           try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log(data);
+                // Display billing details
+                document.getElementById("billerName").textContent = data.BillerName;
+                document.getElementById("billerCategory").textContent = data.Category;
+                document.getElementById("billerAccNum").textContent = data.BillerAccNum;
+                document.getElementById("billAmount").textContent = data.BillAmount
+                const currentDate = new Date().toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                });;
+                document.getElementById("transactionDate").textContent = currentDate;
+           } catch (error) {
+               console.error('Error fetching billing data:', error);
+           }
+        }
+        // Function to make payment
+        async function confirmTransfer() {
+            const url = `http://localhost:3000/pay-bill/${billID}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        "accSender": AccNum,
+                    }),
+                });
+
+                // Handle different error statuses
+                if (response.status === 400) {
+                    const data = await response.json();
+                    if (data.error === "Insufficient balance for transfer.") {
+                        alert("Error: You do not have enough balance to pay this bill.");
+                    } else if (data.error === "You are not authorized to pay this bill.") {
+                        alert("Error: You are not authorized to pay this bill.");
+                    } else {
+                        alert("Error: Something went wrong. Please try again.");
+                    }
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // If successful
+                const result = await response.json();
+                alert(result.message); // "Bill paid successfully."
+                console.log(result);
+
+                // Redirect or refresh after successful payment
+                window.location.href = '../pay-bills/success.html';
+
+            } catch (error) {
+                console.error('Error making payment:', error);
+                alert('Error making payment. Please try again later.');
+            }
+        }
+
+    </script>
+</body>
+</html>

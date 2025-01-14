@@ -9,8 +9,10 @@ ELSE
 BEGIN
     PRINT 'Database OCBC_DB already exists.';
     USE OCBC_DB;
+	IF OBJECT_ID('Bills', 'U') IS NOT NULL DROP TABLE Bills;
+	IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
+	IF OBJECT_ID('Biller', 'U') IS NOT NULL DROP TABLE Biller;
     IF OBJECT_ID('Recipient', 'U') IS NOT NULL DROP TABLE Recipient;
-    IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
     IF OBJECT_ID('Card', 'U') IS NOT NULL DROP TABLE Card;
     IF OBJECT_ID('Account', 'U') IS NOT NULL DROP TABLE Account;
     IF OBJECT_ID('Profile', 'U') IS NOT NULL DROP TABLE Profile;
@@ -63,20 +65,6 @@ create table Card
 		references Account (AccNum)
 );
 
---Transaction Table
-create table BankTransaction
-(
-	TransactNo		int	identity(1,1)	not null,
-	TransactDate	date				not null,
-	TransactAmount	float				not null,
-	AccSender		varchar(20)			not null,
-	AccReceiver		varchar(20)			not null,
-	constraint PK_BankTransaction primary key (TransactNo),
-	constraint FK_BankTransaction_AccSender foreign key (AccSender)
-		references Account (AccNum),
-	constraint FK_BankTransaction_AccReceiver foreign key (AccReceiver)
-		references Account (AccNum)
-)
 --Recipient Table
 create table Recipient (
     RecipientId     smallint identity(1,1) not null,
@@ -88,7 +76,7 @@ create table Recipient (
     constraint FK_Recipient_ProfileId foreign key (ProfileId)
         references Profile (ProfileId)
 )
---Billing Table
+--Biller Table
 CREATE TABLE Biller (
     BillerID       INT           IDENTITY(1,1) NOT NULL,
     BillerName     VARCHAR(50)   NOT NULL,
@@ -96,8 +84,10 @@ CREATE TABLE Biller (
     BankName       VARCHAR(50)   NOT NULL,
     Category       VARCHAR(30)   NOT NULL,  -- e.g., 'Utilities', 'Telecom', 'Insurance'
     CreatedDate    DATETIME      NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT PK_Biller PRIMARY KEY (BillerID)
+    CONSTRAINT PK_Biller PRIMARY KEY (BillerID),
+    CONSTRAINT UQ_BillerAccNum UNIQUE (BillerAccNum)  -- Unique constraint for foreign key reference
 );
+
 
 -- Bills Table
 CREATE TABLE Bills (
@@ -111,6 +101,24 @@ CREATE TABLE Bills (
     CONSTRAINT PK_Bills PRIMARY KEY (BillID),
     CONSTRAINT FK_Bills_BillerID FOREIGN KEY (BillerID) REFERENCES Biller (BillerID),
     CONSTRAINT FK_Bills_ProfileID FOREIGN KEY (ProfileID) REFERENCES Profile (ProfileID)
+);
+
+-- Transaction Table
+CREATE TABLE BankTransaction
+(
+    TransactNo      INT IDENTITY(1,1) NOT NULL,
+    TransactDate    DATE NOT NULL DEFAULT GETDATE(),
+    TransactAmount  FLOAT NOT NULL,
+    AccSender       VARCHAR(20) NOT NULL,
+    AccReceiver     VARCHAR(20),  -- For normal transfers
+    BillerAccNum    VARCHAR(20),  -- For bill payments
+    CONSTRAINT PK_BankTransaction PRIMARY KEY (TransactNo),
+    CONSTRAINT FK_BankTransaction_AccSender FOREIGN KEY (AccSender)
+        REFERENCES Account (AccNum),
+    CONSTRAINT FK_BankTransaction_AccReceiver FOREIGN KEY (AccReceiver)
+        REFERENCES Account (AccNum),
+    CONSTRAINT FK_BankTransaction_BillerAccNum FOREIGN KEY (BillerAccNum)
+        REFERENCES Biller (BillerAccNum)
 );
 
 
@@ -185,4 +193,6 @@ values
 ('Carol Lee', 'Development Bank of Singapore (DBS)', '456-789012-004', 5),
 ('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 5),
 ('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 5);
+
+
 
