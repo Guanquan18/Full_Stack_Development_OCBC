@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scan and Pay</title>
+  <script src="../scripts/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Open Sans', sans-serif;
+      background: white;
+      color: #3f4347;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    #scan-pay-header {
+      background: rgb(241,233,244);
+      background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .homepage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .back-button {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .back-button img {
+      height: 30px;
+      margin-right: 5px;
+    }
+    .header-icon {
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+    }
+    .scan-pay-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    /* Container for the library's UI */
+    #qr-reader {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    #qr-result {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+      color: black;
+    }
+
+    /* Flip the camera feed horizontally for html5-qrcode */
+    #qr-reader__scan_region video {
+      transform: scaleX(-1) !important;
+    }
+
+    /* Hide the built-in "scan type change" anchor if you want to force one mode */
+    #html5-qrcode-anchor-scan-type-change {
+      display: none !important;
+    }
+
+    /* Buttons styling for Start/Stop */
+    #html5-qrcode-button-camera-start, 
+    #html5-qrcode-button-camera-stop{
+      padding: 12px 25px;
+      background-color: #f03c3c;
+      color: white;
+      border: none;
+      font-size: 18px;
+      border-radius: 45px;
+      cursor: pointer;
+    }
+
+    /* Toggle Container */
+    .toggle-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      position: relative;
+      width: 500px;
+      height: 50px;
+      border: 2px solid #f03c3c;
+      border-radius: 30px;
+      background-color: white;
+      overflow: hidden;
+    }
+
+    .toggle-buttons::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: var(--slide-position, 0%);
+      width: 33.3%;
+      height: 100%;
+      background-color: #f03c3c;
+      border-radius: 30px;
+      transition: left 0.4s ease-in-out;
+    }
+
+    .toggle-buttons button {
+      flex: 1;
+      border: none;
+      background: none;
+      color: #f03c3c;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1;
+      outline: none;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-buttons button.active {
+      color: white;
+    }
+    
+   
+    #myqrcode, #create-qr-code-result {
+      display: none;
+      margin: 20px auto;   
+      width: 250px;        
+      padding: 15px;
+      border: 2px solid #f03c3c;
+      border-radius: 20px;
+    }
+
+    
+    #myqrcode-img, #create-qr-code-result-img {
+      display: none;
+      width: 200px;
+      height: 200px;
+      margin: 10px 25px;
+    }
+
+    #myqrcode p, #create-qr-code-result p {
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+        font-weight: 600;
+      margin: 0; 
+    }
+
+    #myqrcode h2, #create-qr-code h2, #create-qr-code-result h2 {
+      font-size: 24px;
+      color: #f03c3c;
+      text-align: center;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    #create-qr-code {
+        display: none; 
+        flex-direction: column; 
+        margin: 20px auto;
+        padding: 15px;
+        width: 90%; 
+    }
+
+    #create-qr-code label {
+        font-weight: 700; 
+        margin-top: 20px;
+        margin-bottom: 5px;
+    }
+
+    #create-qr-code input {
+        width: 90%; 
+        padding: 10px; 
+        border-radius: 10px; 
+        font-size: 16px;
+        border: 0.1px solid #f03c3c;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    #create-qr-code input:focus {
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        outline: none;
+    }
+
+    #create-qr-confirm {
+        display: flex; 
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    #error-message {
+        display: none;
+        color: red; 
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    #create-qr-button {
+        padding: 12px 25px;
+        background-color: #f03c3c;
+        color: white;
+        border: none;
+        font-size: 18px;
+        border-radius: 45px;
+        cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="scan-pay-header">
+    <div class="homepage-header">
+      <a href="../homepage/homepage.html" class="back-button">
+        <img src="../images/back-icon.png" alt="Back">
+      </a>
+      <img id="scan-pay-walkthrough" class="header-icon" 
+           src="../images/homepage/tutorial_simple.png" alt="Video Tutorial Icon">
+    </div>
+    <h2 class="scan-pay-title">Scan and Pay</h2>
+
+    <!-- Toggle Container -->
+    <div class="toggle-container">
+      <div class="toggle-buttons" id="toggleButtons">
+        <button id="qrcode-toggle" class="active">QRCode</button>
+        <button id="create-toggle">Create QRCode</button>
+        <button id="myqrcode-toggle">My QRCode</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The scanner UI -->
+  <div id="qr-reader"></div>
+  <div id="qr-result">Point the camera at a QR code</div>
+
+  <!-- My QR code image -->
+   <div id = "myqrcode">
+        <h2>My QR Code</h2>
+        <img id="myqrcode-img" src="" alt="My QR Code" />
+        <p> This is your personal QR code. </p>
+   </div>
+   <div id="create-qr-code">
+        <h2>Create QR Code</h2>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="Title" required>
+        <label for="description">Description</label>    
+        <input type="text" id="description" name="Description" required>
+        <label for = "expiry-date">Expiry Date</label>
+        <input type="date" id="expiry-date" name="Expiry Date" max="" oninput="validateDates()" required>
+        <label for="amount">Amount (Optional)</label>
+        <input type="number" id="amount" name="Amount">
+        <div id ="create-qr-confirm">
+          <p id = "error-message"></p>
+          <button id="create-qr-button">Create QR Code</button>
+        </div>
+   </div>
+   <div id = "create-qr-code-result">
+        <h2 id = "create-qr-code-result-title">Title</h2>
+        <img id="create-qr-code-result-img" src="" alt="My QR Code" />
+        <p id = "create-qr-code-result-description"> This is your personal QR code. </p>
+        <p id = "create-qr-code-result-expiry-date"> Expiry Date: </p>
+   </div>
+
+  <script>
+  
+     // scan logic
+    const accNum = sessionStorage.getItem("AccNum"); 
+    const userName = sessionStorage.getItem("FullName"); 
+    const bankName = "Overseas-Chinese Bank (OCBC)";  
+
+    function onScanSuccess(decodedText, decodedResult) {
+      // Attempt to parse the paynow://transfer? data
+      const resultObj = decodePayNowQR(decodedText);
+      if (resultObj) {
+        console.log("Scan result:", resultObj);
+        // If scanning your own QR, disallow
+        if (resultObj.acc === accNum) {
+          alert("You cannot transfer to yourself.");
+          return;
+        }
+        // if resultObjc contains, name, bank, acc
+        if (resultObj.name && resultObj.bank && resultObj.acc) {
+          // Store in session for next page
+          sessionStorage.setItem("recipientData", JSON.stringify({
+            recipientName: resultObj.name,
+            bankName: resultObj.bank,
+            accNum: resultObj.acc
+          }));
+          // Redirect to some transfer page
+          window.location.href = "../transaction/transfer.html";
+        }
+        // check if got expiry date
+        if (resultObj.expiry) {
+          // check if expired
+          const today = new Date();
+          const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+          if (resultObj.expiry < localToday) {
+            alert("QR Code has expired.");
+            return;
+          }
+          // check if got amount
+          if (resultObj.amount) {
+            // Store in session for next page
+            sessionStorage.setItem("recipientData", JSON.stringify({
+              recipientName: resultObj.name,
+              bankName: resultObj.bank,
+              accNum: resultObj.acc,
+            }));
+            sessionStorage.setItem("transferAmount", resultObj.amount);
+            // Redirect to some transfer page
+            window.location.href = "../transaction/transfer-details.html";
+          } else {
+            // Store in session for next page
+            sessionStorage.setItem("recipientData", JSON.stringify({
+              recipientName: resultObj.name,
+              bankName: resultObj.bank,
+              accNum: resultObj.acc
+            }));
+            // Redirect to some transfer page
+            window.location.href = "../transaction/transfer.html";
+          }
+        }
+      }
+      else {
+        alert("Invalid QR Code. Please try again.");
+      }
+    }
+    function onScanFailure(error) {
+      // console.warn("Scan failure:", error);
+    }
+
+    function decodePayNowQR(data) {
+      if (!data.startsWith("paynow://transfer?")) {
+        return null;
+      }
+      const queryString = data.split("?")[1];
+      const params = new URLSearchParams(queryString);
+
+      const name = decodeURIComponent(params.get("name") || "");
+      const bank = decodeURIComponent(params.get("bank") || "");
+      const acc = decodeURIComponent(params.get("acc") || "");
+      const expiry = decodeURIComponent(params.get("expiry") || "");
+      const amount = decodeURIComponent(params.get("amount") || "");
+
+      if (!name || !bank || !acc) {
+        console.error("Missing required info in QR Code.");
+        return null;
+      }
+      return { name, bank, acc, expiry, amount };
+    }
+
+    // Initialize html5-qrcode
+    window.addEventListener("DOMContentLoaded", () => {
+      const html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader",
+        { fps: 10, qrbox: 250 },
+        false
+      );
+      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+      
+      generateMyQrCode();
+    });
+
+    // Generate my personal QR code
+    const myqrcodeImg = document.getElementById("myqrcode-img");
+    function generateMyQrCode() {
+    if (!userName || !bankName || !accNum) {
+          alert("Missing user info. Please login again.");
+    }
+      // Construct paynow://transfer? with your user info
+      const dataString = `paynow://transfer?name=${encodeURIComponent(userName)}&bank=${encodeURIComponent(bankName)}&acc=${encodeURIComponent(accNum)}`;
+      myqrcodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(dataString)}`;
+    }
+
+    // Toggle between QRCode scanning, creating, and showing my QR code
+    const qrcodeToggle = document.getElementById('qrcode-toggle');
+    const createToggle = document.getElementById('create-toggle');
+    const myqrcodeToggle = document.getElementById('myqrcode-toggle');
+    const toggleButtons = document.getElementById('toggleButtons');
+
+    function setActiveButton(buttonId) {
+      // Reset
+      qrcodeToggle.classList.remove('active');
+      createToggle.classList.remove('active');
+      myqrcodeToggle.classList.remove('active');
+      // Hide stuff
+      document.getElementById('qr-reader').style.display = 'none';
+      document.getElementById('qr-result').style.display = 'none';
+      document.getElementById('myqrcode').style.display = 'none';
+      document.getElementById('create-qr-code').style.display = 'none';
+      document.getElementById('create-qr-code-result').style.display = 'none';
+      myqrcodeImg.style.display = 'none';
+
+      let slidePos = '0%'; 
+      // qr code scanning
+      if (buttonId === 'qrcode-toggle') {
+        qrcodeToggle.classList.add('active');
+        slidePos = '0%';
+        // Show scanner
+        document.getElementById('qr-reader').style.display = 'block';
+        document.getElementById('qr-result').style.display = 'block';
+
+      // create qr code
+      } else if (buttonId === 'create-toggle') {
+        createToggle.classList.add('active');
+        slidePos = '33.3%';
+        const today = new Date();
+        const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        document.getElementById("expiry-date").setAttribute("min", localToday);
+        // Show create QR code form
+        document.getElementById('create-qr-code').style.display = 'flex';
+
+      // personal qr code
+      } else if (buttonId === 'myqrcode-toggle') {
+        myqrcodeToggle.classList.add('active');
+        slidePos = '66.6%';
+        // Show my personal QR code
+        myqrcodeImg.style.display = 'block';
+        document.getElementById('myqrcode').style.display = 'block';
+      }
+      toggleButtons.style.setProperty('--slide-position', slidePos);
+    }
+
+    qrcodeToggle.addEventListener('click', () => setActiveButton('qrcode-toggle'));
+    createToggle.addEventListener('click', () => setActiveButton('create-toggle'));
+    myqrcodeToggle.addEventListener('click', () => setActiveButton('myqrcode-toggle'));
+
+    // Initialize first view as QRCode scanning
+    setActiveButton('qrcode-toggle');
+    // Validate expiry date
+    function validateDates() {
+      const expiryDate = document.getElementById("expiry-date").value;
+      const today = new Date();
+      const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+      if (expiryDate < localToday) {
+        document.getElementById("error-message").style.display = "block";
+        document.getElementById("error-message").innerText = "Expiry date must be in the future.";
+        document.getElementById("create-qr-button").disabled = true;
+      } else {
+        document.getElementById("error-message").innerText = "";
+        document.getElementById("create-qr-button").disabled = false;
+      }
+    }
+    // Create QR code
+    const createQrCodeButton = document.getElementById("create-qr-button");
+    createQrCodeButton.addEventListener("click", () => {
+      // Get form data
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const expiryDate = document.getElementById("expiry-date").value;
+      const amount = document.getElementById("amount").value;
+      console.log(title, description, expiryDate, amount);
+      // check no null values
+      if (!title || !description || !expiryDate) {
+        document.getElementById("error-message").style.display = "block";
+        document.getElementById("error-message").innerText = "Please fill in all fields.";
+        return;
+      }
+      // store title, description in session storage
+      sessionStorage.setItem("title", title);
+      sessionStorage.setItem("description", description);
+      // Construct paynow://transfer? with your user info (username, bank, acc, expiry date amount)
+      // check if got amount
+      const dataString = amount ? `paynow://transfer?name=${encodeURIComponent(userName)}&bank=${encodeURIComponent(bankName)}&acc=${encodeURIComponent(accNum)}&expiry=${encodeURIComponent(expiryDate)}&amount=${encodeURIComponent(amount)}` : `paynow://transfer?name=${encodeURIComponent(userName)}&bank=${encodeURIComponent(bankName)}&acc=${encodeURIComponent(accNum)}&expiry=${encodeURIComponent(expiryDate)}`;
+      // Display the QR code
+      const createQrCodeResultTitle = document.getElementById("create-qr-code-result-title");
+      const createQrCodeResultDescription = document.getElementById("create-qr-code-result-description");
+      const createQrCodeResultExpiryDate = document.getElementById("create-qr-code-result-expiry-date");
+      const createQrCodeResultImg = document.getElementById("create-qr-code-result-img");
+      createQrCodeResultTitle.innerText = title;
+      createQrCodeResultDescription.innerText = description;
+      createQrCodeResultExpiryDate.innerText = `Expiry Date: ${expiryDate}`;
+      createQrCodeResultImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(dataString)}`;
+      // console log the src
+      console.log(createQrCodeResultImg.src);
+      // Clear form
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("expiry-date").value = "";
+      document.getElementById("amount").value = "";
+      // Clear error message
+      document.getElementById("error-message").innerText = "";
+
+      // Show the result
+      document.getElementById('create-qr-code').style.display = 'none';
+      document.getElementById('create-qr-code-result').style.display = 'block';
+      document.getElementById('create-qr-code-result-img').style.display = 'block';
+      
+    });
+  </script>
+</body>
+</html>
+
