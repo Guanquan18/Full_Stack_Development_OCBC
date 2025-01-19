@@ -209,6 +209,7 @@ async function fetchProfileDetails() {
         const data = await response.json();
         console.log(data)
         document.getElementById('user-name').innerText = data.FullName;
+        sessionStorage.setItem("FullName", data.FullName);  
 
     } catch (error) {
         console.error("Error:", error.message);
