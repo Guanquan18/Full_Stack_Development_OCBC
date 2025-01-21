@@ -57,7 +57,7 @@
             font-size: 1.5rem;
             color: #C8102E; /* OCBC Red */
             font-weight: bold;
-            margin: 0 auto; /* Centers the title horizontally */
+            margin: 0 auto;
             text-align: center;
         }
 
@@ -114,30 +114,99 @@
             cursor: pointer;
         }
     </style>
+    <script>
+        // Helper function to get URL query parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Function to fetch and display forum data
+        async function loadForumData() {
+            const categoryId = getQueryParam('categoryId'); // Get the category ID from the URL
+            if (!categoryId) {
+                alert("No category ID found!");
+                return;
+            }
+
+            try {
+                // Fetch category title
+                const categoryResponse = await fetch(`/api/forum/categories`);
+                const categories = await categoryResponse.json();
+                const category = categories.find(cat => cat.CategoryID == categoryId);
+                if (category) {
+                    document.querySelector('.header h1').textContent = category.CategoryName;
+                }
+
+                // Fetch messages for the category
+                const messagesResponse = await fetch(`/api/forum/messages/${categoryId}`);
+                const messages = await messagesResponse.json();
+
+                // Display messages
+                const messagesContainer = document.querySelector('.messages');
+                messagesContainer.innerHTML = ''; // Clear any existing content
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+                    messageDiv.innerHTML = `
+                        <div class="sender">${msg.SenderName}</div>
+                        <div class="timestamp">${msg.PostedTime}</div>
+                        <div class="text">${msg.MessageContent}</div>
+                    `;
+                    messagesContainer.appendChild(messageDiv);
+                });
+            } catch (error) {
+                console.error("Error loading forum data:", error);
+                alert("Failed to load forum data.");
+            }
+        }
+
+        // Function to post a new message
+        async function postMessage() {
+            const categoryId = getQueryParam('categoryId');
+            const messageInput = document.querySelector('.input-container input');
+            const messageContent = messageInput.value;
+
+            if (!messageContent.trim()) {
+                alert("Message cannot be empty!");
+                return;
+            }
+
+            try {
+                await fetch('/api/forum/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        categoryId: parseInt(categoryId),
+                        senderName: 'Ben Johnson', // Replace with dynamically fetched logged-in user name
+                        messageContent
+                    })
+                });
+
+                messageInput.value = ''; // Clear input field
+                loadForumData(); // Reload messages
+            } catch (error) {
+                console.error("Error posting message:", error);
+                alert("Failed to post message.");
+            }
+        }
+
+        // Initialize forum data on page load
+        window.onload = loadForumData;
+    </script>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="back-btn">
+            <div class="back-btn" onclick="window.history.back()">
                 <span>&#8592;</span>
             </div>
-            <h1>Topic 1</h1>
+            <h1>Forum Title</h1>
         </div>
-        <div class="messages">
-            <div class="message">
-                <div class="sender">John Seah</div>
-                <div class="timestamp">28/01/23, 1704 hrs</div>
-                <div class="text">Does anyone have recommendations for the best savings accounts with competitive interest rates?</div>
-            </div>
-            <div class="message">
-                <div class="sender">Brad Goh</div>
-                <div class="timestamp">29/01/23, 2123 hrs</div>
-                <div class="text">@John Seah You might want to check out the Standard Chartered Bonu$aver Account. It offers competitive interest rates.</div>
-            </div>
-        </div>
+        <div class="messages"></div>
         <div class="input-container">
             <input type="text" placeholder="Type your input...">
-            <button>&uarr;</button>
+            <button onclick="postMessage()">&#8593;</button>
         </div>
     </div>
 </body>
