@@ -128,8 +128,19 @@
           const button = document.createElement('button');
           button.className = 'category-button';
           button.onclick = () => navigateToCategory(category.CategoryID);
+
+          // Assign icons based on CategoryID
+          let icon = '📁'; // Default icon
+          if (category.CategoryID === 1) {
+            icon = '🖥️'; // Icon for Server Downtime
+          } else if (category.CategoryID === 2) {
+            icon = '💵'; // Icon for Financial Knowledge
+          } else if (category.CategoryID === 3) {
+            icon = '💡'; // Icon for Tips and Tricks
+          }
+
           button.innerHTML = `
-            <div class="category-icon">📁</div> <!-- Generic icon -->
+            <div class="category-icon">${icon}</div>
             <span>${category.CategoryName}</span>
           `;
           contentContainer.appendChild(button);
