@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum Categories</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Container */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background-color: white;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+
+    .back-button:hover {
+      background-color: #f2f2f2;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      color: #c72026; /* OCBC red */
+      font-weight: bold;
+      margin: 0 auto; /* Centers the title horizontally */
+      text-align: center;
+    }
+
+    /* Main Content */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .category-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #333;
+      background-color: #D2D2D2; /* Grey Background */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+
+    .category-button:hover {
+      background-color: #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-icon {
+      font-size: 2rem; /* Larger size for the icon */
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <button class="back-button" onclick="goBack()">
+        <span>&#8592;</span> <!-- Left Arrow -->
+      </button>
+      <h1 class="title">Forum Categories</h1>
+    </header>
+    <main class="content">
+      <button class="category-button" onclick="navigateToCategory('serverDowntime')">
+        <div class="category-icon">🖥️</div>
+        <span>Server Downtime (Communication & Support)</span>
+      </button>
+      <button class="category-button" onclick="navigateToCategory('financialKnowledge')">
+        <div class="category-icon">📚</div>
+        <span>Financial Knowledge & Education</span>
+      </button>
+      <button class="category-button" onclick="navigateToCategory('tipsAndTricks')">
+        <div class="category-icon">💡</div>
+        <span>Tips & Tricks (Usability & Efficiency)</span>
+      </button>
+    </main>
+  </div>
+  <script>
+    // JavaScript for back button functionality
+    function goBack() {
+      window.location.href = "ForumHome.html"; // Navigate back to the home page
+    }
+
+    // Placeholder function for category navigation
+    function navigateToCategory(topic) {
+      alert(`Navigating to ${topic} (Functionality to be implemented later)`);
+    }
+  </script>
+</body>
+</html>
