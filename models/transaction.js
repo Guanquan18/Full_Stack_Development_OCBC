@@ -3,7 +3,7 @@ const sql = require("mssql");
 const dbConfig = require("../configs/dbConfig");
 
 class Transaction {
-    constructor(TransactNo, TransactDate, TransactAmount, AccSender, SenderName, AccReceiver, ReceiverName) {
+    constructor(TransactNo, TransactDate, TransactAmount, AccSender, SenderName, AccReceiver, ReceiverName, TransactType) {
         this.TransactNo = TransactNo;
         this.TransactDate = TransactDate;
         this.TransactAmount = TransactAmount;
@@ -11,6 +11,7 @@ class Transaction {
         this.SenderName = SenderName;
         this.AccReceiver = AccReceiver;
         this.ReceiverName = ReceiverName;
+        this.TransactType = TransactType;
     }
 
     // Method to retrieve existing recipients for a profile (kesh)
@@ -203,7 +204,8 @@ class Transaction {
                 bt.AccReceiver, 
                 receiverProfile.FullName AS ReceiverName,
                 bt.BillerAccNum, 
-                biller.BillerName AS BillerName
+                biller.BillerName AS BillerName,
+                bt.TransactType
             FROM BankTransaction bt
             LEFT JOIN Account sender ON bt.AccSender = sender.AccNum
             LEFT JOIN Profile senderProfile ON sender.ProfileId = senderProfile.ProfileId
@@ -212,7 +214,7 @@ class Transaction {
             LEFT JOIN Biller biller ON bt.BillerAccNum = biller.BillerAccNum
             WHERE (bt.AccSender = @AccNum OR bt.AccReceiver = @AccNum OR bt.BillerAccNum IS NOT NULL)
             AND bt.TransactDate BETWEEN @StartDate AND @EndDate
-            ORDER BY bt.TransactDate DESC;`; // Parameterized query
+            ORDER BY bt.TransactDate DESC, bt.TransactNo DESC;`; // Parameterized query
 
             const request = connection.request();
             request.input("AccNum", accNum);
@@ -234,7 +236,8 @@ class Transaction {
                 row.AccSender,
                 row.AccSender === accNum ? "You" : row.SenderName,
                 row.AccReceiver || row.BillerAccNum, // Handle both receiver and biller
-                row.AccReceiver === accNum ? "You" : row.ReceiverName || row.BillerName
+                row.AccReceiver === accNum ? "You" : row.ReceiverName || row.BillerName,
+                row.TransactType
             ));
             
             return transactions; // Return the array of Transaction objects
@@ -245,6 +248,104 @@ class Transaction {
             connection.close();
         }
     }
+    // Static method to fetch transaction history based on account number and time range
+    static async performForeignExchange(accSender, accReceiver, exchangeRate, amount) {
+        const connection = await sql.connect(dbConfig);
+        let transaction;
+        try {
+            transaction = new sql.Transaction(connection);
+            await transaction.begin();
+    
+            // Retrieve sender's currency code
+            const senderCurrencyQuery = `
+                SELECT CurrencyCode, Balance FROM Account WHERE AccNum = @AccSender
+            `;
+            const senderCurrencyResult = await transaction.request()
+                .input("AccSender", sql.VarChar(20), accSender)
+                .query(senderCurrencyQuery);
+            const fromCurrency = senderCurrencyResult.recordset[0]?.CurrencyCode;
+            const senderBalance = senderCurrencyResult.recordset[0]?.Balance;
+
+            if (senderBalance < amount) {
+                throw new Error("Insufficient balance for foreign exchange.");
+            }
+    
+            // Retrieve receiver's currency code
+            const receiverCurrencyQuery = `
+                SELECT CurrencyCode FROM Account WHERE AccNum = @AccReceiver
+            `;
+            const receiverCurrencyResult = await transaction.request()
+                .input("AccReceiver", sql.VarChar(20), accReceiver)
+                .query(receiverCurrencyQuery);
+            const toCurrency = receiverCurrencyResult.recordset[0]?.CurrencyCode;
+    
+            if (!fromCurrency || !toCurrency) {
+                throw new Error("Invalid sender or receiver account.");
+            }
+    
+            // Deduct the amount from sender's account
+            const deductQuery = `
+                UPDATE Account
+                SET Balance = Balance - @Amount
+                WHERE AccNum = @AccSender
+            `;
+            await transaction.request()
+                .input("Amount", sql.Float, amount)
+                .input("AccSender", sql.VarChar(20), accSender)
+                .query(deductQuery);
+    
+            // Calculate converted amount
+            const convertedAmount = amount * exchangeRate;
+    
+            // Add the converted amount to receiver's account
+            const addQuery = `
+                UPDATE Account
+                SET Balance = Balance + @ConvertedAmount
+                WHERE AccNum = @AccReceiver
+            `;
+            await transaction.request()
+                .input("ConvertedAmount", sql.Float, convertedAmount)
+                .input("AccReceiver", sql.VarChar(20), accReceiver)
+                .query(addQuery);
+    
+            // Insert into BankTransaction
+            const transactionQuery = `
+                INSERT INTO BankTransaction (TransactAmount, AccSender, AccReceiver, TransactType)
+                OUTPUT inserted.TransactNo
+                VALUES (@Amount, @AccSender, @AccReceiver, 'Foreign Exchange')
+            `;
+            const transactionResult = await transaction.request()
+                .input("Amount", sql.Float, amount)
+                .input("AccSender", sql.VarChar(20), accSender)
+                .input("AccReceiver", sql.VarChar(20), accReceiver)
+                .query(transactionQuery);
+    
+            const transactNo = transactionResult.recordset[0].TransactNo;
+    
+            // Insert into ForeignExchangeTransaction
+            const foreignExchangeQuery = `
+                INSERT INTO ForeignExchangeTransaction (TransactNo, FromCurrency, ToCurrency, ExchangeRate, ConvertedAmount)
+                VALUES (@TransactNo, @FromCurrency, @ToCurrency, @ExchangeRate, @ConvertedAmount)
+            `;
+            await transaction.request()
+                .input("TransactNo", sql.Int, transactNo)
+                .input("FromCurrency", sql.VarChar(3), fromCurrency)
+                .input("ToCurrency", sql.VarChar(3), toCurrency)
+                .input("ExchangeRate", sql.Float, exchangeRate)
+                .input("ConvertedAmount", sql.Float, convertedAmount)
+                .query(foreignExchangeQuery);
+    
+            await transaction.commit();
+            return { message: "Foreign exchange successful", transactNo };
+        } catch (error) {
+            console.error("Error performing foreign exchange:", error);
+            if (transaction) await transaction.rollback();
+            throw error;
+        } finally {
+            connection.close();
+        }
+    }
+    
 }
 
 module.exports = Transaction;

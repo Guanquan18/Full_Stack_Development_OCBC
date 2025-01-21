@@ -210,8 +210,8 @@ class Bill{
     
             // 6. Create a transaction record
             const transactionQuery = `
-                INSERT INTO BankTransaction (TransactAmount, AccSender, BillerAccNum)
-                VALUES (@Amount, @AccSender, @BillerAccNum)
+                INSERT INTO BankTransaction (TransactAmount, AccSender, BillerAccNum, TransactType)
+                VALUES (@Amount, @AccSender, @BillerAccNum, 'Bill Payment')
             `;
             await transaction.request()
                 .input("Amount", sql.Float, billAmount)

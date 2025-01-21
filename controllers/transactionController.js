@@ -67,9 +67,46 @@ const performTransfer = async (req, res) => {
     }
 };
 
+// Performing a foreign exchange transaction - sairam
+const performForeignExchange = async (req, res) => {
+    const { accSender, accReceiver, exchangeRate, amount } = req.body;
+
+    try {
+        // Validate inputs
+        if (!accSender || !accReceiver || !exchangeRate || !amount) {
+            return res.status(400).json({ error: "All fields (accSender, accReceiver, exchangeRate, amount) are required." });
+        }
+        if (amount <= 0) {
+            return res.status(400).json({ error: "Amount must be greater than zero." });
+        }
+        if (exchangeRate <= 0) {
+            return res.status(400).json({ error: "Exchange rate must be greater than zero." });
+        }
+
+        // Call the model method to perform the foreign exchange
+        const result = await Transaction.performForeignExchange(accSender, accReceiver, exchangeRate, amount);
+
+        // Send success response
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error performing foreign exchange:", error);
+
+        // Handle errors and send appropriate response
+        if (error.message === "Invalid sender or receiver account.") {
+            res.status(400).json({ error: "Invalid sender or receiver account. Please check the account details." });
+        } else if (error.message === "Insufficient balance for foreign exchange.") {
+            res.status(400).json({ error: "Insufficient balance for the foreign exchange transaction." });
+        } else {
+            res.status(500).json({ error: "An error occurred while performing the foreign exchange transaction." });
+        }
+    }
+};
+
+
 module.exports = {
     getTransactionHistory,
     getRecipients, // (kesh)
     addRecipient, // (kesh)
-    performTransfer // (kesh)
+    performTransfer, // (kesh)
+    performForeignExchange // (Sairam)
 };

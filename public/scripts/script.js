@@ -392,6 +392,9 @@ async function fetchTransactions() {
                    <p class="transaction-to">
                         To: ${transaction.AccReceiver ? transaction.ReceiverName : transaction.BillerName}
                     </p>
+                    <p class="transaction-type">
+                        Type: ${transaction.TransactType}
+                    </p>
                     <div class="transaction-amount">Amount: <span style="color: ${amountColor};">${amountDisplay}</span></div>
                 `;
 
