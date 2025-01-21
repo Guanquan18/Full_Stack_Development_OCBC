@@ -16,6 +16,7 @@ const cardController = require("./controllers/cardController"); // Import the ca
 const transactionController = require("./controllers/transactionController"); // Import the transaction controller
 const videoCallingController = require("./controllers/videoCallingController"); // Import the video calling controller
 const billController = require("./controllers/billController"); // Import the bill controller
+const forumController = require("./controllers/forumController"); // Import the forum controller [Created by : Keshwindren S10259469C]
 
 
 const app = express(); // Create an Express application
@@ -52,6 +53,9 @@ app.get("/unpaid-bills/:profileId", billController.getUnpaidBills); // Get unpai
 app.get("/paid-bills/:profileId", billController.getPaidBills); // Get paid bills by profile id
 app.post("/pay-bill/:billID", billController.payBills); // Pay bills by billing id
 app.get("/bill/:billID", billController.getBillById); // Get bill by bill id
+app.get("/api/forum/categories", forumController.getCategories); //  get all categories for forums [Created by : Keshwindren S10259469C] 
+app.get("/api/forum/messages/:categoryId", forumController.getMessagesByCategory); // get categories of forum by ID [Created by : Keshwindren S10259469C]
+app.post("/api/forum/messages", forumController.postMessage); // post  messages to forums [Created by : Keshwindren S10259469C]
 
 app.listen(port, async () => {
     try {

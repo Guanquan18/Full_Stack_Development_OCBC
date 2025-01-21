@@ -1,6 +1,8 @@
-const Forum = require("../models/forum"); // Adjust path if necessary
+// [Created by Keshwindren : S10259469C]
 
-// Fetch all forum categories
+const Forum = require("../models/forum"); 
+
+//fetch forum categories
 const getCategories = async (req, res) => {
     try {
         const categories = await Forum.getCategories(); // Call the model method
@@ -11,7 +13,7 @@ const getCategories = async (req, res) => {
     }
 };
 
-// Fetch messages for a specific category
+//fetch messages for chosen specific category
 const getMessagesByCategory = async (req, res) => {
     const categoryId = req.params.categoryId; // Extract category ID from URL
     try {
@@ -23,7 +25,7 @@ const getMessagesByCategory = async (req, res) => {
     }
 };
 
-// Add a new message
+//add new message
 const postMessage = async (req, res) => {
     const { categoryId, senderName, messageContent } = req.body; // Extract data from request body
     try {
@@ -35,7 +37,7 @@ const postMessage = async (req, res) => {
     }
 };
 
-// Export the controller functions
+//export controller functions
 module.exports = {
     getCategories,
     getMessagesByCategory,
