@@ -109,40 +109,50 @@
       color: #333;
     }
   </style>
+  <script>
+    // Function to navigate to a specific category
+    function navigateToCategory(categoryId) {
+      window.location.href = `Forum.html?categoryId=${categoryId}`; // Pass categoryId to Forum.html
+    }
+
+    // Function to fetch and display categories dynamically
+    async function loadCategories() {
+      try {
+        const response = await fetch('/api/forum/categories'); // Fetch categories from the API
+        const categories = await response.json();
+
+        // Dynamically create buttons for each category
+        const contentContainer = document.querySelector('.content');
+        contentContainer.innerHTML = ''; // Clear existing content
+        categories.forEach(category => {
+          const button = document.createElement('button');
+          button.className = 'category-button';
+          button.onclick = () => navigateToCategory(category.CategoryID);
+          button.innerHTML = `
+            <div class="category-icon">📁</div> <!-- Generic icon -->
+            <span>${category.CategoryName}</span>
+          `;
+          contentContainer.appendChild(button);
+        });
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        alert('Failed to load forum categories. Please try again later.');
+      }
+    }
+
+    // Initialize the page
+    window.onload = loadCategories;
+  </script>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <button class="back-button" onclick="goBack()">
+      <button class="back-button" onclick="window.location.href='ForumHome.html'">
         <span>&#8592;</span> <!-- Left Arrow -->
       </button>
       <h1 class="title">Forum Categories</h1>
     </header>
-    <main class="content">
-      <button class="category-button" onclick="navigateToCategory('serverDowntime')">
-        <div class="category-icon">🖥️</div>
-        <span>Server Downtime (Communication & Support)</span>
-      </button>
-      <button class="category-button" onclick="navigateToCategory('financialKnowledge')">
-        <div class="category-icon">📚</div>
-        <span>Financial Knowledge & Education</span>
-      </button>
-      <button class="category-button" onclick="navigateToCategory('tipsAndTricks')">
-        <div class="category-icon">💡</div>
-        <span>Tips & Tricks (Usability & Efficiency)</span>
-      </button>
-    </main>
+    <main class="content"></main> <!-- Categories will be dynamically loaded here -->
   </div>
-  <script>
-    // JavaScript for back button functionality
-    function goBack() {
-      window.location.href = "ForumHome.html"; // Navigate back to the home page
-    }
-
-    // Placeholder function for category navigation
-    function navigateToCategory(topic) {
-      alert(`Navigating to ${topic} (Functionality to be implemented later)`);
-    }
-  </script>
 </body>
 </html>
