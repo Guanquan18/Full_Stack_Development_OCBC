@@ -1,144 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #f5f5f5;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCBC Discussion Forum</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        .container {
-            width: 100%;
-            height: 100vh;
-            margin: 0;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-        }
+    /* Container */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
 
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 20px;
-        }
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-        .header .back-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background-color: white;
-            transition: background-color 0.2s, box-shadow 0.2s;
-        }
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background-color: white;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
 
-        .header .back-btn:hover {
-            background-color: #f2f2f2;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
+    .back-button:hover {
+      background-color: #f2f2f2;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
-        .header .back-btn span {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-        }
+    .back-button span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
 
-        .header h1 {
-            font-size: 1.5rem;
-            color: #C8102E; /* OCBC Red */
-            font-weight: bold;
-            margin: 0 auto; /* Centers the title horizontally */
-            text-align: center;
-        }
+    .title {
+      font-size: 1.5rem;
+      color: #c72026; /* OCBC red */
+      font-weight: bold;
+      margin: 0 auto; /* Centers the title horizontally */
+      text-align: center;
+    }
 
-        .messages {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-        }
+    /* Main Content */
+    .content {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
 
-        .message {
-            margin-bottom: 15px;
-        }
+    .content h2 {
+      font-size: 1rem;
+      margin-top: 20px;
+      color: #c72026;
+    }
 
-        .message .sender {
-            font-weight: bold;
-        }
+    .content ul {
+      list-style: disc;
+      margin: 10px 0 20px 20px;
+      padding: 0;
+    }
 
-        .message .timestamp {
-            color: #777;
-            font-size: 12px;
-        }
+    .content ul li {
+      margin-bottom: 10px;
+    }
 
-        .message .text {
-            margin-top: 5px;
-            line-height: 1.4;
-        }
+    /* Footer Buttons */
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
 
-        .input-container {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: #e9e9e9;
-        }
+    .btn {
+      padding: 15px 20px;
+      font-size: 1rem;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
 
-        .input-container input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            outline: none;
-        }
+    .btn.red {
+      background-color: #c72026;
+    }
 
-        .input-container button {
-            background-color: #404040;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-    </style>
+    .btn.red:hover {
+      background-color: #a91b1f;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="back-btn">
-                <span>&#8592;</span>
-            </div>
-            <h1>Topic 1</h1>
-        </div>
-        <div class="messages">
-            <div class="message">
-                <div class="sender">John Seah</div>
-                <div class="timestamp">28/01/23, 1704 hrs</div>
-                <div class="text">Does anyone have recommendations for the best savings accounts with competitive interest rates?</div>
-            </div>
-            <div class="message">
-                <div class="sender">Brad Goh</div>
-                <div class="timestamp">29/01/23, 2123 hrs</div>
-                <div class="text">@John Seah You might want to check out the Standard Chartered Bonu$aver Account. It offers competitive interest rates.</div>
-            </div>
-        </div>
-        <div class="input-container">
-            <input type="text" placeholder="Type your input...">
-            <button>&uarr;</button>
-        </div>
+  <div class="container">
+    <header class="header">
+      <button class="back-button" onclick="goBack()">
+        <span>&#8592;</span> <!-- Left Arrow -->
+      </button>
+      <h1 class="title">OCBC Discussion Forum</h1>
+    </header>
+    <main class="content">
+      <p>Welcome to OCBC's Community Forum which is your space to communicate and collaborate with other members of OCBC.</p>
+      <p>
+        This platform also serves as a reliable communication channel during the rare instances of system downtime.
+        If our helpline services are temporarily unavailable, you can count on the forum to stay informed, share updates,
+        and find solutions in collaboration with other users.
+      </p>
+      <h2>Key Features:</h2>
+      <ul>
+        <li>Engage in discussions - Share your thoughts on a wide range of topics from personal finance to feedback about our services.</li>
+        <li>Collaborate and connect - Build a network with like-minded people and learn from each other's experiences.</li>
+        <li>Stay updated - Access the latest updates and community-driven solutions during critical service disruptions.</li>
+      </ul>
+    </main>
+    <div class="button-container">
+      <button class="btn red" onclick="navigateTo('ForumGuidelines.html')">Forum Guidelines</button>
+      <button class="btn red" onclick="navigateTo('ForumCategory.html')">Proceed To Forum</button>
     </div>
+  </div>
+  <script>
+    // JavaScript to handle button navigation (front-end only for now)
+    function goBack() {
+      alert("Back button clicked! (Functionality to be implemented)");
+    }
+
+    function navigateTo(page) {
+      if (page === 'ForumGuidelines.html') {
+        window.location.href = 'ForumGuidelines.html'; // Navigates to ForumGuidelines.html
+      } else if (page === 'ForumCategory.html') {
+        window.location.href = 'ForumCategory.html'; // Navigates to ForumCategory.html
+      }
+    }
+  </script>
 </body>
 </html>
