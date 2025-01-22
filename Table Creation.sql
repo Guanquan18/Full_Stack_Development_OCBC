@@ -9,6 +9,7 @@ ELSE
 BEGIN
     PRINT 'Database OCBC_DB already exists.';
     USE OCBC_DB;
+	IF OBJECT_ID('ForeignExchangeTransaction', 'U') IS NOT NULL DROP TABLE ForeignExchangeTransaction;
 	IF OBJECT_ID('Bills', 'U') IS NOT NULL DROP TABLE Bills;
 	IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
 	IF OBJECT_ID('Biller', 'U') IS NOT NULL DROP TABLE Biller;
@@ -221,6 +222,3 @@ values
 ('Carol Lee', 'Development Bank of Singapore (DBS)', '456-789012-004', 5),
 ('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 5),
 ('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 5);
-
-
-SELECT * FROM ForeignExchangeTransaction

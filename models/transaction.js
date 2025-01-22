@@ -51,65 +51,86 @@ class Transaction {
 
     // Method to add a new recipient (kesh)
     static async addRecipient(profileId, recipientName, bankName, accNum) {
-    const connection = await sql.connect(dbConfig);
-    try {
-        // Check if accNum exists in Account table
-        const accountCheckQuery = `
-            SELECT COUNT(*) AS count FROM Account 
-            WHERE AccNum = @AccNum
-        `;
-        const accountCheckRequest = connection.request();
-        accountCheckRequest.input("AccNum", sql.VarChar(20), accNum);
-        const accountCheckResult = await accountCheckRequest.query(accountCheckQuery);
+        const connection = await sql.connect(dbConfig);
+        try {
+            // Check if accNum exists in Account table
+            const accountCheckQuery = `
+                SELECT COUNT(*) AS count FROM Account 
+                WHERE AccNum = @AccNum
+            `;
+            const accountCheckRequest = connection.request();
+            accountCheckRequest.input("AccNum", sql.VarChar(20), accNum);
+            const accountCheckResult = await accountCheckRequest.query(accountCheckQuery);
 
-        // If accNum does not exist, throw an error
-        if (accountCheckResult.recordset[0].count === 0) {
-            throw new Error("Account number does not exist.");
+            // If accNum does not exist, throw an error
+            if (accountCheckResult.recordset[0].count === 0) {
+                throw new Error("Account number does not exist.");
+            }
+
+            // Check if recipient already exists for this profile and account number
+            const checkQuery = `
+                SELECT COUNT(*) AS count FROM Recipient 
+                WHERE ProfileId = @ProfileId AND AccNum = @AccNum
+            `;
+            const checkRequest = connection.request();
+            checkRequest.input("ProfileId", sql.SmallInt, profileId);
+            checkRequest.input("AccNum", sql.VarChar(20), accNum);
+            const checkResult = await checkRequest.query(checkQuery);
+
+            // If recipient exists, throw an error
+            if (checkResult.recordset[0].count > 0) {
+                throw new Error("Recipient already exists.");
+            }
+
+            // Proceed with inserting the new recipient
+            const insertQuery = `
+                INSERT INTO Recipient (RecipientName, BankName, AccNum, ProfileId)
+                VALUES (@RecipientName, @BankName, @AccNum, @ProfileId)
+            `;
+            const insertRequest = connection.request();
+            insertRequest.input("ProfileId", sql.SmallInt, profileId);
+            insertRequest.input("RecipientName", sql.VarChar(25), recipientName);
+            insertRequest.input("BankName", sql.VarChar(50), bankName);
+            insertRequest.input("AccNum", sql.VarChar(20), accNum);
+            await insertRequest.query(insertQuery);
+
+            // Fetch the newly added recipient with CurrencyCode
+            const selectQuery = `
+                SELECT 
+                    r.RecipientId,
+                    r.RecipientName,
+                    r.BankName,
+                    r.AccNum,
+                    a.CurrencyCode
+                FROM 
+                    Recipient r
+                INNER JOIN 
+                    Account a ON r.AccNum = a.AccNum
+                WHERE 
+                    r.ProfileId = @ProfileId AND r.AccNum = @AccNum
+            `;
+            const selectRequest = connection.request();
+            selectRequest.input("ProfileId", sql.SmallInt, profileId);
+            selectRequest.input("AccNum", sql.VarChar(20), accNum);
+            const result = await selectRequest.query(selectQuery);
+
+            return {
+                message: "Recipient added successfully",
+                recipient: result.recordset[0] // Return the newly added recipient's details
+            };
+        } catch (error) {
+            console.error("Error adding recipient:", error);
+            if (error.message === "Recipient already exists.") {
+                return { error: "Recipient already exists with this profile and account number." };
+            }
+            if (error.message === "Account number does not exist.") {
+                return { error: "The specified account number does not exist." };
+            }
+            throw error;
+        } finally {
+            connection.close();
         }
-
-        // Check if recipient already exists for this profile and account number
-        const checkQuery = `
-            SELECT COUNT(*) AS count FROM Recipient 
-            WHERE ProfileId = @ProfileId AND AccNum = @AccNum
-        `;
-        const checkRequest = connection.request();
-        checkRequest.input("ProfileId", sql.SmallInt, profileId);
-        checkRequest.input("AccNum", sql.VarChar(20), accNum);
-        const checkResult = await checkRequest.query(checkQuery);
-
-        // If recipient exists, throw an error
-        if (checkResult.recordset[0].count > 0) {
-            throw new Error("Recipient already exists.");
-        }
-
-        // Proceed with inserting the new recipient
-        const query = `
-            INSERT INTO Recipient (RecipientName, BankName, AccNum, ProfileId)
-            VALUES (@RecipientName, @BankName, @AccNum, @ProfileId)
-        `;
-        const request = connection.request();
-        request.input("ProfileId", sql.SmallInt, profileId);
-        request.input("RecipientName", sql.VarChar(25), recipientName);
-        request.input("BankName", sql.VarChar(50), bankName);
-        request.input("AccNum", sql.VarChar(20), accNum);
-        await request.query(query);
-
-        return { message: "Recipient added successfully" };
-    } catch (error) {
-        console.error("Error adding recipient:", error);
-        if (error.message === "Recipient already exists.") {
-            return { error: "Recipient already exists with this profile and account number." };
-        }
-        if (error.message === "Account number does not exist.") {
-            return { error: "The specified account number does not exist." };
-        }
-        throw error;
-    } finally {
-        connection.close();
     }
-}
-
-    
 
     // Method to perform a transfer to the recipient (kesh)
     static async performTransfer(accSender, accReceiver, amount) {

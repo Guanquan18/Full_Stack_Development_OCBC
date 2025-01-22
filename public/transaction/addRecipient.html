@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Recipient</title>
+    <title>Bank Account Transfer</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            background-color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             color: #3f4347;
         }
+
         .app {
             max-width: 430px;
             width: 100%;
-            min-height: 100vh;
+            height: 100%;
             background-color: #fff;
+            box-sizing: border-box;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
-        }
-
-        #add-recipient-header{
-            background: rgb(241,233,244);
-            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
-            padding: 20px;
-        }
-
-        #options-section {
-            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
 
         .back-button {
@@ -50,43 +45,204 @@
             margin-right: 5px;
         }
 
+        #bank-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+            padding: 20px;
+        }
+
+        #details-section {
+            padding: 20px;
+        }
+
         .balance {
             font-size: 24px;
             font-weight: bold;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .transfer-to {
-            font-size: 20px;
             margin-bottom: 20px;
             text-align: center;
         }
-        .transfer-option {
+
+        .input-section {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
+            position: relative;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .transfer-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
+
+        .label-container {
             display: flex;
+            justify-content: space-between;
+            width: 100%;
             align-items: center;
-            justify-content: center;
         }
-        .transfer-icon img {
-            width: 70%;
-            height: 70%;
-        }
-        .transfer-text {
+
+        .input-label {
             font-weight: bold;
+            color: #555;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            color: #555;
+            cursor: pointer;
+            margin-left: 10px;
+            align-self: flex-start;
+        }
+
+        .input-section input {
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #c0c5cb; /* Single line underneath */
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            right: -3%;
+            background-color: #282c34;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            max-width: 250px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .top {
+            bottom: 100%;
+        }
+
+        .bottom {
+            top: 50%;
+        }
+
+        .tooltip p {
+            font-size: 18px;
+            color: #fff;
+            margin: 0 0 10px 0;
+        }
+
+        .tooltip .tts-button {
+            background-color: #ED3F3F; 
+            color: white;         
+            border: none;         
+            border-radius: 8px;   
+            padding: 10px 15px;   
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 5px;     
+            cursor: pointer;
+            display: flex; 
+            align-items: center;      
+            transition: background-color 0.3s ease;
+        }
+
+        .tooltip .tts-button:hover {
+            background-color: darkred; 
+        }
+
+        .tooltip .tts-button img {
+            width: 20px;               
+            height: 20px;
+            margin-right: 10px !important;
+        }
+
+        .tooltip.top::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #282c34 transparent transparent transparent;
+        }
+
+        .tooltip.bottom::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            right: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: transparent transparent #282c34 transparent;
+        }
+
+        .next-button {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #f03c3c;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 60px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: auto;
+            margin-bottom: 20px;
+            align-self: center;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .error {
+            color: #f03c3c;
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Custom Dropdown */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .dropdown-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #3f4347;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fff;
+            cursor: pointer;
+            text-align: left;
             color: #3f4347;
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #3f4347;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+            font-size: 16px;
+            color: #3f4347;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
         }
 
         /* Chatbot Styles */
@@ -110,55 +266,76 @@
             margin-bottom: 5px;
         }
 
-        @media (max-width: 430px) {
-            .app {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="app">
-        <div id="add-recipient-header">
-            <a href="javascript:void(0);" class="back-button" onclick="goBack()">
-                <img src="../images/back-icon.png" alt="Back">
-            </a>
-            <div class="balance" id="balance">Balance<br>$0.00</div>
-            <div class="transfer-to">Transfer By</div>
-        </div>
-
-        <div id="options-section">
-        <!-- Link to bank.html for "Bank Account" option -->
-        <a href="bank.html" class="transfer-option">
-            <div class="transfer-icon">
-                <img src="../images/transfer/bank.png" alt="Bank Account Icon">
-            </div>
-            <div class="transfer-text">Bank Account</div>
+    <div class="app" id="appContainer">
+        <div id="bank-header">
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+            <img src="../images/back-icon.png" alt="Back">
         </a>
+        <div class="balance" id="balance">Balance<br>$0.00</div>
+        </div>
+        <div id="details-section">
+        <div class="input-section">
+            <div class="label-container">
+                <span class="input-label">Enter Recipient’s Name</span>
+                <span class="info-icon" onclick="toggleTooltip('recipientNameTooltip')">ℹ️</span>
+            </div>
+            <input type="text" id="recipientName" placeholder="Recipient's Name" required>
+            <div class="tooltip bottom" id="recipientNameTooltip">
+                <p>Enter the full name of the person you want to send money to. Please ensure the name is accurate to avoid delays.</p>
+                <button class="tts-button" onclick="speak('Enter the full name of the person you want to send money to. Please ensure the name is accurate to avoid delays.')">
+                    <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
+                    Read Aloud
+                </button>
+            </div>
+            <div class="error" id="recipientNameError">Please enter the recipient's name.</div>
+        </div>
 
-        <div class="transfer-option">
-            <div class="transfer-icon">
-                <img src="../images/transfer/phone.png" alt="PayNow to Mobile Icon">
+        <div class="input-section" id="selectBankSection">
+            <div class="label-container">
+                <label class="input-label" id="selectedBank">Select Bank</label>
+                <span class="info-icon" onclick="toggleTooltip('selectBankTooltip')">ℹ️</span>
             </div>
-            <div class="transfer-text">PayNow to Mobile</div>
+            <div class="tooltip top" id="selectBankTooltip">
+                <p>Choose the bank where the recipient's account is held.</p>
+                <button class="tts-button" onclick="speak('Choose the bank where the recipient\'s account is held.')">
+                    <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
+                    Read Aloud
+                </button>
+            </div>
+            <!-- Custom Dropdown -->
+            <div class="custom-dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown()">Select Bank</button>
+                <div class="dropdown-list" id="dropdownList">
+                    <div class="dropdown-item" onclick="selectBank('Development Bank of Singapore (DBS)')">Development Bank of Singapore (DBS)</div>
+                    <div class="dropdown-item" onclick="selectBank('Overseas-Chinese Bank (OCBC)')">Overseas-Chinese Bank (OCBC)</div>
+                    <div class="dropdown-item" onclick="selectBank('United Overseas Bank (UOB)')">United Overseas Bank (UOB)</div>
+                    <div class="dropdown-item" onclick="selectBank('Standard Chartered Bank')">Standard Chartered Bank</div>
+                    <div class="dropdown-item" onclick="selectBank('Citibank')">Citibank</div>
+                    <div class="dropdown-item" onclick="selectBank('State Bank of India')">State Bank of India (SBI)</div>
+                    <div class="dropdown-item" onclick="selectBank('Bank of America')">Bank of America (BoA)</div>
+                </div>
+            </div>
+            <div class="error" id="selectBankError">Please select a bank.</div>
         </div>
-        <div class="transfer-option">
-            <div class="transfer-icon">
-                <img src="../images/transfer/id.png" alt="PayNow to NRIC/FIN Icon">
+
+        <div class="input-section">
+            <div class="label-container">
+                <span class="input-label">Enter Account Number</span>
+                <span class="info-icon" onclick="toggleTooltip('accountNumberTooltip')">ℹ️</span>
             </div>
-            <div class="transfer-text">PayNow to NRIC/FIN</div>
+            <input type="text" id="accountNumber" placeholder="Account Number" required>
+            <div class="tooltip top" id="accountNumberTooltip">
+                <p>Enter the recipient's account number. Double-check to ensure accuracy.</p>
+                <button class="tts-button" onclick="speak('Enter the recipient\'s account number. Double-check to ensure accuracy.')">
+                    <img src="../images/homepage/speaker.jpg" alt="Read Aloud">
+                    Read Aloud
+                </button>
+            </div>
+            <div class="error" id="accountNumberError">Please enter the account number.</div>
         </div>
-        <div class="transfer-option">
-            <div class="transfer-icon">
-                <img src="../images/transfer/uen.png" alt="PayNow to UEN Icon">
-            </div>
-            <div class="transfer-text">PayNow to UEN/VPA</div>
-        </div>
-        <div class="transfer-option">
-            <div class="transfer-icon">
-                <img src="../images/transfer/globe.png" alt="Overseas">
-            </div>
-            <div class="transfer-text">Overseas</div>
         </div>
 
         <!-- Chatbot -->
@@ -167,17 +344,80 @@
                 <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
             </div>
         </a>
-    </div>
-    </div>
 
+        <button class="next-button" onclick="handleNext()">NEXT</button>
+    </div>
+    <script src="../scripts/stt.js"></script>
     <script>
         function goBack() {
-            window.location.href = 'transaction.html';
+            window.location.href = "transaction.html";
         }
+
+        function handleNext() {
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+            // Validate Recipient's Name
+            const recipientName = document.getElementById("recipientName").value.trim();
+            if (!recipientName) {
+                document.getElementById("recipientNameError").style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Selected Bank
+            const selectedBank = document.querySelector(".dropdown-btn").innerText;
+            if (selectedBank === "Select Bank") {
+                document.getElementById("selectBankError").style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Account Number
+            const accountNumber = document.getElementById("accountNumber").value.trim();
+            if (!accountNumber) {
+                document.getElementById("accountNumberError").style.display = 'block';
+                isValid = false;
+            }
+
+            // If all inputs are valid, proceed
+            if (isValid) {
+                sessionStorage.setItem("recipientData", JSON.stringify({
+                    recipientName: recipientName,
+                    bankName: selectedBank,
+                    accNum: accountNumber
+                }));
+                window.location.href = "addRecipient-review-details.html";
+            }
+        }
+
+        function toggleTooltip(tooltipId) {
+            document.querySelectorAll('.tooltip').forEach(tooltip => tooltip.style.display = 'none');
+            const tooltip = document.getElementById(tooltipId);
+            tooltip.style.display = (tooltip.style.display === 'none' || tooltip.style.display === '') ? 'block' : 'none';
+        }
+
+        // Custom Dropdown Functions
+        function toggleDropdown() {
+            const dropdownList = document.getElementById('dropdownList');
+            dropdownList.style.display = (dropdownList.style.display === 'none' || dropdownList.style.display === '') ? 'block' : 'none';
+        }
+
+        function selectBank(bankName) {
+            const selectedBank = document.querySelector('.dropdown-btn');
+            selectedBank.innerText = bankName;
+            document.getElementById('dropdownList').style.display = 'none'; // Hide dropdown
+        }
+
+        // Close the tooltip if the click happens outside of it
+        document.addEventListener('click', function(event) {
+                if (!event.target.classList.contains('info-icon') && !event.target.classList.contains('tooltip')) {
+                    document.querySelectorAll('.tooltip').forEach(tooltip => tooltip.style.display = 'none');
+                }
+            });
 
         document.addEventListener('DOMContentLoaded', async function() {
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
-
             // Fetch and display account balance
             try {
                 const response = await fetch(`/account/${profileId}`,{
@@ -195,46 +435,6 @@
             } catch (error) {
                 console.error("Error fetching balance:", error);
             }
-
-            const transferOptions = document.querySelectorAll('.transfer-option');
-            transferOptions.forEach(option => {
-                option.addEventListener('click', event => {
-                    const transferType = option.querySelector('.transfer-text').innerText;
-                    const recipientData = sessionStorage.getItem("recipientData");
-                    const recipientCurrencyCode = sessionStorage.getItem("recipientCurrencyCode");
-                    const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
-
-                    // Helper function to check currency match
-                    const isSameCurrency = recipientCurrencyCode === senderCurrencyCode;
-
-                    if (transferType === "Bank Account") {
-                        event.preventDefault();
-
-                        if (!recipientData) {
-                            // Redirect to bank.html if recipientData is missing
-                            window.location.href = "bank.html";
-                        } else if (isSameCurrency) {
-                            // Redirect to transfer.html for local transfers
-                            window.location.href = "transfer.html";
-                        } else {
-                            // If currencies differ, direct to overseas transfer or handle appropriately
-                            alert("Local transfers require matching currencies. ");
-                        }
-                    } else if (transferType === "Overseas") {
-                        event.preventDefault();
-
-                        if (!isSameCurrency) {
-                            // Redirect to overseas.html if currencies differ
-                            window.location.href = "overseas.html";
-                        } else {
-                            alert("Overseas transfers require different currencies.");
-                        }
-                    } else {
-                        alert('Selected transfer type: ' + transferType + " is not available.");
-                    }
-                });
-            });
-
         });
     </script>
 </body>

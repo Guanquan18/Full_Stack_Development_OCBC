@@ -39,8 +39,9 @@ const addRecipient = async (req, res) => {
     try {
         const result = await Transaction.addRecipient(profileId, recipientName, bankName, accNum);
 
+        // Check if the response contains an error
         if (result.error) {
-            // Check the error message to set the appropriate status code
+            // Set the appropriate HTTP status code based on the error message
             if (result.error === "Recipient already exists with this profile and account number.") {
                 return res.status(400).json({ error: result.error }); // Bad request for existing recipient
             } else if (result.error === "The specified account number does not exist.") {
@@ -48,9 +49,12 @@ const addRecipient = async (req, res) => {
             }
         }
 
-        res.status(201).json(result); // Success response when recipient is added
+        // Success: Send the recipient details in the response
+        res.status(201).json(result); // HTTP 201 Created
     } catch (error) {
         console.error("Error adding recipient:", error);
+
+        // Internal server error
         res.status(500).json({ error: "An error occurred while adding the recipient." });
     }
 };

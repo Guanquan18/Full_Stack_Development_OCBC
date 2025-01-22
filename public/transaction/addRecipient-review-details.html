@@ -126,7 +126,7 @@
 
     <script>
         function goBack() {
-            window.location.href = "bank.html";
+            window.location.href = "addRecipient.html";
         }
 
         // Load recipient data from sessionStorage and display it on the page
@@ -159,9 +159,18 @@
                 });
 
                 if (response.ok) {
-                    alert("Recipient added successfully!");
-                    // Redirect to transfer.html
-                    window.location.href = "transfer.html";
+                    const successData = await response.json();
+                    console.log("Recipient added successfully:", successData);
+                    const recipientCurrencyCode = successData.CurrencyCode;
+                    const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
+                    if (recipientCurrencyCode === senderCurrencyCode) {
+                        alert("Recipient added successfully.");
+                        window.location.href = "transaction.html";
+                    } else {
+                        alert("Recipient added successfully.");
+                        sessionStorage.setItem("recipientCurrencyCode", successData.recipient.CurrencyCode);
+                        window.location.href = "overseas.html";
+                    }
                 } else {
                     const errorData = await response.json();
                 // Show the error message if there is an error
@@ -171,7 +180,7 @@
                     } else if (errorData.error === "The specified account number does not exist.") {
                         alert("The specified account number does not exist.");
                     }
-                    window.location.href = "bank.html";
+                    window.location.href = "addRecipient.html";
                 }
                 }
             } catch (error) {
