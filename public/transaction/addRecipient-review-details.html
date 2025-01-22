@@ -161,11 +161,12 @@
                 if (response.ok) {
                     const successData = await response.json();
                     console.log("Recipient added successfully:", successData);
-                    const recipientCurrencyCode = successData.CurrencyCode;
+                    const recipientCurrencyCode = successData.recipient.CurrencyCode;
                     const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
+                    console.log(recipientCurrencyCode, senderCurrencyCode);
                     if (recipientCurrencyCode === senderCurrencyCode) {
                         alert("Recipient added successfully.");
-                        window.location.href = "transaction.html";
+                        window.location.href = "transfer.html";
                     } else {
                         alert("Recipient added successfully.");
                         sessionStorage.setItem("recipientCurrencyCode", successData.recipient.CurrencyCode);
