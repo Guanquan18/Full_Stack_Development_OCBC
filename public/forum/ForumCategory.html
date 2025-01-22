@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forum Categories</title>
   <style>
-    /* General Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -17,7 +16,6 @@
       min-height: 100vh;
     }
 
-    /* Container */
     .container {
       flex: 1;
       display: flex;
@@ -30,7 +28,6 @@
       margin: auto;
     }
 
-    /* Header */
     .header {
       display: flex;
       align-items: center;
@@ -64,13 +61,12 @@
 
     .title {
       font-size: 1.5rem;
-      color: #c72026; /* OCBC red */
+      color: #c72026; 
       font-weight: bold;
-      margin: 0 auto; /* Centers the title horizontally */
+      margin: 0 auto; 
       text-align: center;
     }
 
-    /* Main Content */
     .content {
       flex: 1;
       display: flex;
@@ -91,7 +87,7 @@
       font-size: 1rem;
       font-weight: bold;
       color: #333;
-      background-color: #D2D2D2; /* Grey Background */
+      background-color: #D2D2D2; 
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -105,38 +101,37 @@
     }
 
     .category-icon {
-      font-size: 2rem; /* Larger size for the icon */
+      font-size: 2rem; 
       color: #333;
     }
   </style>
   <script>
-    // Function to navigate to a specific category
+    //navigate to a specific category
     function navigateToCategory(categoryId) {
-      window.location.href = `Forum.html?categoryId=${categoryId}`; // Pass categoryId to Forum.html
+      window.location.href = `Forum.html?categoryId=${categoryId}`; //pass categoryId to Forum.html
     }
 
-    // Function to fetch and display categories dynamically
+    //function to fetch and display categories dynamically
     async function loadCategories() {
       try {
-        const response = await fetch('/api/forum/categories'); // Fetch categories from the API
+        const response = await fetch('/api/forum/categories'); //fetch categories
         const categories = await response.json();
 
-        // Dynamically create buttons for each category
+        //create buttons for each category
         const contentContainer = document.querySelector('.content');
-        contentContainer.innerHTML = ''; // Clear existing content
+        contentContainer.innerHTML = ''; //clear existing content
         categories.forEach(category => {
           const button = document.createElement('button');
           button.className = 'category-button';
           button.onclick = () => navigateToCategory(category.CategoryID);
 
-          // Assign icons based on CategoryID
-          let icon = '📁'; // Default icon
+          let icon = '📁'; //default icon for categories
           if (category.CategoryID === 1) {
-            icon = '🖥️'; // Icon for Server Downtime
+            icon = '🖥️'; //icon for Server Downtime
           } else if (category.CategoryID === 2) {
-            icon = '💵'; // Icon for Financial Knowledge
+            icon = '💵'; //icon for Financial Knowledge
           } else if (category.CategoryID === 3) {
-            icon = '💡'; // Icon for Tips and Tricks
+            icon = '💡'; //icon for Tips and Tricks
           }
 
           button.innerHTML = `
@@ -145,13 +140,12 @@
           `;
           contentContainer.appendChild(button);
         });
-      } catch (error) {
+      } catch (error) { //error handling
         console.error('Error loading categories:', error);
         alert('Failed to load forum categories. Please try again later.');
       }
     }
 
-    // Initialize the page
     window.onload = loadCategories;
   </script>
 </head>
@@ -159,11 +153,11 @@
   <div class="container">
     <header class="header">
       <button class="back-button" onclick="window.location.href='ForumHome.html'">
-        <span>&#8592;</span> <!-- Left Arrow -->
+        <span>&#8592;</span> 
       </button>
       <h1 class="title">Forum Categories</h1>
     </header>
-    <main class="content"></main> <!-- Categories will be dynamically loaded here -->
+    <main class="content"></main> 
   </div>
 </body>
 </html>
