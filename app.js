@@ -48,11 +48,13 @@ app.post("/recipients",verifyJWT.verifyJWT, transactionController.addRecipient);
 app.post("/transfer",verifyJWT.verifyJWT, transactionController.performTransfer); // Perform a fund transfer (kesh)
 app.post("/video-calling/create-room",verifyJWT.verifyJWT, videoCallingController.createRoom); // Create a room and send an OTP
 app.post("/video-calling/send-host-url", videoCallingController.sendUrl); // Send the host room URL to the admin
-app.get("/unpaid-bills/:profileId", billController.getUnpaidBills); // Get unpaid bills by profile id (sairam)
-app.get("/paid-bills/:profileId", billController.getPaidBills); // Get paid bills by profile id (sairam)
-app.post("/pay-bill/:billID", billController.payBills); // Pay bills by billing id (sairam)
-app.get("/bill/:billID", billController.getBillById); // Get bill by bill id  (sairam)
-app.post("/foregin-exchange", transactionController.performForeignExchange); // Perform a fund transfer (sairam)
+app.get("/unpaid-bills/:profileId", verifyJWT.verifyJWT, billController.getUnpaidBills); // Get unpaid bills by profile id (sairam)
+app.get("/paid-bills/:profileId", verifyJWT.verifyJWT, billController.getPaidBills); // Get paid bills by profile id (sairam)
+app.post("/pay-bill/:billID", verifyJWT.verifyJWT, billController.payBills); // Pay bills by billing id (sairam)
+app.get("/bill/:billID", verifyJWT.verifyJWT, billController.getBillById); // Get bill by bill id  (sairam)
+app.post("/foreign-exchange", transactionController.performForeignExchange); // Perform a fund transfer (sairam)
+app.get("/convert-currency", transactionController.convertCurrency); // Perform a fund transfer (sairam)
+app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
 
 app.listen(port, async () => {
     try {

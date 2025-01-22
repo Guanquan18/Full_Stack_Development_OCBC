@@ -1,0 +1,277 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Foreign Transfer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #3f4347;
+        }
+        .app {
+            max-width: 430px;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .balance-section {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .balance-amount {
+            margin-top: 5px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .amount-details-section {
+            border-radius: 10px;
+            overflow: hidden;
+            font-weight: bold;
+            margin-bottom: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .amount-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 15px;
+            font-size: 18px;
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 32%, rgba(249,243,247,1) 100%);
+        }
+        .amount-label {
+            font-size: 18px;
+            font-weight: 600;
+            width: 30px;
+        }
+
+        .details-section {
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+        .details-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px; 
+        }
+
+        .label {
+            color: #3f4347;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 15px; 
+        }
+
+        .value {
+            color: #3f4347;
+            font-weight: bold;
+            font-size: 16px; 
+            text-align: left;
+            word-wrap: break-word; 
+        }
+
+        .details-item:last-child {
+            border-bottom: none; 
+        }
+        .next-button {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #f03c3c;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 60px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: auto;
+            align-self: center;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 430px) {
+            .app {
+                max-width: 100%;
+                height: 100%;
+                padding: 20px;
+            }
+        }
+        #recipientCurrencyCode {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>
+        <div class="balance-section">
+            Balance<br>
+            <span class="balance-amount" id="balance">$0.00</span>
+        </div>
+
+        <div class="amount-details-section">
+            <div class="amount-section">
+                <span class="amount-label">Amount</span>
+                <span class ="sender-currency-code" id = "senderCurrencyCode">SGD</span>
+                <span id="transferAmount">0.00</span>
+            </div>
+            <div class="amount-section">
+                <span class="amount-label">Exchange Rate:</span>
+                <span id="exchangeRate"></span> 
+            </div>
+            <div class="amount-section">
+                <span class="amount-label">Converted Amount:</span>
+                <span id = "recipientCurrencyCode">SGD</span>
+                <span id="convertedAmount">0.00</span> <!-- Added ID for transfer amount -->
+            </div>
+            <div class="details-section">
+                <div class="details-item">
+                    <span class="label">Recipient:</span>
+                    <span class="value" id="recipientName">Andy</span>
+                </div>
+                <div class="details-item">
+                    <span class="label">Recipient No:</span>
+                    <span class="value" id="recipientNo"></span>
+                </div>
+                <div class="details-item">
+                    <span class="label">When:</span>
+                    <span class="value" id="transactionDate"></span>
+                </div>
+            </div>
+        </div>
+        <button class="next-button" onclick="confirmTransfer()">CONFIRM TRANSFER</button>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        document.addEventListener("DOMContentLoaded", async function() {
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+            const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
+            const transferAmount = sessionStorage.getItem("foreignTransferAmount");
+            const recipientCurrencyCode = sessionStorage.getItem("recipientCurrencyCode");
+            const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
+            const exchangeRate = sessionStorage.getItem("exchangeRate");
+            const convertedAmount = sessionStorage.getItem("convertedAmount");
+
+            // Display recipient data and transfer amount
+            if (recipientData) {
+                document.getElementById("recipientName").textContent = recipientData.recipientName;
+                document.getElementById("recipientNo").textContent = recipientData.accNum;
+            }
+            document.getElementById("transferAmount").textContent = parseFloat(transferAmount).toFixed(2);
+            document.getElementById("recipientCurrencyCode").textContent = recipientCurrencyCode;
+            document.getElementById("senderCurrencyCode").textContent = senderCurrencyCode;
+            document.getElementById("exchangeRate").textContent = exchangeRate;
+            document.getElementById("convertedAmount").textContent = parseFloat(convertedAmount).toFixed(2);
+
+            // Display the current date
+            const currentDate = new Date().toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+            document.getElementById("transactionDate").textContent = currentDate;
+
+            // Fetch and display the account balance
+            const response = await fetch(`/account/${profileId}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("balance").textContent = `$${data.Balance.toFixed(2)}`;
+            } else {
+                console.log("Failed to fetch balance.");
+            }
+        });
+        // confirmTransfer function
+        async function confirmTransfer() {
+            const accSender = sessionStorage.getItem("AccNum");
+            const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
+            const accReceiver = recipientData?.accNum;
+            const exchangeRate = parseFloat(sessionStorage.getItem("exchangeRate"));
+            const amount = parseFloat(sessionStorage.getItem("foreignTransferAmount"));
+
+            if (!accSender || !accReceiver || !exchangeRate || !amount) {
+                alert("Missing required data for the transfer.");
+                return;
+            }
+
+            const body = {
+                accSender,
+                accReceiver,
+                exchangeRate,
+                amount
+            };
+
+            try {
+                const response = await fetch("http://localhost:3000/foreign-exchange", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // On successful transfer
+                    alert(`Transfer successful! Transaction Number: ${result.transactNo}`);
+                    // Redirect to a success page or dashboard
+                    window.location.href = "foreign-transfer-successful.html";
+                } else {
+                    // Handle errors
+                    alert(`Error: ${result.error || "An unknown error occurred."}`);
+                }
+            } catch (error) {
+                console.error("Error confirming transfer:", error);
+                alert("An error occurred while processing the transfer. Please try again later.");
+            }
+        }
+
+    </script>
+</body>
+</html>

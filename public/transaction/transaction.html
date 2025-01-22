@@ -220,6 +220,7 @@
                 });
                 if (recipientsResponse.ok) {
                     const recipients = await recipientsResponse.json();
+                    console.log(recipients);
                     const recipientsList = document.getElementById("recipients-list");
 
                     // Clear the existing recipient list
@@ -259,7 +260,7 @@
                                 bankName: recipient.BankName,
                                 accNum: recipient.AccNum
                             }));
-
+                            sessionStorage.setItem("recipientCurrencyCode", recipient.CurrencyCode);
                             console.log("Recipient data saved to sessionStorage");
 
                             // Redirect to addRecipient.html

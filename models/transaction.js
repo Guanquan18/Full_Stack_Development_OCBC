@@ -19,21 +19,35 @@ class Transaction {
         const connection = await sql.connect(dbConfig);
         try {
             const query = `
-                SELECT RecipientId, RecipientName, BankName, AccNum
-                FROM Recipient
-                WHERE ProfileId = @ProfileId
+                SELECT 
+                    r.RecipientId, 
+                    r.RecipientName, 
+                    r.BankName, 
+                    r.AccNum, 
+                    a.CurrencyCode
+                FROM 
+                    Recipient r
+                INNER JOIN 
+                    Account a
+                ON 
+                    r.AccNum = a.AccNum
+                WHERE 
+                    r.ProfileId = @ProfileId
             `;
+    
             const result = await connection.request()
                 .input("ProfileId", sql.SmallInt, profileId)
                 .query(query);
-            return result.recordset;
+    
+            return result.recordset; // Return the fetched data
         } catch (error) {
             console.error("Error retrieving recipients:", error);
-            throw error;
+            throw error; // Propagate the error
         } finally {
-            connection.close();
+            connection.close(); // Ensure the connection is closed
         }
     }
+    
 
     // Method to add a new recipient (kesh)
     static async addRecipient(profileId, recipientName, bankName, accNum) {
@@ -168,7 +182,7 @@ class Transaction {
     
     
 
-    // Static method to fetch transaction history based on account number and time range
+    // Static method to fetch transaction history based on account number and time range -- Sairam
     static async getTransactionHistory(accNum, rangeOption, startDate, endDate) {
         const connection = await sql.connect(dbConfig); // Connect to the database
 
@@ -248,7 +262,7 @@ class Transaction {
             connection.close();
         }
     }
-    // Static method to fetch transaction history based on account number and time range
+    // Static method to fetch transaction history based on account number and time range -- Sairam
     static async performForeignExchange(accSender, accReceiver, exchangeRate, amount) {
         const connection = await sql.connect(dbConfig);
         let transaction;

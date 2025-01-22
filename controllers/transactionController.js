@@ -1,5 +1,7 @@
 // Created By: Sairam (S10259930H)
 const Transaction = require("../models/transaction"); // Adjust the path as needed
+const fetch = require("node-fetch");
+require("dotenv").config();
 
 // Controller function to get transaction history
 const getTransactionHistory = async (req, res) => {
@@ -101,12 +103,122 @@ const performForeignExchange = async (req, res) => {
         }
     }
 };
+// Convert currency - sairam
+const API_KEY = process.env.EXCHANGE_API_KEY;
+const convertCurrency = async (req, res) => {
+    const { from, to, amount } = req.query;
 
+    try {
+        // Validate inputs
+        if (!from || !to || !amount) {
+            return res.status(400).json({ error: "All query parameters (from, to, amount) are required." });
+        }
+
+        if (amount <= 0) {
+            return res.status(400).json({ error: "Amount must be greater than zero." });
+        }
+
+        // Fetch conversion data from the API
+        const apiUrl = `https://api.exchangeratesapi.io/v1/convert?access_key=${API_KEY}&from=${from}&to=${to}&amount=${amount}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // Check if the API response is successful
+        if (data.success) {
+            return res.status(200).json({
+                from: data.query.from,
+                to: data.query.to,
+                amount: data.query.amount,
+                rate: data.info.rate,
+                convertedAmount: data.result,
+                date: data.date,
+            });
+        } else {
+            console.error("Error from exchange rates API:", data.error);
+            return res.status(500).json({ error: "Failed to convert currency. Please try again later." });
+        }
+    } catch (error) {
+        console.error("Error converting currency:", error);
+        return res.status(500).json({ error: "An error occurred while converting currency." });
+    }
+};
+
+const getHistoricalRates = async (req, res) => {
+    let { from, to } = req.query;
+
+    try {
+        if (!from || !to) {
+            return res.status(400).json({ error: "Both 'from' and 'to' currencies are required." });
+        }
+        from = from.trim();
+        to = to.trim();
+
+        // Get today's date
+        const today = new Date();
+        const endDate = today.toISOString().split("T")[0];
+        console.log("End Date (today):", endDate);
+
+        // Calculate the date 7 days ago
+        const oneWeekAgo = new Date(today);
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        const startDate = oneWeekAgo.toISOString().split("T")[0];
+        console.log("Start Date (one week ago):", startDate);
+
+        // Generate the list of dates for the past week
+        const dateList = [];
+        let currentDate = new Date(startDate);
+        while (currentDate <= today) {
+            dateList.push(currentDate.toISOString().split("T")[0]);
+            currentDate.setDate(currentDate.getDate() + 1); // Increment by one day
+        }
+
+        // Fetch rates for each date
+        const rateResults = [];
+        for (const date of dateList) {
+            const apiUrl = `https://api.exchangeratesapi.io/v1/${date}?access_key=${process.env.EXCHANGE_API_KEY}&base=${from}&symbols=${to}`;
+            console.log("Fetching for date:", date, "URL:", apiUrl);
+
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                console.error(`Error fetching rate for ${date}: ${response.statusText}`);
+                continue;
+            }
+
+            const data = await response.json();
+
+            if (data.success && data.historical === true) {
+                rateResults.push({ date, rate: data.rates });
+            } else {
+                console.error(`No valid rate data for date ${date}:`, data.error || "Unknown issue");
+            }
+        }
+
+        // Check if we successfully fetched rates
+        if (rateResults.length === 0) {
+            return res.status(500).json({ error: "Failed to fetch any historical rates. Please try again later." });
+        }
+
+        // Return the collected rates
+        return res.status(200).json({
+            base: from,
+            target: to,
+            start_date: startDate,
+            end_date: endDate,
+            rates: rateResults,
+        });
+    } catch (error) {
+        console.error("Error fetching historical rates:", error);
+        return res.status(500).json({ error: "An error occurred while fetching historical rates." });
+    }
+};
 
 module.exports = {
     getTransactionHistory,
     getRecipients, // (kesh)
     addRecipient, // (kesh)
     performTransfer, // (kesh)
-    performForeignExchange // (Sairam)
+    performForeignExchange, // (Sairam)
+    convertCurrency, // (Sairam)
+    getHistoricalRates, // (Sairam)
 };

@@ -28,7 +28,12 @@ function verifyJWT(req, res, next) {
             "/recipients",
             "/transfer",
             "/video-calling/create-room",
-            "/video-calling/send-host-url"
+            "/video-calling/send-host-url",
+            "/unpaid-bills/:profileId",
+            "/paid-bills/:profileId",
+            "/pay-bill/:billID",
+            "/bill/:billID",
+            "/foreign-exchange",
         ];
 
         // Get the requested endpoint without query parameters
