@@ -194,5 +194,47 @@ values
 ('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 5),
 ('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 5);
 
+--Forum Category table to create cateogries within the forum with unique IDs
+CREATE TABLE ForumCategory (
+    CategoryID INT IDENTITY(1,1) NOT NULL,
+    CategoryName NVARCHAR(255) NOT NULL,
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT PK_ForumCategory PRIMARY KEY (CategoryID)
+);
+
+--Insert values for the categories
+INSERT INTO ForumCategory (CategoryName) 
+VALUES 
+('Server Downtime'),
+('Financial Knowledge'),
+('Tips and Tricks');
+
+--Create table to include messages into the forum categories
+CREATE TABLE ForumMessages (
+    MessageID INT IDENTITY(1,1) NOT NULL,
+    CategoryID INT NOT NULL,
+    SenderName NVARCHAR(255) NOT NULL,
+    MessageContent NVARCHAR(MAX) NOT NULL,
+    PostedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT PK_ForumMessages PRIMARY KEY (MessageID),
+    CONSTRAINT FK_ForumMessages_CategoryID FOREIGN KEY (CategoryID)
+        REFERENCES ForumCategory (CategoryID)
+);
+
+-- Insert messages values
+INSERT INTO ForumMessages (CategoryID, SenderName, MessageContent)
+VALUES 
+(1, 'Alice Johnson', 'The server has been down since yesterday. Any updates?'),
+(1, 'Cristhian', 'I was in the middle of a transaction! Now I have to start all over again.'),
+(1, 'Laven', 'Is my account information safe? I hope the downtime is not due to a security breach...'),
+(1, 'Guan Quan', 'Has anyone received any notification from the bank about the downtime?'),
+(1, 'Bob Smith', '@Alice Johnson The issue seems to be resolved now.'),
+(2, 'Brad', 'Does anyone know if the Singapore governments decision to increase GST will affect the stock market?'),
+(2, 'Haziq', 'I am a freelancer and wondering how to file my taxes in Singapore. Any advice?'),
+(2, 'Endrick', 'Hi! As a fellow freelancer, I have found it helpful to use accounting software like QuickBooks or Xero to track my income and expenses.'),
+(2, 'Carol Lee', 'Can someone recommend a good financial planner?'),
+(3, 'Seah', 'I have set up automatic transfers from my checking account to my savings account. It is a great way to build up your emergency fund without having to think about it!'),
+(3, 'Tash', 'Does anyone use a budgeting app like Mint or You Need a Budget (YNAB)? I have found it really helps me track my expenses and stay on top of my finances'),
+(3, 'David Brown', 'Use keyboard shortcuts to navigate quickly.');
 
 

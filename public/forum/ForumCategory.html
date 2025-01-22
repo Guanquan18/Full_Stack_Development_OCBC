@@ -1,3 +1,4 @@
+<!--Created by Keshwindren Gandipanh S10259469C-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,16 +37,17 @@
     }
 
     .back-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid #333;
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background-color: white;
-      transition: background-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .back-button img {
+      height: 30px;
+      margin-right: 5px;
     }
 
     .back-button:hover {
@@ -53,17 +55,11 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    .back-button span {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #333;
-    }
-
     .title {
       font-size: 1.5rem;
-      color: #c72026; 
+      color: #c72026;
       font-weight: bold;
-      margin: 0 auto; 
+      margin: 0 auto;
       text-align: center;
     }
 
@@ -87,7 +83,7 @@
       font-size: 1rem;
       font-weight: bold;
       color: #333;
-      background-color: #D2D2D2; 
+      background-color: #D2D2D2;
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -101,46 +97,48 @@
     }
 
     .category-icon {
-      font-size: 2rem; 
-      color: #333;
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
     }
   </style>
   <script>
-    //navigate to a specific category
+    // Navigate to a specific category
     function navigateToCategory(categoryId) {
-      window.location.href = `Forum.html?categoryId=${categoryId}`; //pass categoryId to Forum.html
+      window.location.href = `Forum.html?categoryId=${categoryId}`; // Pass categoryId to Forum.html
     }
 
-    //function to fetch and display categories dynamically
+    // Function to fetch and display categories dynamically
     async function loadCategories() {
       try {
-        const response = await fetch('/api/forum/categories'); //fetch categories
+        const response = await fetch('/api/forum/categories'); // Fetch categories
         const categories = await response.json();
 
-        //create buttons for each category
+        // Create buttons for each category
         const contentContainer = document.querySelector('.content');
-        contentContainer.innerHTML = ''; //clear existing content
+        contentContainer.innerHTML = ''; // Clear existing content
         categories.forEach(category => {
           const button = document.createElement('button');
           button.className = 'category-button';
           button.onclick = () => navigateToCategory(category.CategoryID);
 
-          let icon = '📁'; //default icon for categories
+          // Map CategoryID to corresponding PNG image path
+          let iconPath = '../images/forum/default.png'; // Default icon
           if (category.CategoryID === 1) {
-            icon = '🖥️'; //icon for Server Downtime
+            iconPath = '../images/forum/serverdowntime.png';
           } else if (category.CategoryID === 2) {
-            icon = '💵'; //icon for Financial Knowledge
+            iconPath = '../images/forum/financeknowledge.png';
           } else if (category.CategoryID === 3) {
-            icon = '💡'; //icon for Tips and Tricks
+            iconPath = '../images/forum/tipsandtricks.png';
           }
 
           button.innerHTML = `
-            <div class="category-icon">${icon}</div>
+            <img class="category-icon" src="${iconPath}" alt="${category.CategoryName} Icon">
             <span>${category.CategoryName}</span>
           `;
           contentContainer.appendChild(button);
         });
-      } catch (error) { //error handling
+      } catch (error) {
         console.error('Error loading categories:', error);
         alert('Failed to load forum categories. Please try again later.');
       }
@@ -152,12 +150,12 @@
 <body>
   <div class="container">
     <header class="header">
-      <button class="back-button" onclick="window.location.href='ForumHome.html'">
-        <span>&#8592;</span> 
-      </button>
+      <a href="../forum/ForumHome.html" class="back-button">
+        <img src="../images/back-icon.png" alt="Back">
+      </a>
       <h1 class="title">Forum Categories</h1>
     </header>
-    <main class="content"></main> 
+    <main class="content"></main>
   </div>
 </body>
 </html>

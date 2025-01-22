@@ -1,3 +1,4 @@
+<!--Created by Keshwindren Gandipanh S10259469C-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,17 +30,18 @@
             padding: 20px;
         }
 
-        .header .back-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 1px solid #333;
+        .back-button {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background-color: white;
-            transition: background-color 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
         }
 
         .header .back-btn:hover {
@@ -198,9 +200,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="back-btn" onclick="window.history.back()">
-                <span>&#8592;</span>
-            </div>
+            <a href="../forum/ForumCategory.html" class="back-button">
+                <img src="../images/back-icon.png" alt="Back">
+              </a>              
             <h1>Forum Title</h1>
         </div>
         <div class="messages"></div>

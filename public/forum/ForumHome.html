@@ -1,3 +1,4 @@
+<!--Created by Keshwindren Gandipanh S10259469C-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,17 +41,19 @@
     }
 
     .back-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background-color: white;
-      transition: background-color 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
     }
+
+    .back-button img {
+    height: 30px;
+    margin-right: 5px;
+    }
+
 
     .back-button:hover {
       background-color: #f2f2f2;
@@ -123,9 +126,9 @@
 <body>
   <div class="container">
     <header class="header">
-      <button class="back-button" onclick="goBack()">
-        <span>&#8592;</span> <!-- Left Arrow -->
-      </button>
+        <a href="../homepage/homepage.html" class="back-button">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>        
       <h1 class="title">OCBC Discussion Forum</h1>
     </header>
     <main class="content">
@@ -150,7 +153,7 @@
   <script>
     // JavaScript to handle button navigation (front-end only for now)
     function goBack() {
-      alert("Back button clicked! (Functionality to be implemented)");
+        window.location.href = '../homepage/homepage.html'; // navigates user back to the homepage when clicking the back button
     }
 
     function navigateTo(page) {
