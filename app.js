@@ -56,6 +56,10 @@ app.get("/bill/:billID", billController.getBillById); // Get bill by bill id
 app.get("/api/forum/categories", forumController.getCategories); //  get all categories for forums [Created by : Keshwindren S10259469C] 
 app.get("/api/forum/messages/:categoryId", forumController.getMessagesByCategory); // get categories of forum by ID [Created by : Keshwindren S10259469C]
 app.post("/api/forum/messages", forumController.postMessage); // post  messages to forums [Created by : Keshwindren S10259469C]
+app.post("/foreign-exchange", transactionController.performForeignExchange); // Perform a fund transfer (sairam)
+app.get("/convert-currency", transactionController.convertCurrency); // Perform a fund transfer (sairam)
+app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
+
 
 app.listen(port, async () => {
     try {
