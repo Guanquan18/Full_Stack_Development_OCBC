@@ -1,0 +1,514 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>ForeignTransfer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #3f4347;
+        }
+        .app {
+            max-width: 430px;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .balance-section {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .balance-amount {
+            margin-top: 5px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .amount-details-section {
+            border-radius: 10px;
+            overflow: hidden;
+            font-weight: bold;
+            margin-bottom: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .amount-section, .details-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            font-size: 18px;
+        }
+
+        .amount-section {
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 32%, rgba(249,243,247,1) 100%);
+        }
+
+        .amount-label {
+            font-size: 18px;
+            font-weight: 600;
+            width: 30px;
+        }
+
+        .details-section {
+            font-size: 16px;
+        }
+
+        .input-amount {
+            font-size: 18px;
+            padding: 8px;
+            width: 100px;
+            text-align: right;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .next-button {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #f03c3c;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 60px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: auto;
+            align-self: center;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        .forex-graph-container {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        .chatbot-icon{
+            width: 50%;
+            height: 50%;
+            margin-bottom: 5px;
+        }
+        .forex-graph{
+            width: 80%;
+            height: 80%;
+            margin-bottom: 5px;
+        }
+        @media (max-width: 430px) {
+            .app {
+                max-width: 100%;
+                height: 100%;
+                padding: 20px;
+            }
+        }
+
+        .sender-currency-code {
+            margin-left: 75px;
+        }
+
+        .chart-container {
+            display: none;
+        }
+
+        #mychart {
+            max-width: 400px;
+            max-height: 270px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        #toggle-chart {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #f03c3c;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 60px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+            align-self: center;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .close-chart-button {
+            font-size: 20px;
+            font-weight: bold;
+            background: none;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 20;
+            padding: 7px 12px;
+            border-radius: 50%;
+            background-color: #f03c3c;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="app">
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>
+        <div class="balance-section">
+            Balance<br>
+            <span class="balance-amount" id="balance">$0.00</span>
+        </div>
+
+        <div class="amount-details-section">
+            <div class="amount-section">
+                <span class="amount-label">Amount</span>
+                <span class ="sender-currency-code" id = "senderCurrencyCode">SGD</span>
+                <input type="number" id="transferAmount" class="input-amount" placeholder="0.00" step="0.01" min="0">
+            </div>
+            <div class="amount-section">
+                <span class="amount-label">Exchange Rate:</span>
+                <span id="exchangeRate"></span> <!-- Added ID for transfer amount -->
+            </div>
+            <div class="amount-section">
+                <span class="amount-label">Converted Amount:</span>
+                <span id = "recipientCurrencyCode">SGD</span>
+                <span id="convertedAmount">0.00</span> <!-- Added ID for transfer amount -->
+            </div>
+            <div class="details-section">
+                <span>Recipient:</span>
+                <span id="recipientName"></span> <!-- Added ID for recipient name -->
+            </div>
+            <div class="details-section">
+                <span>Recipient No: </span>
+                <span id="accountNumber"></span> <!-- Added ID for account number -->
+            </div>
+            <div class="details-section">
+                <span>When</span>
+                <span>Immediate</span>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Exchange Rate History</h3>
+                <button class="close-chart-button" onclick="closeChart()">×</button>
+            </div>
+            <canvas id="mychart"></canvas>
+        </div>
+        
+        <!-- Chatbot -->
+        <a href="../chatbot/ibm-chatbot.html">
+            <div class="chatbot-container">
+                <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
+            </div>
+        </a>
+
+        <!-- Graph -->
+        <div class="forex-graph-container" onclick="toggleChart()">
+            <img src="../images/graph.png" alt="forex-graph" class="forex-graph">
+        </div>
+
+        <button class="next-button" onclick="handleNext()">NEXT</button>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        // handleNext function to handle the next button click
+        async function handleNext() {
+            const transferAmount = parseFloat(document.getElementById("transferAmount").value);
+            const balance = parseFloat(document.getElementById("balance").textContent.replace("$", ""));
+
+            if (isNaN(transferAmount) || transferAmount <= 0) {
+                alert("Please enter a valid transfer amount.");
+                return;
+            }
+
+            if (transferAmount > balance) {
+                alert("Transfer amount exceeds available balance.");
+                return;
+            }
+
+            // Save foregin transfer amount in sessionStorage for use in confirm-foreign-transfer.html
+            sessionStorage.setItem("foreignTransferAmount", transferAmount);
+            sessionStorage.setItem("exchangeRate", parseFloat(document.getElementById("exchangeRate").textContent));
+            sessionStorage.setItem("convertedAmount", parseFloat(document.getElementById("convertedAmount").textContent));
+
+            // Redirect to transfer-details.html
+            window.location.href = "confirm-foreign-transfer.html";
+        }
+        // convertCurrency function to convert the currency
+        async function convertCurrency(senderCurrencyCode, recipientCurrencyCode, amount) {
+            if (!amount || amount <= 0) {
+                document.getElementById("convertedAmount").textContent = "0.00";
+                return;
+            }
+
+            try {
+                // Call your backend API for conversion
+                const response = await fetch(`http://localhost:3000/convert-currency?from=${senderCurrencyCode}&to=${recipientCurrencyCode}&amount=${amount}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update the converted amount and rate
+                    document.getElementById("convertedAmount").textContent = data.convertedAmount.toFixed(2);
+                    document.getElementById("exchangeRate").textContent = data.rate.toFixed(4); // Display rate if needed
+                } else {
+                    console.error("Error fetching conversion rate.");
+                }
+            } catch (error) {
+                console.error("Error converting currency:", error);
+            }
+        }
+
+        // dom content loaded event listener
+        document.addEventListener("DOMContentLoaded", async function() {
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+            try {
+                const response = await fetch(`/account/${profileId}`,{
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    }
+                });
+                if (response.ok) {
+                    const accountData = await response.json();
+                    document.getElementById("balance").textContent = `$${accountData.Balance.toFixed(2)}`;
+                } else {
+                    console.error("Failed to fetch balance.");
+                }
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+              // Retrieve recipient data from sessionStorage
+            const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
+            if (recipientData) {
+                // Set recipient name and account number in the HTML
+                document.getElementById("recipientName").textContent = recipientData.recipientName;
+                document.getElementById("accountNumber").textContent = recipientData.accNum;
+            } else {
+                console.error("No recipient data found in sessionStorage.");
+            }
+            const recipientCurrencyCode = sessionStorage.getItem("recipientCurrencyCode");
+            const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
+            document.getElementById("senderCurrencyCode").textContent = senderCurrencyCode;
+            document.getElementById("recipientCurrencyCode").textContent = recipientCurrencyCode;
+            // Add event listener for blur
+            const transferAmountInput = document.getElementById("transferAmount");
+            transferAmountInput.addEventListener("blur", () => {
+                const amount = parseFloat(transferAmountInput.value);
+                convertCurrency(senderCurrencyCode, recipientCurrencyCode, amount);
+            });
+        });
+
+        // Function to toggle the chart visibility and fetch data when displayed
+        async function toggleChart() {
+            const chartContainer = document.querySelector(".chart-container");
+
+            // Check if the chart container is already displayed
+            if (chartContainer.style.display === "block") {
+                return; // Do nothing if already displayed
+            }
+
+            // Show the chart container
+            chartContainer.style.display = "block";
+
+            // Retrieve sender and recipient currencies from sessionStorage
+            const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
+            const recipientCurrencyCode = sessionStorage.getItem("recipientCurrencyCode");
+
+            try {
+                // Fetch historical rates data
+                const response = await fetch(`http://localhost:3000/historical-rates?from=${senderCurrencyCode}&to=${recipientCurrencyCode}`);
+                if (!response.ok) throw new Error("Failed to fetch historical rates.");
+
+                const rateData = await response.json();
+                console.log("Historical rates data:", rateData);
+
+                // Extract rates and dates
+                const historicalDates = rateData.rates.map(rate => rate.date);
+                const historicalRates = rateData.rates.map(rate => rate.rate[recipientCurrencyCode]);
+
+                // Initialize or update the chart
+                const ctx = document.getElementById("mychart").getContext("2d");
+                new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: historicalDates.map(date => {
+                            const [year, month, day] = date.split("-");
+                            return `${month}/${day}`; // Format date as MM/DD
+                        }),
+                        datasets: [{
+                            label: `Exchange Rate (${senderCurrencyCode} to ${recipientCurrencyCode})`,
+                            data: historicalRates,
+                            borderColor: "rgba(249, 100, 120, 1)", // Soft red line
+                            backgroundColor: "rgba(249, 243, 247, 1)", // Light pink fill
+                            tension: 0.4, // Smooth curve
+                            borderWidth: 2, // Line width
+                            pointRadius: 4, // Point size
+                            fill: true,
+                            pointBackgroundColor: "rgba(249, 100, 120, 1)", // Red points
+                            pointBorderColor: "rgba(249, 100, 120, 1)", // Point border color
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: "top",
+                            },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        const rate = tooltipItem.raw; // Current rate value
+                                        const date = historicalDates[tooltipItem.dataIndex]; // Corresponding date
+                                        return [
+                                            `Date: ${date}`,
+                                            `Exchange Rate: ${rate.toFixed(2)}`
+                                        ];
+                                    },
+                                },
+                                backgroundColor: "rgba(255, 255, 255, 0.9)", // White background for tooltip
+                                titleColor: "#000", // Black title text
+                                bodyColor: "#000", // Black body text
+                                bodyFont: {
+                                    size: 14,
+                                    weight: "bold"
+                                },
+                                borderColor: "rgba(200, 200, 200, 1)", // Light gray border
+                                borderWidth: 3,
+                                padding: 10,
+                                displayColors: false,
+                                caretSize: 6,
+                                caretPadding: 8,
+                                cornerRadius: 6
+                            },
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Date", // X-axis title
+                                    color: "#333",
+                                    font: {
+                                        size: 16,
+                                        weight: "bold",
+                                    },
+                                },
+                                ticks: {
+                                    color: "#333",
+                                    font: {
+                                        size: 14,
+                                        weight: "bold",
+                                    },
+                                },
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Exchange Rate", // Y-axis title
+                                    color: "#333",
+                                    font: {
+                                        size: 16,
+                                        weight: "bold",
+                                    },
+                                },
+                                ticks: {
+                                    color: "#333",
+                                    font: {
+                                        size: 14,
+                                        weight: "bold",
+                                    },
+                                },
+                            },
+                        },
+                        interaction: {
+                            mode: "nearest",
+                            axis: "x",
+                            intersect: true
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching historical rates:", error);
+            }
+        }
+
+        // Function to close the chart
+        function closeChart() {
+            const chartContainer = document.querySelector(".chart-container");
+            chartContainer.style.display = "none";
+        }
+    </script>
+</body>
+</html>

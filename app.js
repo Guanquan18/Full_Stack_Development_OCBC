@@ -40,10 +40,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', validateProfile.validateAccessCodePin, profileController.loginProfileByAccessCode);
-app.get("/account/:profileId",verifyJWT.verifyJWT, accountController.getAccountByProfileId); // Get profile by profile id
-app.get("/profile/:profileId",verifyJWT.verifyJWT, profileController.getProfileById); // Get account by profile id
-app.get("/card/:profileId/:accNum",verifyJWT.verifyJWT, cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
-app.get("/transactions/:accNum",verifyJWT.verifyJWT, transactionController.getTransactionHistory); // get trnasactions history by accNum
+app.get("/account/:profileId",verifyJWT.verifyJWT, accountController.getAccountByProfileId); // Get profile by profile id (sairam)
+app.get("/profile/:profileId",verifyJWT.verifyJWT, profileController.getProfileById); // Get account by profile id (sairam)
+app.get("/card/:profileId/:accNum",verifyJWT.verifyJWT, cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum (sairam)
+app.get("/transactions/:accNum",verifyJWT.verifyJWT, transactionController.getTransactionHistory); // get trnasactions history by accNum (sairam)
 app.get("/recipients/:profileId",verifyJWT.verifyJWT, transactionController.getRecipients); // Get recipients for a profile from the recipients table (kesh)
 app.post("/recipients",verifyJWT.verifyJWT, transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
 app.post("/transfer",verifyJWT.verifyJWT, transactionController.performTransfer); // Perform a fund transfer (kesh)

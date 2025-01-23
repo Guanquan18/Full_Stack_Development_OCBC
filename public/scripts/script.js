@@ -140,6 +140,7 @@ function IndexLoginSubmit(formId){
                 console.log(details)
                 
                 sessionStorage.setItem('AccNum', details.AccNum);   // Set the session storgae
+                sessionStorage.setItem('AccCurrency', details.CurrencyCode);   // Set the session storgae
 
                 alert("User Authenticated successfully");
                 console.log("User Authenticated successfully");
@@ -209,6 +210,7 @@ async function fetchProfileDetails() {
         const data = await response.json();
         console.log(data)
         document.getElementById('user-name').innerText = data.FullName;
+        sessionStorage.setItem("FullName", data.FullName);  
 
     } catch (error) {
         console.error("Error:", error.message);
@@ -390,6 +392,9 @@ async function fetchTransactions() {
                     </p>
                    <p class="transaction-to">
                         To: ${transaction.AccReceiver ? transaction.ReceiverName : transaction.BillerName}
+                    </p>
+                    <p class="transaction-type">
+                        Type: ${transaction.TransactType}
                     </p>
                     <div class="transaction-amount">Amount: <span style="color: ${amountColor};">${amountDisplay}</span></div>
                 `;

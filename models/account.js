@@ -3,11 +3,12 @@ const sql = require("mssql");
 const dbConfig = require("../configs/dbConfig");
 
 class Account{
-    constructor(AccNum, Balance,ProfileId,AccType){
+    constructor(AccNum, Balance,ProfileId,AccType,CurrencyCode){
         this.AccNum = AccNum;
         this.AccType = AccType
         this.Balance = Balance;
         this.ProfileId = ProfileId;
+        this.CurrencyCode = CurrencyCode;
     }
     // Static method to fetch account details
     static async getAccountByProfileId(profileId) {
@@ -27,6 +28,7 @@ class Account{
                     row.Balance,
                     row.ProfileId,
                     row.AccType,
+                    row.CurrencyCode
                 )
                 : null;
 
