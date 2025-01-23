@@ -1,11 +1,10 @@
-<!--Created By: Sairam (S10259930H)!-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-    <title> Billing Successfull </title>
+    <title>Transfer Confirmation</title>
     <style>
         * {
             margin: 0;
@@ -21,6 +20,18 @@
             padding: 20px;
             display: block;
         }
+        .balance-section {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .balance-amount {
+            margin-top: 5px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
         .confirmation-icon-container {
             display: flex;
             justify-content: center;
@@ -87,10 +98,20 @@
         .next-button:hover, .back-button:hover {
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
+        .amount-label {
+            font-size: 18px;
+            font-weight: 600;
+            width: 30px;
+        }
     </style>
 </head>
 <body>
     <div class="app">
+        <div class="balance-section">
+            Balance
+            <div class="balance-amount" id="newBalance">$0.00</div>
+        </div>
+
         <div class="confirmation-icon-container">
             <dotlottie-player src="https://lottie.host/b371ae55-1d94-4756-af60-2d215b29d319/PYHdabwx7M.json" background="transparent" speed="1" loop autoplay class="confirmation-icon"></dotlottie-player>
         </div>
@@ -99,25 +120,29 @@
 
         <div class="amount-details-section">
             <div class="amount-section">
-                <span>Amount</span>
-                <span>SGD</span>
-                <span id="successAmount">0.00</span>
+                <span class="amount-label">Amount</span>
+                <span class ="sender-currency-code" id = "senderCurrencyCode">SGD</span>
+                <span id="transferAmount">0.00</span>
+            </div><div class="amount-section">
+                <span class="amount-label">Exchange Rate:</span>
+                <span id="exchangeRate"></span> 
+            </div>
+            <div class="amount-section">
+                <span class="amount-label">Converted Amount:</span>
+                <span id = "recipientCurrencyCode">SGD</span>
+                <span id="convertedAmount">0.00</span> <!-- Added ID for transfer amount -->
             </div>
             <div class="details-section">
                 <span>From:</span>
-                <span id="successSenderName"></span> 
+                <span id="senderName"></span> 
             </div>
             <div class="details-section">
                 <span>To:</span>
-                <span id="successRecipientName"></span> 
-            </div>
-            <div class="details-section">
-                <span>Category:</span>
-                <span id="successCategory"></span>
+                <span id="recipientName"></span> 
             </div>
             <div class="details-section">
                 <span>Recipient No:</span>
-                <span id="successRecipientNo"></span>
+                <span id="accountNumber"></span>
             </div>
         </div>
 
@@ -126,48 +151,55 @@
     </div>
 
     <script>
-        // Function to redirect to view-bills.html
+        // Function to redirect to the transaction page
         function makeAnotherTransfer() {
-            window.location.href = "view-bills.html";
+            window.location.href = "transaction.html";
         }
-        // Function to redirect to homepage
+        // Function to redirect to the homepage
         function goBack() {
             window.location.href = "../homepage/homepage.html"; 
         }
-        // Fetching billing data
+        // Load transfer details from sessionStorage and display it on the page
         document.addEventListener("DOMContentLoaded", async function() {
-            const billingId = sessionStorage.getItem("billingId");
-            const AccNum = sessionStorage.getItem("AccNum");
-            const url = `http://localhost:3000/bill/${billingId}`; // Corrected variable name
+            const transferAmount = parseFloat(sessionStorage.getItem("foreignTransferAmount"));
+            const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
 
             try {
-                const response = await fetch(url, {
-                    method: 'GET',
+                const response = await fetch(`/account/${profileId}`,{
+                    method: "GET",
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
-                    },
+                    }
                 });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if (response.ok) {
+                    const accountData = await response.json();
+                    document.getElementById("newBalance").textContent = `$${accountData.Balance.toFixed(2)}`;
+                    document.getElementById("senderName").textContent = accountData.AccNum;
+                } else {
+                    console.error("Failed to fetch balance.");
                 }
-
-                const data = await response.json();
-                console.log(data);
-
-                // Updating UI with fetched data
-                document.getElementById("successAmount").textContent = data.BillAmount;
-                document.getElementById("successSenderName").textContent = AccNum;
-                document.getElementById("successRecipientName").textContent = data.BillerName;
-                document.getElementById("successCategory").textContent = data.Category;
-                document.getElementById("successRecipientNo").textContent = data.BillerAccNum;
-
             } catch (error) {
-                console.error('Error fetching billing data:', error);
+                console.error("Error fetching balance:", error);
             }
+            
+            document.getElementById("transferAmount").textContent = transferAmount.toFixed(2);
+            if (recipientData) {
+                document.getElementById("recipientName").textContent = recipientData.recipientName;
+                document.getElementById("accountNumber").textContent = recipientData.accNum;
+            } else {
+                console.error("No recipient data found in sessionStorage.");
+            }
+            // populate the exchange rate and converted amount
+            document.getElementById("exchangeRate").textContent = sessionStorage.getItem("exchangeRate");
+            document.getElementById("convertedAmount").textContent = sessionStorage.getItem("convertedAmount");
+            document.getElementById("recipientCurrencyCode").textContent = sessionStorage.getItem("recipientCurrencyCode");
+            sessionStorage.removeItem("recipientData");
+            sessionStorage.removeItem("foreignTransferAmount");
+            sessionStorage.removeItem("exchangeRate");
+            sessionStorage.removeItem("convertedAmount");
+            sessionStorage.removeItem("recipientCurrencyCode");
         });
-
     </script>
 </body>
 </html>

@@ -167,7 +167,6 @@
                 <img src="../images/back-icon.png" alt="Back">
             </a>
             <div class="balance" id="balance">Balance<br>$0.00</div>
-            <div class="local-transfer">Local Transfer</div>
             <a href="addRecipient.html" class="add-recipient-link">
                 <div class="add-recipient">
                     <button class="add-button">+</button>
@@ -220,6 +219,7 @@
                 });
                 if (recipientsResponse.ok) {
                     const recipients = await recipientsResponse.json();
+                    console.log(recipients);
                     const recipientsList = document.getElementById("recipients-list");
 
                     // Clear the existing recipient list
@@ -259,11 +259,11 @@
                                 bankName: recipient.BankName,
                                 accNum: recipient.AccNum
                             }));
-
+                            sessionStorage.setItem("recipientCurrencyCode", recipient.CurrencyCode);
                             console.log("Recipient data saved to sessionStorage");
 
                             // Redirect to addRecipient.html
-                            window.location.href = "addRecipient.html";
+                            window.location.href = "transferby.html";
                         });
 
                         recipientsList.appendChild(recipientDiv);
