@@ -116,6 +116,12 @@ CREATE TABLE BankTransaction
     AccSender       VARCHAR(20) NOT NULL,
     AccReceiver     VARCHAR(20),  -- For normal transfers
     BillerAccNum    VARCHAR(20),  -- For bill payments
+	TransactPurpose	VARCHAR(100)	NULL CHECK(TransactPurpose in ('Grocery or Retail Purchases',
+															   'ATM Withdrawals or Cash Deposits',
+															   'Online Shopping',
+															   'Medical or Healthcare Payments',
+															   'ATM Withdrawals or Cash Deposits',
+															   'Others'))
 	TransactType VARCHAR(20) NOT NULL DEFAULT 'Local Transfer',
     CONSTRAINT PK_BankTransaction PRIMARY KEY (TransactNo),
     CONSTRAINT FK_BankTransaction_AccSender FOREIGN KEY (AccSender)

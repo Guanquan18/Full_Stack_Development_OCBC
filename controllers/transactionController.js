@@ -3,6 +3,20 @@ const Transaction = require("../models/transaction"); // Adjust the path as need
 const fetch = require("node-fetch");
 require("dotenv").config();
 
+// Controller function to get transaction expenses
+const getExpenses = async (req, res) => {
+    const profileId = req.params.profileId;
+    try {
+        // Call the model method to fetch expenses
+        const expenses = await Transaction.getExpenses(profileId);
+        // Send response back to the client
+        return res.status(200).json(expenses);
+    } catch (error) {
+        console.error("Error fetching expenses:", error);
+        return res.status(500).json({ error: "An error occurred while retrieving expenses." });
+    }
+};
+
 // Controller function to get transaction history
 const getTransactionHistory = async (req, res) => {
     const { rangeOption, startDate, endDate } = req.query;;
@@ -218,6 +232,7 @@ const getHistoricalRates = async (req, res) => {
 };
 
 module.exports = {
+    getExpenses,
     getTransactionHistory,
     getRecipients, // (kesh)
     addRecipient, // (kesh)

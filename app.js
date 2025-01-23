@@ -60,6 +60,7 @@ app.post("/foreign-exchange", verifyJWT.verifyJWT,transactionController.performF
 app.get("/convert-currency", transactionController.convertCurrency); // Perform a fund transfer (sairam)
 app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
 
+app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id
 
 app.listen(port, async () => {
     try {

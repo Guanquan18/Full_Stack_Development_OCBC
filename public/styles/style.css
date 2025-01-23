@@ -340,3 +340,9 @@ body{
 }
 
 
+/* Quiz styles */
+.quiz-wrapper {
+    width: 85%;
+    height: 100vh;
+    margin: 0 auto;
+}

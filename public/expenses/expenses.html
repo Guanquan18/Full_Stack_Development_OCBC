@@ -1,0 +1,158 @@
+<!--Created By: Sairam (S10259930H)!-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+        }
+        a {
+            text-decoration: none; /* Remove underline */
+        }
+
+        /* Additional states to prevent underlining */
+        a:link,
+        a:visited,
+        a:hover,
+        a:focus,
+        a:active {
+            text-decoration: none;
+            color: #3f4347;
+        }
+
+        .expenses-wrapper{
+            width: 85%;
+            height: fit-content;
+            margin: 0 auto;
+        }
+        /* Financial Overview Header */
+        .financial-header {
+            padding: 20px;
+            text-align: center;
+        }
+        .financial-header h1 {
+            margin: 0;
+        }
+
+        /* Account Card */
+        .account-card {
+            background: #e74c3c;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .account-card h3 {
+            margin: 0 0 10px;
+        }
+
+        .account-card .account-type {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .account-card .balance span,
+        .account-card .debit-card span {
+            font-weight: bold;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin: 20px auto;
+            text-align: center;
+            color: white;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: fit-content;
+            /* Gradient Background */
+            padding: 10px 5px;
+            margin-bottom: 20px;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            border-radius: 10px;
+        }
+
+        #pie-chart {
+            background: linear-gradient(45deg, #e74d3c06, #e74d3c8d);
+            border-radius: 10px;
+        }
+
+        .chart-placeholder p {
+            margin: 0;
+            font-size: 1.2rem;
+            color: black;
+        }
+
+        .chart-placeholder img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 10px;
+            display: block;
+        }
+
+
+    </style>
+</head>
+<body>
+    <article class="expenses-wrapper">
+        <!-- Financial Overview Header -->
+        <header class="financial-header">
+            <h1>Financial Overview</h1>
+        </header>
+    
+        <!-- Account Details Card -->
+        <div class="account-card">
+            <h3>OCBC Bank</h3>
+            <p class="account-type">Statement Savings Account</p>
+            <p class="balance">Available Balance: <span>$23,540.00</span></p>
+            <p class="debit-card">Debit Card No: <span>1234 5678 9876 5432</span></p>
+        </div>
+    
+        <!-- Embedded Charts Section -->
+        <div class="charts-section">
+
+            <!-- Line Chart -->
+        <div class="chart-placeholder">
+            <canvas id="line-chart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="chart-placeholder">
+            <canvas id="pie-chart" width="400" height="200"></canvas>
+        </div>
+
+            
+        </div>
+    </article>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <script src="../scripts/script.js"></script>
+    <script>
+        
+        // Fetch data and display Expenses
+        document.addEventListener("DOMContentLoaded", displayExpenses);
+
+    </script>
+</body>
+</html>

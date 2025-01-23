@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+    <style>
+        .quiz-wrapper {
+            width: 85%;
+            margin: 0 auto;
+        }
+        .quiz-information {
+            width: fit-content;
+            height: fit-content;
+            margin: 30px 0;
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quiz-header {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .back-exit-button {
+            width: 10%;
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .quiz-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+            color: #ED3F3F;
+        }
+
+        .quiz-description {
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        .quiz-description p {
+            font-size: large;
+            margin-bottom: 15px;
+        }
+
+        .quiz-action {
+            width: 100%;
+            height: fit-content;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .start-quiz-button, .check-answer-button {
+            width: 100%;
+            padding: 15px 0px;
+
+            color: #fff;
+            border: none;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            
+            background-color: #ED3F3F;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 3px 15px #ed3f3f72;
+        }
+
+        .quiz-content {
+            padding: 20px;
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .quiz-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .exit-button {
+            background-color: transparent;
+            border: none;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .quiz-topic h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ED3F3F;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 150px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            font-size: 14px;
+            color: #ED3F3F;
+            text-align: center;
+        }
+
+        .quiz-questions {
+            margin-top: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .question-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .options label {
+            display: block;
+            background-color: #ffffff;
+            box-shadow: 0 2px 7px #0000001c;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .quiz-action {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <article class="quiz-wrapper">
+        
+        <section id="quiz-information" class="quiz-information">
+            <div class="quiz-header">
+                <button class="back-exit-button">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h1>Scam Awareness Quiz</h1>
+                <button class="back-exit-button"></button>
+            </div>
+            <div class="quiz-description">
+                <p>
+                    The scam awareness quiz in the OCBC app is designed to educate elderly users and individuals with limited financial literacy about common scams and fraudulent activities. This interactive feature aims to enhance their awareness of the tactics scammers use, such as phishing emails, fake calls, and deceptive online offers.
+                </p>
+                <p>
+                    By simulating real-world scenarios, the quiz helps users identify red flags and equips them with practical tips to safeguard their personal information and finances.
+                </p>
+                <p>
+                    The ultimate goal is to empower users to make informed decisions, fostering confidence in navigating digital financial platforms while reducing the risks of falling victim to scams.
+                </p>
+            </div>
+            <div class="quiz-action">
+                <button class="start-quiz-button" onclick="showContent('quiz-phishing-scams');hideContent('quiz-information')">Start Quiz</button>
+            </div>
+        </section>
+
+        <section id="quiz-phishing-scams" class="quiz-content" style="display: none;">
+            <div class="quiz-header">
+                <h2>Scam Awareness Quiz</h2>
+                <button class="exit-button">Exit</button>
+            </div>
+            <div class="quiz-topic">
+                <h3>Phishing Scams</h3>
+                <div class="video-placeholder"></div>
+                <p class="note">Note: Please watch the video before attempting the questions</p>
+            </div>
+            <div class="quiz-questions">
+                <div class="question">
+                    <p class="question-title">Question 1 of 6</p>
+                    <p class="question-text">What is the safest action if you receive an email claiming to be from your bank, asking you to log in through a provided link?</p>
+                    <div class="options">
+                        <label>
+                            <input type="radio" name="question1" />
+                            Click the link immediately and log in
+                        </label>
+                        <label>
+                            <input type="radio" name="question1" />
+                            Ignore the email
+                        </label>
+                        <label>
+                            <input type="radio" name="question1" />
+                            Verify the sender's email address and contact the bank through their official channels
+                        </label>
+                        
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-title">Question 2 of 6</p>
+                    <p class="question-text">What should you do if an SMS with a suspicious link asks for your banking details?</p>
+                    <div class="options">
+                        <label><input type="radio" name="question2"> Provide the details to avoid account issue</label>
+                        <label><input type="radio" name="question2" > Delete the SMS and report it to your bank</label>
+                        <label><input type="radio" name="question2"> Forward it to friends to warn them</label>
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-action">
+                <button id="check-phishing" type="submit" class="check-answer-button">Check Answer</button>
+                <button id="next-phishing" class="check-answer-button" style="display: none;" onclick="showContent('quiz-fake-calls');hideContent('quiz-phishing-scams')">Next</button>
+            </div>
+        </section>
+
+        <section id="quiz-fake-calls" class="quiz-content" style="display: none;">
+            <div class="quiz-header">
+                <h2>Scam Awareness Quiz</h2>
+                <button class="exit-button">Exit</button>
+            </div>
+            <div class="quiz-topic">
+                <h3>Fake Calls and Impersonation</h3>
+                <div class="video-placeholder"></div>
+                <p class="note">Note: Please watch the video before attempting the questions</p>
+            </div>
+            <div class="quiz-questions">
+                <div class="question">
+                    <p class="question-title">Question 1 of 6</p>
+                    <p class="question-text">A caller claims to be a police officer and demands your bank account details for an investigation. What should you do?</p>
+                    <div class="options">
+                        <label>
+                            <input type="radio" name="question1" />
+                            Share the details to cooperate
+                        </label>
+                        <label>
+                            <input type="radio" name="question1" />
+                            Hang up and verify with the police hotline
+                        </label>
+                        <label>
+                            <input type="radio" name="question1" />
+                            Ask them to call back later
+                        </label>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-title">Question 2 of 6</p>
+                    <p class="question-text">How can you confirm the authenticity of a call claiming to be from your bank?</p>
+                    <div class="options">
+                        <label>
+                            <input type="radio" name="question2" />
+                            Ask for their employee ID
+                        </label>
+                        <label>
+                            <input type="radio" name="question2" />
+                            Call your bank's official hotline to verify
+                        </label>
+                        <label>
+                            <input type="radio" name="question2" />
+                            Trust them if they know your name
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-action">
+                <button id="check-fake-calls" class="check-answer-button">Check Answer</button>
+                <button id="next-fake-calls" class="check-answer-button" style="display: none;">Next</button>
+            </div>
+        </section>
+        
+        
+    </article>
+    <script>
+        function showContent(contentId){
+            document.getElementById(contentId).style.display = 'block';
+        }
+
+        function hideContent(contentId){
+            document.getElementById(contentId).style.display = 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const options = document.querySelectorAll(".options input[type='radio']");
+
+            options.forEach(option => {
+                option.addEventListener("change", (e) => {
+                    const labels = option.closest(".options").querySelectorAll("label");
+                    labels.forEach(label => {
+                        label.style.backgroundColor = "#f9f9f9"; // Reset background
+                        label.style.color = "#333"; // Reset text color
+                        label.style.borderColor = "#ccc"; // Reset border color
+                    });
+
+                    if (option.checked) {
+                        const label = option.parentElement;
+                        label.style.backgroundColor = "#ED3F3F";
+                        label.style.color = "#fff";
+                        label.style.borderColor = "#ED3F3F";
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            function validateAnswers(currentSectionId) {
+                let allAnswered = true;
+                const currentSection = document.getElementById(currentSectionId);
+                const questions = currentSection.querySelectorAll(".question");
+
+                questions.forEach((question) => {
+                    const selectedOption = question.querySelector("input[type='radio']:checked");
+                    const feedback = question.querySelector(".feedback") || document.createElement("div");
+                    feedback.classList.add("feedback");
+
+                    const correctAnswers = {
+                        "quiz-phishing-scams": {
+                            "question1": "Verify the sender's email address and contact the bank through their official channels",
+                            "question2": "Delete the SMS and report it to your bank"
+                        },
+                        "quiz-fake-calls": {
+                            "question1": "Hang up and verify with the police hotline",
+                            "question2": "Call your bank's official hotline to verify"
+                        },
+                        "quiz-third-section": {
+                            "question1": "Correct answer for question 1 in third section",
+                            "question2": "Correct answer for question 2 in third section"
+                        }
+                    };
+
+                    const explanations = {
+                        "quiz-phishing-scams": {
+                            "question1": "Explanation for phishing question 1",
+                            "question2": "Explanation for phishing question 2"
+                        },
+                        "quiz-fake-calls": {
+                            "question1": "Explanation for fake calls question 1",
+                            "question2": "Explanation for fake calls question 2"
+                        },
+                        "quiz-third-section": {
+                            "question1": "Explanation for third section question 1",
+                            "question2": "Explanation for third section question 2"
+                        }
+                    };
+
+                    const currentQuiz = correctAnswers[currentSectionId];
+                    const questionName = question.querySelector("input[type='radio']").name;
+                    const selectedText = selectedOption ? selectedOption.parentElement.textContent.trim() : null;
+
+                    if (selectedText && currentQuiz[questionName] === selectedText) {
+                        feedback.textContent = "Correct! Well done.";
+                        feedback.style.color = "green";
+                        feedback.style.background = "#d4f5d4";
+                    } else if (selectedText) {
+                        feedback.textContent = explanations[currentSectionId][questionName];
+                        feedback.style.color = "red";
+                        feedback.style.background = "#fddddd";
+                    } else {
+                        feedback.textContent = "Please select an answer.";
+                        feedback.style.color = "red";
+                        feedback.style.background = "#fddddd";
+                        allAnswered = false;
+                    }
+
+                    feedback.style.padding = "10px";
+                    feedback.style.borderRadius = "5px";
+                    feedback.style.marginTop = "10px";
+                    if (!question.contains(feedback)) {
+                        question.appendChild(feedback);
+                    }
+                });
+
+                return allAnswered;
+            }
+
+            document.getElementById("check-phishing").addEventListener("click", (e) => {
+                const allAnswered = validateAnswers("quiz-phishing-scams");
+                if (allAnswered) {
+                    document.getElementById("check-phishing").style.display = "none";
+                    document.getElementById("next-phishing").style.display = "block";
+                }
+            });
+
+            document.getElementById("check-fake-calls").addEventListener("click", (e) => {
+                const allAnswered = validateAnswers("quiz-fake-calls");
+                if (allAnswered) {
+                    document.getElementById("check-fake-calls").style.display = "none";
+                    document.getElementById("next-fake-calls").style.display = "block";
+                }
+            });
+
+            document.getElementById("check-third").addEventListener("click", (e) => {
+                const allAnswered = validateAnswers("quiz-third-section");
+                if (allAnswered) {
+                    document.getElementById("check-third").style.display = "none";
+                    document.getElementById("next-third").style.display = "block";
+                }
+            });
+        });
+
+
+
+
+
+    </script>
+</body>
+</html>

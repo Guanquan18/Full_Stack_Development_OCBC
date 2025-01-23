@@ -34,6 +34,7 @@ function verifyJWT(req, res, next) {
             "/pay-bill/:billID",
             "/bill/:billID",
             "/foreign-exchange",
+            "/transactions/expenses/:profileId",
         ];
 
         // Get the requested endpoint without query parameters
