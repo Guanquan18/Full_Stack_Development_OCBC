@@ -121,7 +121,7 @@ CREATE TABLE BankTransaction
 															   'Online Shopping',
 															   'Medical or Healthcare Payments',
 															   'ATM Withdrawals or Cash Deposits',
-															   'Others'))
+															   'Others')),
 	TransactType VARCHAR(20) NOT NULL DEFAULT 'Local Transfer',
     CONSTRAINT PK_BankTransaction PRIMARY KEY (TransactNo),
     CONSTRAINT FK_BankTransaction_AccSender FOREIGN KEY (AccSender)
