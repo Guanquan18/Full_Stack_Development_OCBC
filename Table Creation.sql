@@ -9,6 +9,8 @@ ELSE
 BEGIN
     PRINT 'Database OCBC_DB already exists.';
     USE OCBC_DB;
+    IF OBJECT_ID('ForumMessages', 'U') IS NOT NULL DROP TABLE ForumMessages;
+    IF OBJECT_ID('ForumCategory', 'U') IS NOT NULL DROP TABLE ForumCategory;
 	IF OBJECT_ID('ForeignExchangeTransaction', 'U') IS NOT NULL DROP TABLE ForeignExchangeTransaction;
 	IF OBJECT_ID('Bills', 'U') IS NOT NULL DROP TABLE Bills;
 	IF OBJECT_ID('BankTransaction', 'U') IS NOT NULL DROP TABLE BankTransaction;
@@ -136,6 +138,27 @@ CREATE TABLE ForeignExchangeTransaction (
         REFERENCES BankTransaction (TransactNo)
 );
 
+--Forum Category table to create cateogries within the forum with unique IDs
+CREATE TABLE ForumCategory (
+    CategoryID INT IDENTITY(1,1) NOT NULL,
+    CategoryName NVARCHAR(255) NOT NULL,
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT PK_ForumCategory PRIMARY KEY (CategoryID)
+);
+
+--Create table to include messages into the forum categories
+CREATE TABLE ForumMessages (
+    MessageID INT IDENTITY(1,1) NOT NULL,
+    CategoryID INT NOT NULL,
+    SenderName NVARCHAR(255) NOT NULL,
+    MessageContent NVARCHAR(MAX) NOT NULL,
+    PostedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT PK_ForumMessages PRIMARY KEY (MessageID),
+    CONSTRAINT FK_ForumMessages_CategoryID FOREIGN KEY (CategoryID)
+        REFERENCES ForumCategory (CategoryID)
+);
+
+
 
 --Insert sample values
 insert into Profile(FullName, AccessCode, PinHash)
@@ -223,14 +246,6 @@ values
 ('Alice Johnson', 'Overseas-Chinese Bank (OCBC)', '234-567890-002', 5),
 ('Bob Smith', 'United Overseas Bank (UOB)', '345-678901-003', 5);
 
---Forum Category table to create cateogries within the forum with unique IDs
-CREATE TABLE ForumCategory (
-    CategoryID INT IDENTITY(1,1) NOT NULL,
-    CategoryName NVARCHAR(255) NOT NULL,
-    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT PK_ForumCategory PRIMARY KEY (CategoryID)
-);
-
 --Insert values for the categories
 INSERT INTO ForumCategory (CategoryName) 
 VALUES 
@@ -238,17 +253,6 @@ VALUES
 ('Financial Knowledge'),
 ('Tips and Tricks');
 
---Create table to include messages into the forum categories
-CREATE TABLE ForumMessages (
-    MessageID INT IDENTITY(1,1) NOT NULL,
-    CategoryID INT NOT NULL,
-    SenderName NVARCHAR(255) NOT NULL,
-    MessageContent NVARCHAR(MAX) NOT NULL,
-    PostedDate DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT PK_ForumMessages PRIMARY KEY (MessageID),
-    CONSTRAINT FK_ForumMessages_CategoryID FOREIGN KEY (CategoryID)
-        REFERENCES ForumCategory (CategoryID)
-);
 
 -- Insert messages values
 INSERT INTO ForumMessages (CategoryID, SenderName, MessageContent)

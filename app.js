@@ -49,14 +49,14 @@ app.post("/recipients",verifyJWT.verifyJWT, transactionController.addRecipient);
 app.post("/transfer",verifyJWT.verifyJWT, transactionController.performTransfer); // Perform a fund transfer (kesh)
 app.post("/video-calling/create-room",verifyJWT.verifyJWT, videoCallingController.createRoom); // Create a room and send an OTP
 app.post("/video-calling/send-host-url", videoCallingController.sendUrl); // Send the host room URL to the admin
-app.get("/unpaid-bills/:profileId", billController.getUnpaidBills); // Get unpaid bills by profile id
-app.get("/paid-bills/:profileId", billController.getPaidBills); // Get paid bills by profile id
-app.post("/pay-bill/:billID", billController.payBills); // Pay bills by billing id
-app.get("/bill/:billID", billController.getBillById); // Get bill by bill id
+app.get("/unpaid-bills/:profileId", verifyJWT.verifyJWT, billController.getUnpaidBills); // Get unpaid bills by profile id
+app.get("/paid-bills/:profileId", verifyJWT.verifyJWT, billController.getPaidBills); // Get paid bills by profile id
+app.post("/pay-bill/:billID", verifyJWT.verifyJWT, billController.payBills); // Pay bills by billing id
+app.get("/bill/:billID", verifyJWT.verifyJWT, billController.getBillById); // Get bill by bill id
 app.get("/api/forum/categories", forumController.getCategories); //  get all categories for forums [Created by : Keshwindren S10259469C] 
 app.get("/api/forum/messages/:categoryId", forumController.getMessagesByCategory); // get categories of forum by ID [Created by : Keshwindren S10259469C]
 app.post("/api/forum/messages", forumController.postMessage); // post  messages to forums [Created by : Keshwindren S10259469C]
-app.post("/foreign-exchange", transactionController.performForeignExchange); // Perform a fund transfer (sairam)
+app.post("/foreign-exchange", verifyJWT.verifyJWT,transactionController.performForeignExchange); // Perform a fund transfer (sairam)
 app.get("/convert-currency", transactionController.convertCurrency); // Perform a fund transfer (sairam)
 app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
 
