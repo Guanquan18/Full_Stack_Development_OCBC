@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipient</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #3f4347;
+        }
+        .app {
+            max-width: 430px;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #add-recipient-header{
+            background: rgb(241,233,244);
+            background: linear-gradient(45deg, rgba(241,233,244,1) 0%, rgba(252,251,249,1) 100%);
+            padding: 20px;
+        }
+
+        #options-section {
+            padding: 20px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        .back-button img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .transfer-to {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .transfer-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .transfer-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .transfer-icon img {
+            width: 70%;
+            height: 70%;
+        }
+        .transfer-text {
+            font-weight: bold;
+            color: #3f4347;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        .chatbot-icon{
+            width: 50%;
+            height: 50%;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 430px) {
+            .app {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div id="add-recipient-header">
+            <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+                <img src="../images/back-icon.png" alt="Back">
+            </a>
+            <div class="balance" id="balance">Balance<br>$0.00</div>
+            <div class="transfer-to">Transfer By</div>
+        </div>
+
+        <div id="options-section">
+        <!-- Link to bank.html for "Bank Account" option -->
+        <a href="bank.html" class="transfer-option">
+            <div class="transfer-icon">
+                <img src="../images/transfer/bank.png" alt="Bank Account Icon">
+            </div>
+            <div class="transfer-text">Bank Account</div>
+        </a>
+
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="../images/transfer/phone.png" alt="PayNow to Mobile Icon">
+            </div>
+            <div class="transfer-text">PayNow to Mobile</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="../images/transfer/id.png" alt="PayNow to NRIC/FIN Icon">
+            </div>
+            <div class="transfer-text">PayNow to NRIC/FIN</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="../images/transfer/uen.png" alt="PayNow to UEN Icon">
+            </div>
+            <div class="transfer-text">PayNow to UEN/VPA</div>
+        </div>
+        <div class="transfer-option">
+            <div class="transfer-icon">
+                <img src="../images/transfer/globe.png" alt="Overseas">
+            </div>
+            <div class="transfer-text">Overseas</div>
+        </div>
+
+        <!-- Chatbot -->
+        <a href="../chatbot/ibm-chatbot.html">
+            <div class="chatbot-container">
+                <img src="../images/chatbot.png" alt="Chatbot" class="chatbot-icon">
+            </div>
+        </a>
+    </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'transaction.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+
+            // Fetch and display account balance
+            try {
+                const response = await fetch(`/account/${profileId}`,{
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    }
+                });
+                if (response.ok) {
+                    const accountData = await response.json();
+                    document.getElementById("balance").textContent = `Balance\n$${accountData.Balance.toFixed(2)}`;
+                } else {
+                    console.error("Failed to fetch balance.");
+                }
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+
+            const transferOptions = document.querySelectorAll('.transfer-option');
+            transferOptions.forEach(option => {
+                option.addEventListener('click', event => {
+                    const transferType = option.querySelector('.transfer-text').innerText;
+                    const recipientData = sessionStorage.getItem("recipientData");
+                    const recipientCurrencyCode = sessionStorage.getItem("recipientCurrencyCode");
+                    const senderCurrencyCode = sessionStorage.getItem("AccCurrency");
+
+                    
+                    
+                    // Helper function to check currency match
+                    const isSameCurrency = recipientCurrencyCode === senderCurrencyCode;
+                    if (transferType === "Bank Account") {
+                        event.preventDefault();
+
+                        if (!recipientData) {
+                            // Redirect to bank.html if recipientData is missing
+                            window.location.href = "addRecipient.html";
+                        } else if (isSameCurrency) {
+                            // Redirect to transfer.html for local transfers
+                            window.location.href = "transfer.html";
+                        } else {
+                            // If currencies differ, direct to overseas transfer or handle appropriately
+                            alert("Local transfers require matching currencies. ");
+                        }
+                    } else if (transferType === "Overseas") {
+                        event.preventDefault();
+                        if (!recipientData) {
+                            // Redirect to bank.html if recipientData is missing
+                            window.location.href = "addRecipient.html";
+                        } else
+                        if (!isSameCurrency) {
+                            // Redirect to overseas.html if currencies differ
+                            window.location.href = "overseas.html";
+                        } else {
+                            alert("Overseas transfers require different currencies.");
+                        }
+                    } else {
+                        alert('Selected transfer type: ' + transferType + " is not available.");
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
