@@ -40,37 +40,47 @@
         .financial-header {
             padding: 20px;
             text-align: center;
+            margin: 20px auto;
         }
         .financial-header h1 {
             margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #e74d3c;
         }
 
-        /* Account Card */
-        .account-card {
-            background: #e74c3c;
-            color: white;
-            border-radius: 10px;
-            padding: 20px;
+        .acount-balance-container {
+            width: 100%;
+            height: fit-content;
             margin: 20px auto;
             text-align: center;
+            color: white;
         }
 
-        .account-card h3 {
-            margin: 0 0 10px;
+        .account-balance-container h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #626262;
         }
 
-        .account-card .account-type {
-            font-size: 1.2rem;
-            margin: 10px 0;
+        .account-balance {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
         }
 
-        .account-card .balance span,
-        .account-card .debit-card span {
-            font-weight: bold;
+        .account-balance-month {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+            color: #626262;
         }
+
 
         /* Charts Section */
         .charts-section {
+            width: 100%;
             margin: 20px auto;
             text-align: center;
             color: white;
@@ -79,37 +89,18 @@
         .chart-placeholder {
             width: 100%;
             height: fit-content;
-            /* Gradient Background */
-            padding: 10px 5px;
+            padding: 20px 0;
             margin-bottom: 20px;
             
             display: flex;
             align-items: center;
             justify-content: center;
             
+            border: 1px solid #e74d3c;
             border-radius: 10px;
         }
 
-        #pie-chart {
-            background: linear-gradient(45deg, #e74d3c06, #e74d3c8d);
-            border-radius: 10px;
-        }
-
-        .chart-placeholder p {
-            margin: 0;
-            font-size: 1.2rem;
-            color: black;
-        }
-
-        .chart-placeholder img {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-            margin: 0 auto;
-            border-radius: 10px;
-            display: block;
-        }
-
+        
 
     </style>
 </head>
@@ -121,25 +112,24 @@
         </header>
     
         <!-- Account Details Card -->
-        <div class="account-card">
-            <h3>OCBC Bank</h3>
-            <p class="account-type">Statement Savings Account</p>
-            <p class="balance">Available Balance: <span>$23,540.00</span></p>
-            <p class="debit-card">Debit Card No: <span>1234 5678 9876 5432</span></p>
+        <div class="account-balance-container">
+            <h3>Total Spending</h3>
+            <p class="account-balance">$23,540.00</p>
+            <p class="account-balance-month">May 2024</p>
         </div>
     
         <!-- Embedded Charts Section -->
         <div class="charts-section">
 
-            <!-- Line Chart -->
-        <div class="chart-placeholder">
-            <canvas id="line-chart" width="400" height="200"></canvas>
-        </div>
+                <!-- Line Chart -->
+            <div class="chart-placeholder">
+                <canvas id="line-chart" width="400" height="400"></canvas>
+            </div>
 
-        <!-- Pie Chart -->
-        <div class="chart-placeholder">
-            <canvas id="pie-chart" width="400" height="200"></canvas>
-        </div>
+            <!-- Pie Chart -->
+            <div class="chart-placeholder">
+                <canvas id="pie-chart" style="width: 100%; height: auto;"></canvas>
+            </div>
 
             
         </div>

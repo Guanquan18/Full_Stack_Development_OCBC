@@ -220,6 +220,49 @@ values
 INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver, TransactType)
 VALUES ('2024-12-01', 100.00, '123-456789-001', '789-012345-008', 'Foreign Exchange');
 
+INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver, TransactPurpose)
+VALUES
+-- Grocery or Retail Purchases
+('2024-10-20', 80.25, '123-456789-001', '234-567890-002', 'Grocery or Retail Purchases'),
+('2024-11-15', 95.00, '234-567890-002', '345-678901-003', 'Grocery or Retail Purchases'),
+('2024-12-10', 110.50, '345-678901-003', '456-789012-004', 'Grocery or Retail Purchases'),
+('2025-01-05', 120.25, '456-789012-004', '567-890123-005', 'Grocery or Retail Purchases'),
+('2025-01-15', 130.00, '567-890123-005', '123-456789-001', 'Grocery or Retail Purchases'),
+('2025-01-20', 140.75, '123-456789-001', '234-567890-002', 'Grocery or Retail Purchases'),
+
+-- ATM Withdrawals or Cash Deposits
+('2024-10-23', 300.00, '456-789012-004', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2024-11-05', 450.00, '567-890123-005', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2024-12-18', 500.00, '123-456789-001', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2025-01-10', 400.00, '234-567890-002', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2025-01-18', 350.00, '345-678901-003', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2025-01-22', 250.00, '456-789012-004', NULL, 'ATM Withdrawals or Cash Deposits'),
+
+-- Online Shopping
+('2024-10-25', 50.00, '123-456789-001', '345-678901-003', 'Online Shopping'),
+('2024-11-14', 75.50, '234-567890-002', '456-789012-004', 'Online Shopping'),
+('2024-12-22', 100.00, '345-678901-003', '567-890123-005', 'Online Shopping'),
+('2025-01-07', 90.25, '456-789012-004', '123-456789-001', 'Online Shopping'),
+('2025-01-15', 110.75, '567-890123-005', '234-567890-002', 'Online Shopping'),
+('2025-01-20', 95.50, '123-456789-001', '345-678901-003', 'Online Shopping'),
+
+-- Medical or Healthcare Payments
+('2024-10-28', 220.75, '456-789012-004', '123-456789-001', 'Medical or Healthcare Payments'),
+('2024-11-20', 250.50, '567-890123-005', '234-567890-002', 'Medical or Healthcare Payments'),
+('2024-12-08', 300.00, '123-456789-001', '345-678901-003', 'Medical or Healthcare Payments'),
+('2025-01-10', 350.25, '234-567890-002', '456-789012-004', 'Medical or Healthcare Payments'),
+('2025-01-18', 400.00, '345-678901-003', '567-890123-005', 'Medical or Healthcare Payments'),
+('2025-01-22', 450.75, '456-789012-004', '123-456789-001', 'Medical or Healthcare Payments'),
+
+-- Others
+('2024-10-30', 300.00, '123-456789-001', '234-567890-002', 'Others'),
+('2024-11-25', 400.50, '234-567890-002', '345-678901-003', 'Others'),
+('2024-12-15', 200.00, '345-678901-003', '567-890123-005', 'Others'),
+('2025-01-12', 350.75, '456-789012-004', '123-456789-001', 'Others'),
+('2025-01-18', 450.25, '567-890123-005', '234-567890-002', 'Others'),
+('2025-01-22', 500.00, '123-456789-001', '345-678901-003', 'Others');
+
+
 INSERT INTO ForeignExchangeTransaction (TransactNo, FromCurrency, ToCurrency, ExchangeRate, ConvertedAmount)
 VALUES (6, 'SGD', 'INR', 63.67, 6367.00);
 

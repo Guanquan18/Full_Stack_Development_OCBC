@@ -29,7 +29,7 @@ function IndexLoginSubmit(formId){
             sessionStorage.removeItem("selectedLink");
             if (selectedLink === null) {
                 // If no link is stored, redirect to the default homepage
-                window.location.href = "../homepage/homepage.html";
+                window.location.href = "../expenses/expenses.html";
             } else {
                 // Otherwise, redirect to the stored link
                 window.location.href = selectedLink;
@@ -233,20 +233,18 @@ async function displayExpenses() {
     // Render line chart
     const lineCtx = document.getElementById("line-chart").getContext("2d");
 
-    // Destroy old chart if it exists
     if (window.lineChart) {
         window.lineChart.destroy();
     }
 
-    // Create a new chart
     window.lineChart = new Chart(lineCtx, {
         type: "line",
         data: {
-            labels: lineChartLabels, // Array of labels
+            labels: lineChartLabels,
             datasets: [
                 {
                     label: "Spending",
-                    data: lineChartData, // Array of data
+                    data: lineChartData,
                     backgroundColor: "rgba(255, 99, 132, 0.5)",
                     borderColor: "rgb(255, 99, 132)",
                     fill: true,
@@ -265,7 +263,7 @@ async function displayExpenses() {
                     font: {
                         size: 30,
                         family: "sans-serif",
-                        weight: "bold", // Corrected: Use 'weight' instead of 'style'
+                        weight: "bold",
                     },
                     padding: 10,
                 },
@@ -276,7 +274,7 @@ async function displayExpenses() {
                         font: {
                             size: 12,
                             family: "sans-serif",
-                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                            weight: "normal",
                         },
                         color: "#666",
                     },
@@ -296,9 +294,7 @@ async function displayExpenses() {
                         family: "sans-serif",
                         weight: "bold",
                     },
-                    formatter: function (value) {
-                        return `$${value.toFixed(2)}`; // Format values as currency
-                    },
+                    formatter: value => `$${value.toFixed(2)}`,
                 },
             },
             scales: {
@@ -307,7 +303,7 @@ async function displayExpenses() {
                         font: {
                             size: 18,
                             family: "sans-serif",
-                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                            weight: "normal",
                         },
                         color: "#666",
                     },
@@ -320,7 +316,7 @@ async function displayExpenses() {
                         font: {
                             size: 18,
                             family: "sans-serif",
-                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                            weight: "normal",
                         },
                         color: "#666",
                     },
@@ -330,41 +326,7 @@ async function displayExpenses() {
                 },
             },
         },
-        plugins: [ChartDataLabels], // Enable the datalabels plugin
     });
-
-
-    
-    // new Chart(lineCtx, {
-    //     type: "line",
-    //     data: {
-    //         labels: lineChartLabels,
-    //         datasets: [{
-    //             label: "Monthly Spending",
-    //             data: lineChartData,
-    //             borderColor: "#3498db",
-    //             backgroundColor: "rgba(52, 152, 219, 0.2)",
-    //             fill: true,
-    //             tension: 0.3
-    //         }]
-    //     },
-    //     options: {
-    //         responsive: true,
-    //         plugins: {
-    //             legend: {
-    //                 display: true,
-    //             },
-    //             tooltip: {
-    //                 callbacks: {
-    //                     label: function (context) {
-    //                         return `$${context.raw.toFixed(2)}`;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // });
-    
 
     // Prepare data for pie chart
     const pieChartLabels = Object.keys(currentMonthSpending);
@@ -372,37 +334,66 @@ async function displayExpenses() {
 
     // Render pie chart
     const pieCtx = document.getElementById("pie-chart").getContext("2d");
-    new Chart(pieCtx, {
+
+    if (window.pieChart) {
+        window.pieChart.destroy();
+    }
+
+    window.pieChart = new Chart(pieCtx, {
         type: "pie",
         data: {
-            labels: pieChartLabels,
-            datasets: [{
-                data: pieChartData,
-                backgroundColor: [
-                    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#e74c3c",
-                    "#f1c40f", "#e67e22", "#95a5a6"
-                ]
-            }]
+            labels: pieChartLabels, // Add your labels here
+            datasets: [
+                {
+                    data: pieChartData, // Add your data here
+                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+                    borderColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+                    borderWidth: 3,
+                },
+            ],
         },
         options: {
             responsive: true,
             plugins: {
                 legend: {
                     display: true,
+                    position: "top",
+                    align: "center",
+                    labels: {
+                        font: {
+                            size: 12,
+                            family: "sans-serif",
+                            weight: "normal",
+                        },
+                        color: "#666666",
+                        padding: 20,
+                    },
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const label = context.label || "";
-                            const value = context.raw || 0;
-                            return `${label}: $${value.toFixed(2)}`;
-                        }
-                    }
-                }
-            }
-        }
+                datalabels: {
+                    display: true, // Ensure it's enabled
+                    align: "center", // Align data labels
+                    anchor: "center", // Position relative to the segment
+                    backgroundColor: "#fff",
+                    borderColor: "#ddd",
+                    borderRadius: 6,
+                    borderWidth: 1,
+                    padding: 4,
+                    color: "#666666",
+                    font: {
+                        family: "sans-serif",
+                        size: 15,
+                        weight: "bold",
+                    },
+                    formatter: (value, context) => `${value.toFixed(2)}`, // Format the data label
+                },
+            },
+        },
+        plugins: [ChartDataLabels], // Ensure the plugin is added here
     });
+       
+    
 }
+
 
 // Function to fetch and process expenses
 async function getExpenses() {

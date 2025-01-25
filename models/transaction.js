@@ -3,7 +3,7 @@ const sql = require("mssql");
 const dbConfig = require("../configs/dbConfig");
 
 class Transaction {
-    constructor(TransactNo, TransactDate, TransactAmount, AccSender, SenderName, AccReceiver, ReceiverName, TransactType) {
+    constructor(TransactNo, TransactDate, TransactAmount, AccSender, SenderName, AccReceiver, ReceiverName, TransactType, TransactPurpose) {
         this.TransactNo = TransactNo;
         this.TransactDate = TransactDate;
         this.TransactAmount = TransactAmount;
@@ -12,6 +12,7 @@ class Transaction {
         this.AccReceiver = AccReceiver;
         this.ReceiverName = ReceiverName;
         this.TransactType = TransactType;
+        this.TransactPurpose = TransactPurpose;
     }
 
     // Method to retrieve existing recipients for a profile (kesh)
@@ -395,6 +396,7 @@ class Transaction {
                     senderProfile.FullName AS SenderName, 
                     bt.AccReceiver, 
                     receiverProfile.FullName AS ReceiverName,
+                    bt.TransactType,
                     bt.TransactPurpose,
                     bt.BillerAccNum,
                     biller.BillerName AS BillerName
@@ -426,6 +428,7 @@ class Transaction {
                 row.SenderName,
                 row.AccReceiver || row.BillerAccNum, // Handle both receiver and biller
                 row.ReceiverName || row.BillerName,
+                row.TransactType,
                 row.TransactPurpose
             ));
 
