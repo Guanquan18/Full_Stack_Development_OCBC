@@ -140,6 +140,7 @@ function IndexLoginSubmit(formId){
                 console.log(details)
                 
                 sessionStorage.setItem('AccNum', details.AccNum);   // Set the session storgae
+                sessionStorage.setItem('AccCurrency', details.CurrencyCode);   // Set the session storgae
 
                 alert("User Authenticated successfully");
                 console.log("User Authenticated successfully");
@@ -191,6 +192,254 @@ function IndexLoginSubmit(formId){
         }
     },false)
 }
+
+async function displayExpenses() {
+    const data = await getExpenses();
+    console.log(data);
+
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const monthlySpending = {};
+    const currentMonthSpending = {};
+
+    // Process data
+    data.forEach(transaction => {
+        const transactionDate = new Date(transaction.TransactDate);
+        const month = transactionDate.getMonth();
+        const year = transactionDate.getFullYear();
+
+        // Group by month-year for line graph
+        const monthYearKey = `${year}-${String(month + 1).padStart(2, "0")}`; // Add leading zero for proper sorting
+        if (!monthlySpending[monthYearKey]) {
+            monthlySpending[monthYearKey] = 0;
+        }
+        monthlySpending[monthYearKey] += transaction.TransactAmount;
+
+        // Categorize for pie chart if in the current month and year
+        if (month === currentMonth && year === currentYear) {
+            const purpose = transaction.TransactPurpose || "Uncategorized"; // Assign default if null
+            if (!currentMonthSpending[purpose]) {
+                currentMonthSpending[purpose] = 0;
+            }
+            currentMonthSpending[purpose] += transaction.TransactAmount;
+        }
+    });
+
+    // Prepare data for line chart
+    const lineChartLabels = Object.keys(monthlySpending).sort(); // Proper chronological order
+    const lineChartData = lineChartLabels.map(key => monthlySpending[key]);
+
+    // Render line chart
+    const lineCtx = document.getElementById("line-chart").getContext("2d");
+
+    // Destroy old chart if it exists
+    if (window.lineChart) {
+        window.lineChart.destroy();
+    }
+
+    // Create a new chart
+    window.lineChart = new Chart(lineCtx, {
+        type: "line",
+        data: {
+            labels: lineChartLabels, // Array of labels
+            datasets: [
+                {
+                    label: "Spending",
+                    data: lineChartData, // Array of data
+                    backgroundColor: "rgba(255, 99, 132, 0.5)",
+                    borderColor: "rgb(255, 99, 132)",
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 3,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: "Monthly Spending",
+                    font: {
+                        size: 30,
+                        family: "sans-serif",
+                        weight: "bold", // Corrected: Use 'weight' instead of 'style'
+                    },
+                    padding: 10,
+                },
+                legend: {
+                    display: true,
+                    position: "top",
+                    labels: {
+                        font: {
+                            size: 12,
+                            family: "sans-serif",
+                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                        },
+                        color: "#666",
+                    },
+                },
+                datalabels: {
+                    display: true,
+                    align: "top",
+                    anchor: "center",
+                    backgroundColor: "#fff",
+                    borderColor: "#ddd",
+                    borderRadius: 6,
+                    borderWidth: 1,
+                    padding: 4,
+                    color: "#666",
+                    font: {
+                        size: 17,
+                        family: "sans-serif",
+                        weight: "bold",
+                    },
+                    formatter: function (value) {
+                        return `$${value.toFixed(2)}`; // Format values as currency
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        font: {
+                            size: 18,
+                            family: "sans-serif",
+                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                        },
+                        color: "#666",
+                    },
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.1)",
+                    },
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 18,
+                            family: "sans-serif",
+                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                        },
+                        color: "#666",
+                    },
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.1)",
+                    },
+                },
+            },
+        },
+        plugins: [ChartDataLabels], // Enable the datalabels plugin
+    });
+
+
+    
+    // new Chart(lineCtx, {
+    //     type: "line",
+    //     data: {
+    //         labels: lineChartLabels,
+    //         datasets: [{
+    //             label: "Monthly Spending",
+    //             data: lineChartData,
+    //             borderColor: "#3498db",
+    //             backgroundColor: "rgba(52, 152, 219, 0.2)",
+    //             fill: true,
+    //             tension: 0.3
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         plugins: {
+    //             legend: {
+    //                 display: true,
+    //             },
+    //             tooltip: {
+    //                 callbacks: {
+    //                     label: function (context) {
+    //                         return `$${context.raw.toFixed(2)}`;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
+    
+
+    // Prepare data for pie chart
+    const pieChartLabels = Object.keys(currentMonthSpending);
+    const pieChartData = pieChartLabels.map(key => currentMonthSpending[key]);
+
+    // Render pie chart
+    const pieCtx = document.getElementById("pie-chart").getContext("2d");
+    new Chart(pieCtx, {
+        type: "pie",
+        data: {
+            labels: pieChartLabels,
+            datasets: [{
+                data: pieChartData,
+                backgroundColor: [
+                    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#e74c3c",
+                    "#f1c40f", "#e67e22", "#95a5a6"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const label = context.label || "";
+                            const value = context.raw || 0;
+                            return `${label}: $${value.toFixed(2)}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Function to fetch and process expenses
+async function getExpenses() {
+    const profileId = sessionStorage.getItem("profileId");
+    const token = sessionStorage.getItem("token");
+
+    const response = await fetch(`/transactions/expenses/${profileId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    return response.json();
+}
+
+// Initialize expense charts
+document.addEventListener("DOMContentLoaded", displayExpenses);
+
+
+async function getExpenses(){
+    const profileId = sessionStorage.getItem("profileId");
+    const token = sessionStorage.getItem("token");
+
+    const response = await fetch(`/transactions/expenses/${profileId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
+
 /*--------------------------------  Sairam Functions --------------------------------*/
 const profileId = JSON.parse(sessionStorage.getItem("profileId")); // Retrieve the profile ID from the session storage
 console.log(profileId)
@@ -209,6 +458,7 @@ async function fetchProfileDetails() {
         const data = await response.json();
         console.log(data)
         document.getElementById('user-name').innerText = data.FullName;
+        sessionStorage.setItem("FullName", data.FullName);  
 
     } catch (error) {
         console.error("Error:", error.message);
@@ -390,6 +640,9 @@ async function fetchTransactions() {
                     </p>
                    <p class="transaction-to">
                         To: ${transaction.AccReceiver ? transaction.ReceiverName : transaction.BillerName}
+                    </p>
+                    <p class="transaction-type">
+                        Type: ${transaction.TransactType}
                     </p>
                     <div class="transaction-amount">Amount: <span style="color: ${amountColor};">${amountDisplay}</span></div>
                 `;

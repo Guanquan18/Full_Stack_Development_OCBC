@@ -11,9 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "chart.js": "^4.4.7",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "html5-qrcode": "^2.3.8",
     "joi": "^17.13.3",
+    "jsqr": "^1.4.0",
     "mssql": "^11.0.1",
     "nodemailer": "^6.9.16",
     "openai": "^4.78.1",

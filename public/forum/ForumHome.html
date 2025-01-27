@@ -1,0 +1,168 @@
+<!--Created by Keshwindren Gandipanh S10259469C-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCBC Discussion Forum</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Container */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+    }
+
+    .back-button img {
+    height: 30px;
+    margin-right: 5px;
+    }
+
+
+    .back-button:hover {
+      background-color: #f2f2f2;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      color: #c72026; /* OCBC red */
+      font-weight: bold;
+      margin: 0 auto; /* Centers the title horizontally */
+      text-align: center;
+    }
+
+    /* Main Content */
+    .content {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .content h2 {
+      font-size: 1rem;
+      margin-top: 20px;
+      color: #c72026;
+    }
+
+    .content ul {
+      list-style: disc;
+      margin: 10px 0 20px 20px;
+      padding: 0;
+    }
+
+    .content ul li {
+      margin-bottom: 10px;
+    }
+
+    /* Footer Buttons */
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 15px 20px;
+      font-size: 1rem;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn.red {
+      background-color: #c72026;
+    }
+
+    .btn.red:hover {
+      background-color: #a91b1f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+        <a href="../homepage/homepage.html" class="back-button">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>        
+      <h1 class="title">OCBC Discussion Forum</h1>
+    </header>
+    <main class="content">
+      <p>Welcome to OCBC's Community Forum which is your space to communicate and collaborate with other members of OCBC.</p>
+      <p>
+        This platform also serves as a reliable communication channel during the rare instances of system downtime.
+        If our helpline services are temporarily unavailable, you can count on the forum to stay informed, share updates,
+        and find solutions in collaboration with other users.
+      </p>
+      <h2>Key Features:</h2>
+      <ul>
+        <li>Engage in discussions - Share your thoughts on a wide range of topics from personal finance to feedback about our services.</li>
+        <li>Collaborate and connect - Build a network with like-minded people and learn from each other's experiences.</li>
+        <li>Stay updated - Access the latest updates and community-driven solutions during critical service disruptions.</li>
+      </ul>
+    </main>
+    <div class="button-container">
+      <button class="btn red" onclick="navigateTo('ForumGuidelines.html')">Forum Guidelines</button>
+      <button class="btn red" onclick="navigateTo('ForumCategory.html')">Proceed To Forum</button>
+    </div>
+  </div>
+  <script>
+    // JavaScript to handle button navigation (front-end only for now)
+    function goBack() {
+        window.location.href = '../homepage/homepage.html'; // navigates user back to the homepage when clicking the back button
+    }
+
+    function navigateTo(page) {
+      if (page === 'ForumGuidelines.html') {
+        window.location.href = 'ForumGuidelines.html'; // Navigates to ForumGuidelines.html
+      } else if (page === 'ForumCategory.html') {
+        window.location.href = 'ForumCategory.html'; // Navigates to ForumCategory.html
+      }
+    }
+  </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ const cardController = require("./controllers/cardController"); // Import the ca
 const transactionController = require("./controllers/transactionController"); // Import the transaction controller
 const videoCallingController = require("./controllers/videoCallingController"); // Import the video calling controller
 const billController = require("./controllers/billController"); // Import the bill controller
+const forumController = require("./controllers/forumController"); // Import the forum controller [Created by : Keshwindren S10259469C]
 
 
 const app = express(); // Create an Express application
@@ -39,19 +40,27 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', validateProfile.validateAccessCodePin, profileController.loginProfileByAccessCode);
-app.get("/account/:profileId",verifyJWT.verifyJWT, accountController.getAccountByProfileId); // Get profile by profile id
-app.get("/profile/:profileId",verifyJWT.verifyJWT, profileController.getProfileById); // Get account by profile id
-app.get("/card/:profileId/:accNum",verifyJWT.verifyJWT, cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum
-app.get("/transactions/:accNum",verifyJWT.verifyJWT, transactionController.getTransactionHistory); // get trnasactions history by accNum
+app.get("/account/:profileId",verifyJWT.verifyJWT, accountController.getAccountByProfileId); // Get profile by profile id (sairam)
+app.get("/profile/:profileId",verifyJWT.verifyJWT, profileController.getProfileById); // Get account by profile id (sairam)
+app.get("/card/:profileId/:accNum",verifyJWT.verifyJWT, cardController.getCardtByProfileIdandAccNum); // Get account by profile id and accNum (sairam)
+app.get("/transactions/:accNum",verifyJWT.verifyJWT, transactionController.getTransactionHistory); // get trnasactions history by accNum (sairam)
 app.get("/recipients/:profileId",verifyJWT.verifyJWT, transactionController.getRecipients); // Get recipients for a profile from the recipients table (kesh)
 app.post("/recipients",verifyJWT.verifyJWT, transactionController.addRecipient); // Add a new recipient after clicking on add recipient which would add the recipient to the database (kesh)
 app.post("/transfer",verifyJWT.verifyJWT, transactionController.performTransfer); // Perform a fund transfer (kesh)
 app.post("/video-calling/create-room",verifyJWT.verifyJWT, videoCallingController.createRoom); // Create a room and send an OTP
 app.post("/video-calling/send-host-url", videoCallingController.sendUrl); // Send the host room URL to the admin
-app.get("/unpaid-bills/:profileId", billController.getUnpaidBills); // Get unpaid bills by profile id
-app.get("/paid-bills/:profileId", billController.getPaidBills); // Get paid bills by profile id
-app.post("/pay-bill/:billID", billController.payBills); // Pay bills by billing id
-app.get("/bill/:billID", billController.getBillById); // Get bill by bill id
+app.get("/unpaid-bills/:profileId", verifyJWT.verifyJWT, billController.getUnpaidBills); // Get unpaid bills by profile id
+app.get("/paid-bills/:profileId", verifyJWT.verifyJWT, billController.getPaidBills); // Get paid bills by profile id
+app.post("/pay-bill/:billID", verifyJWT.verifyJWT, billController.payBills); // Pay bills by billing id
+app.get("/bill/:billID", verifyJWT.verifyJWT, billController.getBillById); // Get bill by bill id
+app.get("/api/forum/categories", forumController.getCategories); //  get all categories for forums [Created by : Keshwindren S10259469C] 
+app.get("/api/forum/messages/:categoryId", forumController.getMessagesByCategory); // get categories of forum by ID [Created by : Keshwindren S10259469C]
+app.post("/api/forum/messages", forumController.postMessage); // post  messages to forums [Created by : Keshwindren S10259469C]
+app.post("/foreign-exchange", verifyJWT.verifyJWT,transactionController.performForeignExchange); // Perform a fund transfer (sairam)
+app.get("/convert-currency", transactionController.convertCurrency); // Perform a fund transfer (sairam)
+app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
+
+app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id
 
 app.listen(port, async () => {
     try {

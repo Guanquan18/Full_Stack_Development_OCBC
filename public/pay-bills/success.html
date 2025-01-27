@@ -126,12 +126,15 @@
     </div>
 
     <script>
+        // Function to redirect to view-bills.html
         function makeAnotherTransfer() {
             window.location.href = "view-bills.html";
         }
+        // Function to redirect to homepage
         function goBack() {
             window.location.href = "../homepage/homepage.html"; 
         }
+        // Fetching billing data
         document.addEventListener("DOMContentLoaded", async function() {
             const billingId = sessionStorage.getItem("billingId");
             const AccNum = sessionStorage.getItem("AccNum");

@@ -1,0 +1,138 @@
+<!--Created by Keshwindren Gandipanh S10259469C-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum Guidelines</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Container */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .back-button {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+    }
+
+    .back-button img {
+    height: 30px;
+    margin-right: 5px;
+    }
+
+
+    .back-button:hover {
+      background-color: #f2f2f2;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      color: #c72026; /* OCBC red */
+      font-weight: bold;
+      margin: 0 auto; /* Centers the title horizontally */
+      text-align: center;
+    }
+
+    /* Main Content */
+    .content {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .content h2 {
+      font-size: 1.2rem;
+      color: #c72026;
+      margin-bottom: 10px;
+    }
+
+    .content ul {
+      list-style-type: disc;
+      margin: 10px 0 20px 20px;
+      padding: 0;
+    }
+
+    .content ul li {
+      margin-bottom: 10px;
+    }
+
+    .welcome-message {
+      margin: 10px 0; /* Reduced margin for closer alignment */
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: left; /* Ensures alignment as shown in reference */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+        <a href="../forum/ForumHome.html" class="back-button">
+            <img src="../images/back-icon.png" alt="Back">
+        </a>        
+      <h1 class="title">Forum Guidelines</h1>
+    </header>
+    <p class="welcome-message">
+      Welcome to the OCBC Forum! This is your space to engage with other users, share knowledge, and stay informed. 
+      Please read through the guidelines to ensure a respectful and enjoyable experience for everyone.
+    </p>
+    <main class="content">
+      <h2>Guidelines:</h2>
+      <ul>
+        <li>Be respectful to other members at all times.</li>
+        <li>Do not post any offensive or inappropriate content.</li>
+        <li>Stay on topic in your discussions.</li>
+        <li>Use clear and concise language to communicate your ideas.</li>
+        <li>Refrain from spamming or advertising unrelated products or services.</li>
+        <li>Follow all community and OCBC platform rules and policies.</li>
+      </ul>
+    </main>
+  </div>
+  <script>
+    // JavaScript for back button functionality
+    function goBack() {
+      window.location.href = "ForumHome.html"; // Navigate back to the home page
+    }
+  </script>
+</body>
+</html>
