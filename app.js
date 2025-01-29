@@ -3,7 +3,6 @@ const sql = require("mssql"); // Import the mssql module
 const dbConfig = require("./configs/dbConfig"); // Import the database configuration
 const bodyParser = require("body-parser"); // Import body-parser for parsing request bodies
 const staticMiddleware = express.static("public"); // Middleware to serve static files from the public folder
-const OpenAI = require('openai'); // Import the OpenAI module
 
 // Imoort middlewares
 const verifyJWT = require("./middlewares/verifyJWT");
@@ -17,6 +16,7 @@ const transactionController = require("./controllers/transactionController"); //
 const videoCallingController = require("./controllers/videoCallingController"); // Import the video calling controller
 const billController = require("./controllers/billController"); // Import the bill controller
 const forumController = require("./controllers/forumController"); // Import the forum controller [Created by : Keshwindren S10259469C]
+const OpenAIController = require("./controllers/openAIController"); // Import the OpenAI controller
 
 
 const app = express(); // Create an Express application
@@ -27,12 +27,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // For form data handling
 app.use(staticMiddleware); // Mount the static middleware
 app.use(express.json()); // Middleware to parse JSON bodies
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: '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',
-  baseURL: 'https://integrate.api.nvidia.com/v1',
-});
 
 // Route to serve the login page HTML file (login page)
 app.get('/', (req, res) => {
@@ -61,6 +55,7 @@ app.get("/convert-currency", transactionController.convertCurrency); // Perform 
 app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
 
 app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id
+app.post("/get-intent", OpenAIController.getIntent); // Get the intent from OpenAI
 
 app.listen(port, async () => {
     try {

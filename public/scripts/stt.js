@@ -3,6 +3,16 @@ let transcriptionActive = false;
 
 function closeLanguagePopup() {
     document.getElementById('language-overlay').style.display = 'none';
+    document.getElementById('mic-overlay').style.display = 'none';
+    document.getElementById('stop-button').style.display = 'none';
+    document.getElementById('mic-icon').style.display = 'flex'; // Ensure mic icon remains visible
+
+    if (transcriptionActive) {
+        transcriptionActive = false;
+        recognition.stop(); // Stop speech recognition if active
+    }
+
+    document.getElementById('transcription').innerText = ''; // Clear transcription text
 }
 
 window.closeLanguagePopup = closeLanguagePopup;
@@ -61,8 +71,47 @@ async function stopTranscription() {
             window.location.href = '../chatbot/ibm-chatbot.html';
         } else if (intent === "transfer") {
             window.location.href = '../transaction/transaction.html';
+        } else if (intent === "bills") {
+            window.location.href = '../pay-bills/view-bills.html';
+        } else if (intent === "forum") {
+            window.location.href = '../forum/ForumHome.html';
         } else if (intent === "previous page") {
             window.history.back();
+        } else if (intent === "helpline") {
+            try {
+                const response = await fetch('/video-calling/create-room', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    },
+                });
+                const data = await response.json();
+                console.log('room data: ', data);
+
+                window.open(data.roomUrl, '_blank');    // Open the video call page in a new tab
+                
+                if (response.ok) {
+                    try{
+                        await fetch('/video-calling/send-host-url', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                            },
+                            body: JSON.stringify({
+                                data: data
+                            })
+                        });
+                    }catch(error){
+                        console.log('Error:', error);
+                    }
+                } else {
+                    console.log(data.message);
+                    alert('Failed to create video calling room. Try again later.');
+                }
+            } catch (error) {
+                console.log('Error:', error);
+            }
         } else {
             console.error("Unrecognized intent: ", intent);
         }
@@ -77,22 +126,17 @@ async function stopTranscription() {
 
 async function getIntentFromOpenAI(inputText) {
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("/get-intent", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer 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`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", 
-                    content: `The user is navigating a banking app. Here is the user's interaction: "${inputText}". Read the response and recognize the intent, then output the intent. Here is a list of valid intents. If not in list, output error. {homepage, history, chatbot, transfer, previous page}. Only output the intents given without additional words.`,
-        }]
-      })
+      body: JSON.stringify({ text: inputText })
     });
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content?.trim() || "error";
+    console.log("Intent from OpenAI:", data);
+    return data.intent?.trim() || "error";
   } catch (error) {
     console.error("Error communicating with OpenAI API:", error);
     return "error";
