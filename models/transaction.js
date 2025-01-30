@@ -199,90 +199,100 @@ class Transaction {
             connection.close();
         }
     }
-    
-    
-    
 
     // Static method to fetch transaction history based on account number and time range -- Sairam
     static async getTransactionHistory(accNum, rangeOption, startDate, endDate) {
-        const connection = await sql.connect(dbConfig); // Connect to the database
-
+        await sql.close(); // Close any existing connections
+        const connection = await sql.connect(dbConfig); // Reconnect to avoid stale connections
+    
         try {
-            let calculatedStartDate;
-            let calculatedEndDate = new Date(); // Set to today's date
-
-            // Calculate start date based on range option
+            let calculatedStartDate = new Date();
+            let calculatedEndDate = new Date(); // Today's date
+    
+            // Determine the date range
             if (rangeOption === '1month') {
-                calculatedStartDate = new Date();
                 calculatedStartDate.setMonth(calculatedStartDate.getMonth() - 1);
             } else if (rangeOption === '3months') {
-                calculatedStartDate = new Date();
                 calculatedStartDate.setMonth(calculatedStartDate.getMonth() - 3);
             } else if (rangeOption === 'custom') {
                 if (!startDate || !endDate) {
-                    throw new Error('Start date and end date are required for a custom range.');
+                    throw new Error('Start and end dates are required for a custom range.');
                 }
                 calculatedStartDate = new Date(startDate);
                 calculatedEndDate = new Date(endDate);
             } else {
                 throw new Error('Invalid range option.');
             }
-
-            // SQL query to fetch transactions based on account number and calculated date range
+    
+            // Set time boundaries to include the entire day
+            calculatedStartDate.setHours(0, 0, 0, 0);
+            calculatedEndDate.setHours(23, 59, 59, 999);
+    
+            console.log("Fetching transactions from:", calculatedStartDate, "to", calculatedEndDate);
+    
+            // SQL Query
             const sqlQuery = `
-            SELECT 
-                bt.TransactNo, 
-                FORMAT(bt.TransactDate, 'dd MMMM yyyy') AS TransactDate,
-                bt.TransactAmount, 
-                bt.AccSender, 
-                senderProfile.FullName AS SenderName, 
-                bt.AccReceiver, 
-                receiverProfile.FullName AS ReceiverName,
-                bt.BillerAccNum, 
-                biller.BillerName AS BillerName,
-                bt.TransactType
-            FROM BankTransaction bt
-            LEFT JOIN Account sender ON bt.AccSender = sender.AccNum
-            LEFT JOIN Profile senderProfile ON sender.ProfileId = senderProfile.ProfileId
-            LEFT JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
-            LEFT JOIN Profile receiverProfile ON receiver.ProfileId = receiverProfile.ProfileId
-            LEFT JOIN Biller biller ON bt.BillerAccNum = biller.BillerAccNum
-            WHERE (bt.AccSender = @AccNum OR bt.AccReceiver = @AccNum OR bt.BillerAccNum IS NOT NULL)
-            AND bt.TransactDate BETWEEN @StartDate AND @EndDate
-            ORDER BY bt.TransactDate DESC, bt.TransactNo DESC;`; // Parameterized query
-
+                SELECT 
+                    bt.TransactNo, 
+                    FORMAT(bt.TransactDate, 'dd MMMM yyyy') AS TransactDate,
+                    bt.TransactAmount, 
+                    bt.AccSender, 
+                    senderProfile.FullName AS SenderName, 
+                    bt.AccReceiver, 
+                    receiverProfile.FullName AS ReceiverName,
+                    bt.BillerAccNum, 
+                    biller.BillerName AS BillerName,
+                    bt.TransactType
+                FROM BankTransaction bt
+                LEFT JOIN Account sender ON bt.AccSender = sender.AccNum
+                LEFT JOIN Profile senderProfile ON sender.ProfileId = senderProfile.ProfileId
+                LEFT JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
+                LEFT JOIN Profile receiverProfile ON receiver.ProfileId = receiverProfile.ProfileId
+                LEFT JOIN Biller biller ON bt.BillerAccNum = biller.BillerAccNum
+                WHERE (bt.AccSender = @AccNum OR bt.AccReceiver = @AccNum OR bt.BillerAccNum IS NOT NULL)
+                AND CAST(bt.TransactDate AS DATE) BETWEEN @StartDate AND @EndDate
+                ORDER BY bt.TransactDate DESC, bt.TransactNo DESC;
+            `;
+    
+            console.log("Executing SQL Query:", sqlQuery);
+    
+            // Run the query
             const request = connection.request();
-            request.input("AccNum", accNum);
-            request.input("StartDate", calculatedStartDate);
-            request.input("EndDate", calculatedEndDate);
-
+            request.input("AccNum", sql.VarChar(20), accNum);
+            request.input("StartDate", sql.DateTime, calculatedStartDate);
+            request.input("EndDate", sql.DateTime, calculatedEndDate);
+    
             const result = await request.query(sqlQuery);
-
-            // Check if any records were found
+            console.log("SQL Query Result:", result.recordset); // Debugging
+    
             if (result.recordset.length === 0) {
+                console.log("No transactions found.");
                 return [];
             }
-
-            // Map the results to Transaction objects
-            const transactions = result.recordset.map(row => new Transaction(
-                row.TransactNo,
-                row.TransactDate,
-                row.TransactAmount,
-                row.AccSender,
-                row.AccSender === accNum ? "You" : row.SenderName,
-                row.AccReceiver || row.BillerAccNum, // Handle both receiver and biller
-                row.AccReceiver === accNum ? "You" : row.ReceiverName || row.BillerName,
-                row.TransactType
-            ));
-            
-            return transactions; // Return the array of Transaction objects
+    
+            // Map SQL results to Transaction objects
+            return result.recordset.map(row => {
+                return new Transaction(
+                    row.TransactNo,
+                    row.TransactDate,
+                    row.TransactAmount,
+                    row.AccSender,
+                    row.AccSender === accNum ? "You" : row.SenderName,
+                    row.AccReceiver || row.BillerAccNum,  // If AccReceiver is NULL, use BillerAccNum
+                    row.AccReceiver
+                        ? (row.AccReceiver === accNum ? "You" : row.ReceiverName)
+                        : row.BillerName,  // If AccReceiver is NULL, use BillerName
+                    row.TransactType
+                );
+            });
         } catch (error) {
             console.error("Error retrieving transaction history:", error);
             throw error;
         } finally {
-            connection.close();
+            await sql.close(); // Close the connection after execution
         }
     }
+    
     // Static method to fetch transaction history based on account number and time range -- Sairam
     static async performForeignExchange(accSender, accReceiver, exchangeRate, amount) {
         const connection = await sql.connect(dbConfig);
