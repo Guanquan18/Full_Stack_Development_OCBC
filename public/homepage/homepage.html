@@ -376,6 +376,19 @@
             text-decoration: none;
             color: inherit;
         }
+        .bank-locator-container {
+            position: fixed;
+            bottom: 150px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
     </style>
 </head>
 <body>
@@ -523,6 +536,13 @@
         <p>Stop</p>
     </div>
 
+    <!-- Map -->
+    <a href="../bank-locator/bank-locator.html">
+        <div class="bank-locator-container">
+            <img src="../images/map.png" alt="Map" class="chatbot-icon">
+        </div>
+    </a>
+
      <!-- Language Overlay -->
      <div id="language-overlay" class="language-overlay">
         <span class="language-popup-close-btn" onclick="closeLanguagePopup()">&times;</span>
@@ -536,6 +556,7 @@
 
     <!-- Mic Overlay -->
     <div id="mic-overlay" class="mic-overlay">
+        <span class="language-popup-close-btn" onclick="closeLanguagePopup()">&times;</span>
         <h2>Transcribed Words:</h2>
         <p id="transcription"></p>
     </div>
