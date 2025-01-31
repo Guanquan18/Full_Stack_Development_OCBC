@@ -48,10 +48,28 @@ const getMessageCounts = async (req, res) => {
     }
 };
 
+//delete a message
+const deleteMessage = async (req, res) => {
+    const messageId = req.params.messageId;
+    try {
+        const result = await Forum.deleteMessage(messageId);
+        if (result.success) {
+            return res.status(200).json({ message: "Message deleted successfully" });
+        } else {
+            return res.status(404).json({ error: "Message not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        return res.status(500).json({ error: "An error occurred while deleting the message." });
+    }
+};
+
+
 //export controller functions
 module.exports = {
     getCategories,
     getMessagesByCategory,
     postMessage,
-    getMessageCounts
+    getMessageCounts,
+    deleteMessage
 };

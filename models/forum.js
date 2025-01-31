@@ -24,7 +24,7 @@ async function getMessagesByCategory(categoryId) {
         const result = await pool.request()
             .input("CategoryID", sql.Int, categoryId) // Bind the category ID
             .query(`
-                SELECT SenderName, MessageContent, FORMAT(PostedDate, 'dd/MM/yyyy, HH:mm') AS PostedTime
+                SELECT MessageID, SenderName, MessageContent, FORMAT(PostedDate, 'dd/MM/yyyy, HH:mm') AS PostedTime
                 FROM ForumMessages WHERE CategoryID = @CategoryID;
             `); // Query to fetch messages for the category
         return result.recordset; // Return the result set
@@ -72,10 +72,28 @@ async function getMessageCounts() {
     }
 }
 
+//delete a message by ID
+async function deleteMessage(messageId) {
+    try {
+        const pool = await sql.connect(dbConfig); // Connect to the database
+        const result = await pool.request()
+            .input("MessageID", sql.Int, messageId)
+            .query("DELETE FROM ForumMessages WHERE MessageID = @MessageID");
+
+        return { success: result.rowsAffected[0] > 0 }; // Return success if at least one row was deleted
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        throw new Error("Database error while deleting message.");
+    }
+}
+
+
+
 // Export all model methods
 module.exports = {
     getCategories,
     getMessagesByCategory,
     postMessage,
-    getMessageCounts
+    getMessageCounts,
+    deleteMessage
 };
