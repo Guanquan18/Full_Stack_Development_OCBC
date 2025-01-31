@@ -55,7 +55,8 @@ app.get("/convert-currency", transactionController.convertCurrency); // Perform 
 app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
 
 app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id
-app.post("/get-intent", OpenAIController.getIntent); // Get the intent from OpenAI
+app.post("/get-intent", OpenAIController.getIntent); // Get the intent from 
+app.post("/generate-insights", OpenAIController.generateTransactionInsights); // Get the intent from OpenAI
 app.get('/transactions/past-month/:accNum', transactionController.getTransactionHistoryPastMonth); // Get the transactions for the past month
 
 app.listen(port, async () => {
