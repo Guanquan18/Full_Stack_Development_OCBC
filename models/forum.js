@@ -53,9 +53,29 @@ async function postMessage(categoryId, senderName, messageContent) {
     }
 }
 
+async function getMessageCounts() {
+    try {
+        const pool = await sql.connect(dbConfig); // Connect to database
+        const result = await pool.request().query(`
+            SELECT 
+                FC.CategoryName,
+                COUNT(FM.MessageID) AS MessageCount
+            FROM ForumCategory FC
+            LEFT JOIN ForumMessages FM ON FC.CategoryID = FM.CategoryID
+            GROUP BY FC.CategoryName;
+        `); // Query to count messages per category
+
+        return result.recordset; // Return data in JSON format
+    } catch (error) {
+        console.error("Error fetching message counts:", error);
+        throw new Error("Database error while fetching message counts.");
+    }
+}
+
 // Export all model methods
 module.exports = {
     getCategories,
     getMessagesByCategory,
-    postMessage
+    postMessage,
+    getMessageCounts
 };
