@@ -37,9 +37,21 @@ const postMessage = async (req, res) => {
     }
 };
 
+//API endpoint to get message counts for pie chart
+const getMessageCounts = async (req, res) => {
+    try {
+        const counts = await Forum.getMessageCounts();
+        return res.status(200).json(counts);
+    } catch (error) {
+        console.error("Error fetching message counts:", error);
+        return res.status(500).json({ error: "An error occurred while retrieving message counts." });
+    }
+};
+
 //export controller functions
 module.exports = {
     getCategories,
     getMessagesByCategory,
-    postMessage
+    postMessage,
+    getMessageCounts
 };
