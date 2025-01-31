@@ -53,6 +53,9 @@ app.post("/api/forum/messages", forumController.postMessage); // post  messages 
 app.post("/foreign-exchange", verifyJWT.verifyJWT,transactionController.performForeignExchange); // Perform a fund transfer (sairam)
 app.get("/convert-currency", transactionController.convertCurrency); // Perform a fund transfer (sairam)
 app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
+app.get("/api/forum/message-counts", forumController.getMessageCounts); // Route for pie chart [Created by : Keshwindren S10259469C]
+app.delete("/api/forum/messages/:messageId", forumController.deleteMessage); // Route for deleting posted comments [Created by : Keshwindren S10259469C]
+
 
 app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id
 app.post("/get-intent", OpenAIController.getIntent); // Get the intent from OpenAI

@@ -5,7 +5,7 @@ const Forum = require("../models/forum");
 //fetch forum categories
 const getCategories = async (req, res) => {
     try {
-        const categories = await Forum.getCategories(); // Call the model method
+        const categories = await Forum.getCategories(); //call the model method
         return res.status(200).json(categories);
     } catch (error) {
         console.error("Error fetching categories:", error);
@@ -15,9 +15,9 @@ const getCategories = async (req, res) => {
 
 //fetch messages for chosen specific category
 const getMessagesByCategory = async (req, res) => {
-    const categoryId = req.params.categoryId; // Extract category ID from URL
+    const categoryId = req.params.categoryId; //extract category ID
     try {
-        const messages = await Forum.getMessagesByCategory(categoryId); // Call the model method
+        const messages = await Forum.getMessagesByCategory(categoryId); //call the model method
         return res.status(200).json(messages);
     } catch (error) {
         console.error("Error fetching messages:", error);
@@ -27,9 +27,9 @@ const getMessagesByCategory = async (req, res) => {
 
 //add new message
 const postMessage = async (req, res) => {
-    const { categoryId, senderName, messageContent } = req.body; // Extract data from request body
+    const { categoryId, senderName, messageContent } = req.body; //extract data from request body
     try {
-        const result = await Forum.postMessage(categoryId, senderName, messageContent); // Call the model method
+        const result = await Forum.postMessage(categoryId, senderName, messageContent); //call the model method
         return res.status(201).json({ message: "Message posted successfully", result });
     } catch (error) {
         console.error("Error posting message:", error);
@@ -37,9 +37,39 @@ const postMessage = async (req, res) => {
     }
 };
 
+//API endpoint to get message counts for pie chart
+const getMessageCounts = async (req, res) => {
+    try {
+        const counts = await Forum.getMessageCounts();
+        return res.status(200).json(counts);
+    } catch (error) {
+        console.error("Error fetching message counts:", error);
+        return res.status(500).json({ error: "An error occurred while retrieving message counts." });
+    }
+};
+
+//delete a message
+const deleteMessage = async (req, res) => {
+    const messageId = req.params.messageId;
+    try {
+        const result = await Forum.deleteMessage(messageId);
+        if (result.success) {
+            return res.status(200).json({ message: "Message deleted successfully" });
+        } else {
+            return res.status(404).json({ error: "Message not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        return res.status(500).json({ error: "An error occurred while deleting the message." });
+    }
+};
+
+
 //export controller functions
 module.exports = {
     getCategories,
     getMessagesByCategory,
-    postMessage
+    postMessage,
+    getMessageCounts,
+    deleteMessage
 };
