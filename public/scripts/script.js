@@ -550,6 +550,8 @@ async function fetchTransactions() {
         const today = new Date();
         const oneMonthAgo = new Date();
         oneMonthAgo.setMonth(today.getMonth() - 1);
+        startDate = oneMonthAgo.toISOString().split("T")[0];
+        endDate = today.toISOString().split("T")[0];
 
         const formattedToday = today.toLocaleDateString('en-GB', {
             day: '2-digit', month: 'short', year: 'numeric'
@@ -564,6 +566,8 @@ async function fetchTransactions() {
         const today = new Date();
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(today.getMonth() - 3);
+        startDate = threeMonthsAgo.toISOString().split("T")[0];
+        endDate = today.toISOString().split("T")[0];
 
         const formattedToday = today.toLocaleDateString('en-GB', {
             day: '2-digit', month: 'short', year: 'numeric'
@@ -600,7 +604,10 @@ async function fetchTransactions() {
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
+        sessionStorage.setItem("transactions", JSON.stringify(data));
+        sessionStorage.setItem("startDate", startDate); 
+        sessionStorage.setItem("endDate", endDate);
 
         // Clear previous transaction cards if any
         const transactionContainer = document.querySelector('.transaction-list');
@@ -652,7 +659,7 @@ async function fetchTransactions() {
         } else {
             selectedRangeElement.style.display = 'block';
             selectedRangeElement.innerText = 'No transactions found';
-        }
+        }        
     } catch (error) {
         console.error('Error fetching transactions:', error);
         selectedRangeElement.style.display = 'block';
@@ -660,7 +667,30 @@ async function fetchTransactions() {
     }
 }
 
+async function generateTransactionInsights(transactions) {
+    try {
+        const response = await fetch("/generate-insights", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ transactions })
+        });
 
+        const data = await response.json();
+
+        // Ensure insights are in valid JSON format
+        if (typeof data.insights === "string") {
+            data.insights = JSON.parse(data.insights);
+        }
+
+        console.log("Insights Data Parsed Successfully:", data);
+        return data.insights;  // Return the parsed data
+    } catch (error) {
+        console.error("Error communicating with OpenAI API:", error);
+        return { totalIncome: 0, totalExpense: 0, insights: ["Error retrieving insights."] };
+    }
+}
 
 
 
