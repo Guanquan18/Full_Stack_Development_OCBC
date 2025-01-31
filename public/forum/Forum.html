@@ -151,22 +151,22 @@
         }
     </style>
     <script>
-        // Helper function to get URL query parameters
+        //function to get URL query parameters
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
-        // Function to fetch and display forum data
+        //function to fetch and display forum data
         async function loadForumData() {
-            const categoryId = getQueryParam('categoryId'); // Get the category ID from the URL
+            const categoryId = getQueryParam('categoryId'); //gt the category ID from the URL
             if (!categoryId) {
                 alert("No category ID found!");
                 return;
             }
 
             try {
-                // Fetch category title
+                //fetch category title
                 const categoryResponse = await fetch('/api/forum/categories');
                 const categories = await categoryResponse.json();
                 const category = categories.find(cat => cat.CategoryID == categoryId);
@@ -174,20 +174,20 @@
                     document.querySelector('.header h1').textContent = category.CategoryName;
                 }
 
-                // Fetch messages for the category
+                //fetch messages for the category
                 const messagesResponse = await fetch(`/api/forum/messages/${categoryId}`);
                 const messages = await messagesResponse.json();
 
-                // Hardcoded user for demo purposes
+                //for demo purposes
                 const currentUser = 'Ben Johnson';
 
-                // Display messages
+                //display messages from each cat
                 const messagesContainer = document.querySelector('.messages');
-                messagesContainer.innerHTML = ''; // Clear any existing content
+                messagesContainer.innerHTML = ''; //clear any existing content
                 messages.forEach(msg => {
                     if (!msg.MessageID) {
                         console.error("Missing MessageID for message:", msg);
-                        msg.MessageID = "0"; // Fallback ID for debugging
+                        msg.MessageID = "0"; //fallback ID for debugging
                     }
 
                     const messageDiv = document.createElement('div');
@@ -207,20 +207,16 @@
             }
         }
 
-        // Function to reply to a message
+        //function to reply 
         function replyTo(senderName) {
             const inputField = document.querySelector('.input-container input');
             const replyHighlight = document.querySelector('.reply-highlight');
 
-            // Set the input field with @username
+            //set input field with @username
             inputField.value = `@${senderName} `;
-
-            // Show the reply highlight above input
-            replyHighlight.textContent = `Replying to @${senderName}`;
-            replyHighlight.style.display = "inline-block";
         }
 
-        // Function to delete a message
+        //function to delete message
         async function deleteMessage(messageId) {
             if (!messageId || messageId === "0") {
                 alert("Error: Message ID is missing.");
@@ -236,7 +232,7 @@
 
                 if (response.ok) {
                     alert("Message deleted successfully.");
-                    loadForumData(); // Reload forum data
+                    loadForumData(); //reload forum data
                 } else {
                     alert("Failed to delete message.");
                 }
@@ -246,13 +242,13 @@
             }
         }
 
-        // Function to post a new message
+        //function to post a new message
         async function postMessage() {
     const categoryId = getQueryParam('categoryId');
     const messageInput = document.querySelector('.input-container input');
     const messageContent = messageInput.value;
 
-    if (!messageContent.trim()) {
+    if (!messageContent.trim()) {  //error handling if the input field is empty
         alert("Message cannot be empty!");
         return;
     }
@@ -263,20 +259,19 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 categoryId: parseInt(categoryId),
-                senderName: 'Ben Johnson',
+                senderName: 'Ben Johnson', //for demo purposes
                 messageContent,
             }),
         });
 
-        messageInput.value = ''; // Clear input field
+        messageInput.value = ''; //clear input field after posting
 
-        // ✅ Fix: Ensure `.reply-highlight` exists before modifying
         const replyHighlight = document.querySelector('.reply-highlight');
         if (replyHighlight) {
             replyHighlight.style.display = "none"; 
         }
 
-        loadForumData(); // Reload messages
+        loadForumData(); //reload messages
     } catch (error) {
         console.error("Error posting message:", error);
         alert("Failed to post message.");
@@ -284,7 +279,7 @@
 }
 
 
-        // Initialize forum data on page load
+        //initialize forum data on page load
         window.onload = loadForumData;
     </script>
 </head>
