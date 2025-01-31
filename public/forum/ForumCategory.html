@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forum Categories</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,6 +28,7 @@
       width: 100%;
       max-width: 500px;
       margin: auto;
+      padding-bottom: 20px;
     }
 
     .header {
@@ -101,29 +103,68 @@
       height: 50px;
       margin-bottom: 10px;
     }
+
+    /* Styling for Pie Chart */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+      padding: 20px;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #C8102E;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
   </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <a href="../forum/ForumHome.html" class="back-button">
+        <img src="../images/back-icon.png" alt="Back">
+      </a>
+      <h1 class="title">Forum Categories</h1>
+    </header>
+    <main class="content"></main>
+
+    <!-- Pie Chart Section -->
+    <div class="chart-container">
+      <h2 class="chart-title">Breakdown Of Discussion Points</h2>
+      <canvas id="discussionChart"></canvas>
+    </div>
+  </div>
+
   <script>
     // Navigate to a specific category
     function navigateToCategory(categoryId) {
-      window.location.href = `Forum.html?categoryId=${categoryId}`; // Pass categoryId to Forum.html
+      window.location.href = `Forum.html?categoryId=${categoryId}`;
     }
 
     // Function to fetch and display categories dynamically
     async function loadCategories() {
       try {
-        const response = await fetch('/api/forum/categories'); // Fetch categories
+        const response = await fetch('/api/forum/categories');
         const categories = await response.json();
 
-        // Create buttons for each category
         const contentContainer = document.querySelector('.content');
-        contentContainer.innerHTML = ''; // Clear existing content
+        contentContainer.innerHTML = '';
+
         categories.forEach(category => {
           const button = document.createElement('button');
           button.className = 'category-button';
           button.onclick = () => navigateToCategory(category.CategoryID);
 
-          // Map CategoryID to corresponding PNG image path
-          let iconPath = '../images/forum/default.png'; // Default icon
+          let iconPath = '../images/forum/default.png';
           if (category.CategoryID === 1) {
             iconPath = '../images/forum/serverdowntime.png';
           } else if (category.CategoryID === 2) {
@@ -144,18 +185,45 @@
       }
     }
 
-    window.onload = loadCategories;
+    // Function to fetch and render pie chart
+    async function loadMessageCounts() {
+      try {
+        const response = await fetch('/api/forum/message-counts');
+        const data = await response.json();
+
+        const labels = data.map(item => item.CategoryName);
+        const values = data.map(item => item.MessageCount);
+        const backgroundColors = ["red", "#747574", "#9CD5FF"];
+
+        const ctx = document.getElementById('discussionChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: values,
+              backgroundColor: backgroundColors
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'right'
+              }
+            }
+          }
+        });
+
+      } catch (error) {
+        console.error('Error loading message counts:', error);
+      }
+    }
+
+    window.onload = () => {
+      loadCategories();
+      loadMessageCounts();
+    };
   </script>
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <a href="../forum/ForumHome.html" class="back-button">
-        <img src="../images/back-icon.png" alt="Back">
-      </a>
-      <h1 class="title">Forum Categories</h1>
-    </header>
-    <main class="content"></main>
-  </div>
 </body>
 </html>
