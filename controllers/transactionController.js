@@ -231,6 +231,22 @@ const getHistoricalRates = async (req, res) => {
     }
 };
 
+// Controller function to get transaction history for the past month - laven
+const getTransactionHistoryPastMonth = async (req, res) => {
+    const accNum = req.params.accNum; // Get account number from request params
+
+    try {
+        // Call the model method to fetch transaction history for the past month
+        const transactions = await Transaction.getTransactionHistoryPastMonth(accNum);
+
+        // Send response back to the client
+        return res.status(200).json(transactions);
+    } catch (error) {
+        console.error("Error fetching past month transaction history:", error);
+        return res.status(500).json({ error: "An error occurred while retrieving transaction history for the past month." });
+    }
+};
+
 module.exports = {
     getExpenses,
     getTransactionHistory,
@@ -240,4 +256,5 @@ module.exports = {
     performForeignExchange, // (Sairam)
     convertCurrency, // (Sairam)
     getHistoricalRates, // (Sairam)
+    getTransactionHistoryPastMonth // (laven)
 };
