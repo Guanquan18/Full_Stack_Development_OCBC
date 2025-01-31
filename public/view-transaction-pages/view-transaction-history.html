@@ -349,7 +349,24 @@
             margin-bottom: 5px;
         }
 
-
+        .e-statement-container {
+            position: fixed;
+            bottom: 90px;
+            right: 10px;
+            z-index: 10;
+            width: 60px;
+            height: 60px;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+        .e-statement{
+            width: 80%;
+            height: 80%;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -402,6 +419,11 @@
         <img src="../images/homepage/microphone.webp" alt="Microphone Icon" class="mic-image">
     </div>
 
+    <!-- E-Statement Icon -->
+    <div id="e-statement-button" class="e-statement-container">
+        <img src="../images/download.png" alt="e-statement" class="e-statement">
+    </div>
+
     <!-- Stop Button -->
     <div id="stop-button" class="stop-button" onclick="stopTranscription()">
         <p>Stop</p>
@@ -425,6 +447,7 @@
     </div>
     <script src = "../scripts/script.js"></script>
     <script src = "../scripts/stt.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         const searchButton = document.querySelector('.search-button');
         // Function to toggle the custom date range visibility
@@ -569,6 +592,156 @@
                 showProgress: true,      
         }).start();
     }
+    document.getElementById("e-statement-button").addEventListener("click", async function () {
+        console.log("Generating E-Statement...");
+
+        // Get user details from sessionStorage
+        const accNum = sessionStorage.getItem("AccNum");
+        const fullName = sessionStorage.getItem("FullName");
+        const token = sessionStorage.getItem("token");
+        const fixedIncome = 3000; // Fixed value for income
+
+        // Ensure required details are available
+        if (!accNum || !fullName || !token) {
+            console.error("Missing user details or token.");
+            alert("Session expired. Please log in again.");
+            return;
+        }
+
+        // Define API URL to fetch transactions
+        const apiUrl = `http://localhost:3000/transactions/past-month/${accNum}`;
+
+        try {
+            // Fetch transaction history
+            const response = await fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            // Check response status
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+
+            // Parse transaction data
+            const transactions = await response.json();
+            console.log("Past Month Transactions:", transactions);
+
+            // Generate PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: "p",
+                unit: "pt",
+                format: "a4",
+            });
+
+            // Set margins and page properties
+            const marginLeft = 50;
+            const marginRight = 50;
+            const marginTop = 60;
+            const marginBottom = 50;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            let yOffset = marginTop;
+
+            // Title: "E-Statement"
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(18);
+            doc.text("E-Statement", marginLeft, yOffset);
+            doc.setLineWidth(0.5);
+            doc.line(marginLeft, yOffset + 3, marginLeft + doc.getTextWidth("E-Statement"), yOffset + 3);
+            yOffset += 40;
+
+            // User Details Section
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setFillColor(234, 242, 252); // Light blue background
+            doc.rect(marginLeft, yOffset - 18, pageWidth - marginLeft - marginRight, 24, "F");
+            doc.text("User Details", marginLeft, yOffset);
+            yOffset += 30;
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+            const userDetails = [
+                `Full Name: ${fullName}`,
+                `Account Number: ${accNum}`,
+                `Monthly Income: $${fixedIncome}`,
+            ];
+
+            // Print user details line by line
+            userDetails.forEach((line) => {
+                if (yOffset + 15 > pageHeight - marginBottom) {
+                    doc.addPage();
+                    yOffset = marginTop;
+                }
+                doc.text(line, marginLeft, yOffset);
+                yOffset += 15;
+            });
+
+            yOffset += 20; // Space before transaction section
+
+            // Transaction History Header
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setFillColor(234, 242, 252); // Light blue background
+            doc.rect(marginLeft, yOffset - 18, pageWidth - marginLeft - marginRight, 24, "F");
+            doc.text("Transaction History (Past Month)", marginLeft, yOffset);
+            yOffset += 30;
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+
+            // Loop through transactions
+            transactions.forEach((transaction, index) => {
+                // Page break if needed
+                if (yOffset + 80 > pageHeight - marginBottom) {
+                    doc.addPage();
+                    yOffset = marginTop;
+                }
+
+                // Transaction No as Header
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(13);
+                doc.text(`Transaction No: ${transaction.TransactNo}`, marginLeft, yOffset);
+                yOffset += 16;
+
+                doc.setFont("Helvetica", "normal");
+                doc.setFontSize(12);
+
+                // Transaction details
+                const transactionDetails = [
+                    `Date: ${transaction.TransactDate}`,
+                    `Amount: $${transaction.TransactAmount.toFixed(2)}`,
+                    `From: ${transaction.SenderName} (${transaction.AccSender})`,
+                    `To: ${transaction.ReceiverName} (${transaction.AccReceiver})`,
+                    `Type: ${transaction.TransactType}`,
+                ];
+
+                // Print details line by line
+                transactionDetails.forEach((line) => {
+                    if (yOffset + 15 > pageHeight - marginBottom) {
+                        doc.addPage();
+                        yOffset = marginTop;
+                    }
+                    doc.text(line, marginLeft, yOffset);
+                    yOffset += 15;
+                });
+
+                yOffset += 15; // Space after each transaction
+            });
+
+            // Save the PDF
+            doc.save("E-Statement.pdf");
+            alert("E-Statement downloaded successfully!");
+
+        } catch (error) {
+            console.error("Error fetching transaction history:", error);
+            alert("Failed to fetch transaction history. Please try again.");
+        }
+    });
     </script>
 </body>
 </html>
