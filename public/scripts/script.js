@@ -193,9 +193,44 @@ function IndexLoginSubmit(formId){
     },false)
 }
 
+async function displayAccDetails() {
+    const profileId = sessionStorage.getItem("profileId");
+    const response = await fetch(`/account/${profileId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+    });
+    if (!response.ok) {
+        alert("Failed to fetch account details.");
+        return;
+    }
+    const data = await response.json();
+    console.log(data);
+    const accNum = data.AccNum;
+    const accType = data.AccType;
+    const balance = data.Balance;
+    const currencyCode = data.CurrencyCode;
+
+    const today = new Date();
+    const month = today.toLocaleString('default', { month: 'long' });
+    const year = today.getFullYear();
+    const monthYear = `${month} ${year}`;
+
+    const accountBalanceContainer = document.querySelector('.account-balance-container');
+    accountBalanceContainer.innerHTML = `
+        <h3>${accType}</h3>
+        <p class="account-balance">${currencyCode} ${balance}</p>
+        <p class="account-balance-month">${monthYear}</p>
+    `;
+    
+}
+
+// Function to process and display expenses
 async function displayExpenses() {
     const data = await getExpenses();
-    console.log(data);
+    console.log('Expenses', data); // Log data
 
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
@@ -218,7 +253,7 @@ async function displayExpenses() {
 
         // Categorize for pie chart if in the current month and year
         if (month === currentMonth && year === currentYear) {
-            const purpose = transaction.TransactPurpose || "Uncategorized"; // Assign default if null
+            const purpose = transaction.TransactPurpose;
             if (!currentMonthSpending[purpose]) {
                 currentMonthSpending[purpose] = 0;
             }
@@ -233,25 +268,23 @@ async function displayExpenses() {
     // Render line chart
     const lineCtx = document.getElementById("line-chart").getContext("2d");
 
-    // Destroy old chart if it exists
     if (window.lineChart) {
         window.lineChart.destroy();
     }
 
-    // Create a new chart
     window.lineChart = new Chart(lineCtx, {
         type: "line",
         data: {
-            labels: lineChartLabels, // Array of labels
+            labels: lineChartLabels,
             datasets: [
                 {
                     label: "Spending",
-                    data: lineChartData, // Array of data
-                    backgroundColor: "rgba(255, 99, 132, 0.5)",
-                    borderColor: "rgb(255, 99, 132)",
+                    data: lineChartData,
+                    backgroundColor: "rgba(255, 99, 132, 0.5)", // Red with transparency
+                    borderColor: "rgb(255, 99, 132)", // Solid red
                     fill: true,
                     tension: 0.4,
-                    pointRadius: 3,
+                    pointRadius: 4,
                     pointHoverRadius: 3,
                 },
             ],
@@ -265,7 +298,7 @@ async function displayExpenses() {
                     font: {
                         size: 30,
                         family: "sans-serif",
-                        weight: "bold", // Corrected: Use 'weight' instead of 'style'
+                        weight: "bold",
                     },
                     padding: 10,
                 },
@@ -274,9 +307,9 @@ async function displayExpenses() {
                     position: "top",
                     labels: {
                         font: {
-                            size: 12,
+                            size: 15,
                             family: "sans-serif",
-                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                            weight: "bold",
                         },
                         color: "#666",
                     },
@@ -296,9 +329,7 @@ async function displayExpenses() {
                         family: "sans-serif",
                         weight: "bold",
                     },
-                    formatter: function (value) {
-                        return `$${value.toFixed(2)}`; // Format values as currency
-                    },
+                    formatter: value => `$${value.toFixed(2)}`,
                 },
             },
             scales: {
@@ -307,7 +338,7 @@ async function displayExpenses() {
                         font: {
                             size: 18,
                             family: "sans-serif",
-                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                            weight: "normal",
                         },
                         color: "#666",
                     },
@@ -320,7 +351,7 @@ async function displayExpenses() {
                         font: {
                             size: 18,
                             family: "sans-serif",
-                            weight: "normal", // Corrected: Use 'weight' instead of 'style'
+                            weight: "normal",
                         },
                         color: "#666",
                     },
@@ -330,81 +361,88 @@ async function displayExpenses() {
                 },
             },
         },
-        plugins: [ChartDataLabels], // Enable the datalabels plugin
     });
 
+    // Calculate total spending for the current month
+    const totalSpending = Object.values(currentMonthSpending).reduce((sum, value) => sum + value, 0);
 
-    
-    // new Chart(lineCtx, {
-    //     type: "line",
-    //     data: {
-    //         labels: lineChartLabels,
-    //         datasets: [{
-    //             label: "Monthly Spending",
-    //             data: lineChartData,
-    //             borderColor: "#3498db",
-    //             backgroundColor: "rgba(52, 152, 219, 0.2)",
-    //             fill: true,
-    //             tension: 0.3
-    //         }]
-    //     },
-    //     options: {
-    //         responsive: true,
-    //         plugins: {
-    //             legend: {
-    //                 display: true,
-    //             },
-    //             tooltip: {
-    //                 callbacks: {
-    //                     label: function (context) {
-    //                         return `$${context.raw.toFixed(2)}`;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // });
-    
-
-    // Prepare data for pie chart
+    // Prepare data for pie chart (percentages)
     const pieChartLabels = Object.keys(currentMonthSpending);
-    const pieChartData = pieChartLabels.map(key => currentMonthSpending[key]);
+    const pieChartData = pieChartLabels.map(key => {
+        const percentage = (currentMonthSpending[key] / totalSpending) * 100;
+        return parseFloat(percentage.toFixed(2)); // Keep 2 decimal places
+    });
+
+    console.log("Pie Chart Labels:", pieChartLabels);
+    console.log("Pie Chart Data:", pieChartData);
 
     // Render pie chart
     const pieCtx = document.getElementById("pie-chart").getContext("2d");
-    new Chart(pieCtx, {
-        type: "pie",
+
+    if (window.pieChart) {
+        window.pieChart.destroy();
+    }
+
+    window.pieChart = new Chart(pieCtx, {
+        type: "doughnut",
         data: {
-            labels: pieChartLabels,
-            datasets: [{
-                data: pieChartData,
-                backgroundColor: [
-                    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#e74c3c",
-                    "#f1c40f", "#e67e22", "#95a5a6"
-                ]
-            }]
+            labels: pieChartLabels, // Labels like "Food", "Housing"
+            datasets: [
+                {
+                    data: pieChartData, // Percentage values
+                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+                    borderColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+                    borderWidth: 3,
+                },
+            ],
         },
         options: {
             responsive: true,
             plugins: {
                 legend: {
                     display: true,
+                    position: "top",
+                    align: "center",
+                    labels: {
+                        font: {
+                            size: 15,
+                            family: "sans-serif",
+                            weight: "bold",
+                        },
+                        color: "#666666",
+                        padding: 20,
+                    },
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const label = context.label || "";
-                            const value = context.raw || 0;
-                            return `${label}: $${value.toFixed(2)}`;
-                        }
-                    }
-                }
-            }
-        }
+                datalabels: {
+                    display: true, // Enable datalabels
+                    align: "end", // Align labels
+                    anchor: "center", // Position in the center of each segment
+                    color: "#666666",
+                    font: {
+                        family: "sans-serif",
+                        size: 15,
+                        weight: "bold",
+                    },
+                    backgroundColor: "#fff", // White background
+                    borderColor: "#ddd", // Light gray border
+                    borderWidth: 1, // Thin border
+                    borderRadius: 6, // Rounded corners
+                    formatter: (value, context) => `${value.toFixed(2)}%`, // Format as percentage
+                },
+            },
+        },
+        plugins: [ChartDataLabels], // Ensure the plugin is registered
     });
+
+    // Calculate the percentage of cash withdrawals or deposits
+    const cashWithdrawalIndex = pieChartLabels.indexOf("ATM Withdrawals or Cash Deposits");
+    const cashWithdrawalPercentage = cashWithdrawalIndex !== -1 ? pieChartData[cashWithdrawalIndex] : 0;
+    console.log("Cash Withdrawal Percentage:", cashWithdrawalPercentage);
+
+    getRewardsEligibility(data, cashWithdrawalPercentage);
 }
 
-// Function to fetch and process expenses
+// Function to fetch expenses
 async function getExpenses() {
     const profileId = sessionStorage.getItem("profileId");
     const token = sessionStorage.getItem("token");
@@ -416,14 +454,108 @@ async function getExpenses() {
             "Authorization": `Bearer ${token}`,
         },
     });
-
-    return response.json();
+    
+    return response.json;
 }
 
-// Initialize expense charts
-document.addEventListener("DOMContentLoaded", displayExpenses);
+// Functions to get rewards eligibility
+async function getRewardsEligibility(data, cashWithdrawalPercentage) {
+    // Fetch reward eligibility data
+    const accNum = "123-456789-001";
+    // const accNum = JSON.parse(sessionStorage.getItem("AccNum"));
+    const token = sessionStorage.getItem("token");
 
+    // Check if user has already claimed the reward this month
+    const hasClaimed = await checkRewardsHistory(accNum, token);
+    const isEligible = await checkRewardsEligibility(data, cashWithdrawalPercentage);
+    
 
+    const claimButton = document.getElementById("reward-claim-button");
+
+    if (hasClaimed) {
+        claimButton.textContent = "Reward Already Claimed";
+        claimButton.disabled = true; // Disable the button
+        claimButton.style.backgroundColor = "#999"; // Change color to indicate it's inactive
+        return;
+    } else if (isEligible) {
+        claimButton.textContent = "Claim Reward";
+        claimButton.disabled = false; // Enable the button
+        claimButton.style.backgroundColor = "#f03c3c"; // Restore original color
+    }else{
+        claimButton.textContent = "Not Eligible for Reward";
+        claimButton.disabled = true; // Disable the button
+        claimButton.style.backgroundColor = "#999"; // Change color to indicate it's inactive
+    }
+    
+}
+
+// Function to check if reward has been claimed the current month
+async function checkRewardsHistory(accNum, token) {
+    const response = await fetch(`/rewards`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            "profileId": profileId,
+        })
+    });
+
+    if (!response.ok) {
+        alert("Failed to fetch reward eligibility data.");
+        return;
+    }
+    
+    const rewardData = await response.json();
+    
+    // Get current month and year
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-based
+    const currentYear = currentDate.getFullYear();
+
+    // Check if user has already claimed the reward this month
+    let hasClaimed = rewardData.some(reward => {
+        let rewardDate = new Date(reward.RewardDate);
+        return rewardDate.getMonth() + 1 === currentMonth && rewardDate.getFullYear() === currentYear;
+    });
+
+    return hasClaimed;
+}
+
+// Function to check other rewards eligibility
+async function checkRewardsEligibility(data, cashWithdrawalPercentage) {
+    const cashWithdrawalPercentageThreshold = 10; // 10% threshold for cash withdrawals or deposits
+    let isEligible;
+
+    // Check if the user has at least 2 transactions in the current month
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    const currentMonthTransactions = data.filter(transaction => {
+        const transactionDate = new
+        Date(transaction.TransactDate);
+        return transactionDate.getMonth() === currentMonth && transactionDate.getFullYear() === currentYear;
+    });
+
+    if (currentMonthTransactions.length >= 2) {
+        isEligible = true;
+    }else {
+        isEligible = false;
+    }
+
+    // Check if the has percentage of cash withdrawals or deposits is below the threshold
+    if (cashWithdrawalPercentage <= cashWithdrawalPercentageThreshold) {
+        isEligible = true;
+    } else {
+        isEligible = false;
+    }
+
+    return isEligible;
+}
+
+// Function to get Expenses
 async function getExpenses(){
     const profileId = sessionStorage.getItem("profileId");
     const token = sessionStorage.getItem("token");
@@ -438,6 +570,262 @@ async function getExpenses(){
 
     const data = await response.json();
     return data;
+}
+
+// Functiion to get user budget
+async function fetchUserBudget() {
+    const profileId = sessionStorage.getItem("profileId");
+    const token = sessionStorage.getItem("token");
+
+    // Get accNum by profileId
+    const response1 = await fetch(`/account/${profileId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+    if (!response1.ok) {
+        console.alert("Failed to fetch account details.");
+        return null;
+    }
+    const data = await response1.json();
+
+    const response2 = await fetch(`/expense/budget/${data.AccNum}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response2.ok) {
+        console.error("Failed to fetch budget data.");
+        return null;
+    }
+
+    const budgetData = await response2.json();
+    console.log("User Budget Data:", budgetData);
+    return budgetData;
+}
+
+// Function to claim reward
+function claimReward(){
+    const rewardClaimButton = document.getElementById('reward-claim-button');
+    rewardClaimButton.addEventListener('click', async function(event){
+        event.preventDefault();
+
+        const profileId = sessionStorage.getItem("profileId");
+
+        //Get accNum with profileId
+        const response1 = await fetch(`/account/${profileId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        });
+        if (!response1.ok) {
+            alert("Failed to fetch account details.");
+            return;
+        }
+        const data = await response1.json();
+        const recipientAcc = data.AccNum;
+
+        
+        // Transfer $5 to the recipient account
+        const response2 = await fetch("/transfer", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                accSender: null,
+                accReceiver: recipientAcc,
+                amount: 5,
+                transactPurpose: "Bank Reward Claim"
+            })
+        });
+        if (!response2.ok) {
+            alert("Failed to claim reward.");
+            return;
+        }
+
+        // Update Rewards History
+        const response3 = await fetch("/rewards-claim", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                rewardDescription: "Receive 5$ cashback",
+                rewardType: "Cashback",
+                rewardAmount: 5,
+                accNum: recipientAcc
+            })
+        });
+        if (!response3.ok) {
+            alert("Failed to update rewards history.");
+            return;
+        }
+        alert("Reward claimed successfully!");
+        location.reload();
+    });
+}
+
+// Function to display budget management
+async function displayBudgetManagement() {
+    const expensesData = await getExpenses();
+    const budgetDataArray = await fetchUserBudget();
+
+    const budgetData = {};
+    if (Array.isArray(budgetDataArray)) {
+        budgetDataArray.forEach(item => {
+            budgetData[item.BudgetCategory] = item.BudgetAmount; // ✅ Correctly map budget category to amount
+        });
+    }
+
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const budgetContainer = document.getElementById("budget-container");
+    budgetContainer.innerHTML = ""; // Clear existing content
+
+    // **Fixed Spending Categories**
+    const categories = [
+        "Grocery or Retail Purchases",
+        "ATM Withdrawals or Cash Deposits",
+        "Online Shopping",
+        "Medical or Healthcare Payments",
+        "Uncategorised",
+        "Others"
+    ];
+
+    // **Calculate total spending per category**
+    const monthlyCategoryExpenses = {};
+    categories.forEach(category => monthlyCategoryExpenses[category] = 0); // Initialize all categories to 0
+
+    expensesData.forEach(transaction => {
+        const transactionDate = new Date(transaction.TransactDate);
+        const month = transactionDate.getMonth();
+        const year = transactionDate.getFullYear();
+
+        if (month === currentMonth && year === currentYear) {
+            const category = transaction.TransactPurpose;
+            if (monthlyCategoryExpenses.hasOwnProperty(category)) {
+                monthlyCategoryExpenses[category] += transaction.TransactAmount;
+            }
+        }
+    });
+
+    // **Populate UI**
+    categories.forEach(category => {
+        const spending = monthlyCategoryExpenses[category] || 0; // Default to 0 if no spending
+        const budget = budgetData[category] || 0;
+
+        const card = document.createElement("div");
+        card.classList.add("budget-card");
+
+        // Red if overspending, Green otherwise. If budget is 0 or equal, always green.
+        const amountColor = budget > 0 && spending > budget ? "red" : "green";
+
+        card.innerHTML = `
+            <div class="budget-header">${category}</div>
+            <div class="amount-spent" style="color: ${amountColor};">$${spending.toFixed(2)}</div>
+            <div class="budget-section">
+                <span>Budget</span>
+                <span class="budget-value">$${budget.toFixed(2)}</span>
+                <input type="number" class="budget-input" value="${budget.toFixed(2)}">
+            </div>
+            <div class="budget-actions">
+                <button class="cancel-btn">Cancel</button>
+                <button class="change-btn">Change</button>
+            </div>
+        `;
+
+
+        // **Add Event Listeners**
+        const budgetValue = card.querySelector(".budget-value");
+        const budgetInput = card.querySelector(".budget-input");
+        const actionsDiv = card.querySelector(".budget-actions");
+        const cancelBtn = card.querySelector(".cancel-btn");
+        const changeBtn = card.querySelector(".change-btn");
+
+        // **Enable Edit Mode**
+        budgetValue.addEventListener("click", () => {
+            budgetValue.style.display = "none";
+            budgetInput.style.display = "inline-block";
+            actionsDiv.style.display = "flex";
+        });
+
+        // **Cancel Changes**
+        cancelBtn.addEventListener("click", () => {
+            budgetInput.value = budget.toFixed(2);
+            budgetValue.style.display = "inline-block";
+            budgetInput.style.display = "none";
+            actionsDiv.style.display = "none";
+        });
+
+        // **Save Changes**
+        changeBtn.addEventListener("click", async () => {
+            const newBudget = parseFloat(budgetInput.value);
+            if (isNaN(newBudget) || newBudget < 0) {
+                alert("Invalid budget amount.");
+                return;
+            }
+
+            const updated = await updateUserBudget(category, newBudget);
+            if (updated) {
+                budgetValue.textContent = `$${newBudget.toFixed(2)}`;
+                budgetValue.style.display = "inline-block";
+                budgetInput.style.display = "none";
+                actionsDiv.style.display = "none";
+                alert("Budget updated successfully!");
+            }
+        });
+
+        budgetContainer.appendChild(card);
+    });
+}
+
+// Function to update user budget
+async function updateUserBudget(category, newBudget) {
+    const profileId = sessionStorage.getItem("profileId");
+    const token = sessionStorage.getItem("token");
+
+    // Get accNum by profileId
+    const response1 = await fetch(`/account/${profileId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+    if (!response1.ok) {
+        console.alert("Failed to fetch account details.");
+        return false;
+    }
+    const data = await response1.json();
+
+    const response2 = await fetch(`/expense/budget/${data.AccNum}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            budgetCategory: category,
+            budgetAmount: newBudget
+        }),
+    });
+    if (!response2.ok) {
+        console.error("Failed to update budget data.");
+        return false;
+    }
+
+    return true;
 }
 
 /*--------------------------------  Sairam Functions --------------------------------*/

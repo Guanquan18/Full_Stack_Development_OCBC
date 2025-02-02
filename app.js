@@ -17,6 +17,8 @@ const videoCallingController = require("./controllers/videoCallingController"); 
 const billController = require("./controllers/billController"); // Import the bill controller
 const forumController = require("./controllers/forumController"); // Import the forum controller [Created by : Keshwindren S10259469C]
 const OpenAIController = require("./controllers/openAIController"); // Import the OpenAI controller
+const rewardsController = require("./controllers/rewardsController"); // Import the rewards controller [Created by : Chang Guan Quan S10257825A]
+const budgetController = require("./controllers/budgetController"); // Import the budget controller [Created by : Chang Guan Quan S10257825A]
 
 
 const app = express(); // Create an Express application
@@ -55,12 +57,16 @@ app.get("/convert-currency", transactionController.convertCurrency); // Perform 
 app.get("/historical-rates",transactionController.getHistoricalRates); // Perform a fund transfer (sairam)
 app.get("/api/forum/message-counts", forumController.getMessageCounts); // Route for pie chart [Created by : Keshwindren S10259469C]
 app.delete("/api/forum/messages/:messageId", forumController.deleteMessage); // Route for deleting posted comments [Created by : Keshwindren S10259469C]
-
-
-app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id
+app.get("/transactions/expenses/:profileId", verifyJWT.verifyJWT, transactionController.getExpenses); // Get expenses by profile id (Guan Quan)
 app.post("/get-intent", OpenAIController.getIntent); // Get the intent from 
 app.post("/generate-insights", OpenAIController.generateTransactionInsights); // Get the intent from OpenAI
 app.get('/transactions/past-month/:accNum', transactionController.getTransactionHistoryPastMonth); // Get the transactions for the past month
+app.post("/rewards", rewardsController.getRewardsByProfileId); // Get income by profile id (Guan Quan)
+app.post("/rewards-claim", rewardsController.claimRewards); // Get income by profile id (Guan Quan)
+app.get("/expense/budget/:accNum", budgetController.getBudgetByAccNum); // Get budget by account number (Guan Quan)
+app.post("/expense/budget/:accNum", budgetController.updateBudgetByAccNum); // Update budget by account number (Guan Quan)
+app.post("/expense/budget-alert", budgetController.sendBudgetAlert); // Send budget alert (Guan Quan)
+
 
 app.listen(port, async () => {
     try {

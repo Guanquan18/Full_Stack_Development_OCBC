@@ -9,6 +9,8 @@ ELSE
 BEGIN
     PRINT 'Database OCBC_DB already exists.';
     USE OCBC_DB;
+    IF OBJECT_ID('Budget', 'U') IS NOT NULL DROP TABLE Budget;
+    IF OBJECT_ID('RewardsHistory', 'U') IS NOT NULL DROP TABLE RewardsHistory;
     IF OBJECT_ID('ForumMessages', 'U') IS NOT NULL DROP TABLE ForumMessages;
     IF OBJECT_ID('ForumCategory', 'U') IS NOT NULL DROP TABLE ForumCategory;
 	IF OBJECT_ID('ForeignExchangeTransaction', 'U') IS NOT NULL DROP TABLE ForeignExchangeTransaction;
@@ -113,15 +115,17 @@ CREATE TABLE BankTransaction
     TransactNo      INT IDENTITY(1,1) NOT NULL,
     TransactDate    DATE NOT NULL DEFAULT GETDATE(),
     TransactAmount  FLOAT NOT NULL,
-    AccSender       VARCHAR(20) NOT NULL,
+    AccSender       VARCHAR(20),
     AccReceiver     VARCHAR(20),  -- For normal transfers
     BillerAccNum    VARCHAR(20),  -- For bill payments
-	TransactPurpose	VARCHAR(100)	NULL CHECK(TransactPurpose in ('Grocery or Retail Purchases',
-															   'ATM Withdrawals or Cash Deposits',
-															   'Online Shopping',
-															   'Medical or Healthcare Payments',
-															   'ATM Withdrawals or Cash Deposits',
-															   'Others')),
+	TransactPurpose	VARCHAR(100)	DEFAULT ('Uncategorised')	NULL CHECK(TransactPurpose in ('Grocery or Retail Purchases',
+																					   'ATM Withdrawals or Cash Deposits',
+																					   'Online Shopping',
+																					   'Medical or Healthcare Payments',
+																					   'ATM Withdrawals or Cash Deposits',
+																					   'Uncategorised',
+																					   'Others',
+																					   'Bank Reward Claim')),
 	TransactType VARCHAR(20) NOT NULL DEFAULT 'Local Transfer',
     CONSTRAINT PK_BankTransaction PRIMARY KEY (TransactNo),
     CONSTRAINT FK_BankTransaction_AccSender FOREIGN KEY (AccSender)
@@ -164,6 +168,29 @@ CREATE TABLE ForumMessages (
         REFERENCES ForumCategory (CategoryID)
 );
 
+--Create table for reward system
+CREATE TABLE RewardsHistory (
+    RewardsHistoryId    INT IDENTITY(1,1)   NOT NULL,
+    RewardDescription   NVARCHAR(255)       NOT NULL,
+    RewardType          NVARCHAR(255)       NOT NULL CHECK(RewardType IN ('Points', 'Vouchers', 'Discounts', 'Cashback')),
+    RewardAmount        FLOAT               NOT NULL,
+    RewardDate          DATETIME            NOT NULL DEFAULT GETDATE(),
+    AccNum              VARCHAR(20)		    NOT NULL,
+    CONSTRAINT PK_RewardsHistory PRIMARY KEY (RewardsHistoryId),
+    CONSTRAINT FK_RewardsHistory_AccNum FOREIGN KEY (AccNum)
+        REFERENCES Account (AccNum)
+);
+
+--Create table for Budget
+CREATE TABLE Budget (
+    BudgetID        INT IDENTITY(1,1)   NOT NULL,
+    BudgetAmount    FLOAT               NOT NULL,
+    BudgetCategory  NVARCHAR(255)       NOT NULL,
+    AccNum          VARCHAR(20)         NOT NULL,
+    CONSTRAINT PK_Budget PRIMARY KEY (BudgetID),
+    CONSTRAINT FK_Budget_AccNum FOREIGN KEY (AccNum)
+        REFERENCES Account (AccNum)
+);
 
 
 --Insert sample values
@@ -219,6 +246,57 @@ values
 
 INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver, TransactType)
 VALUES ('2024-12-01', 100.00, '123-456789-001', '789-012345-008', 'Foreign Exchange');
+
+INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver, TransactPurpose)
+VALUES
+-- Grocery or Retail Purchases
+('2024-10-20', 80.25, '123-456789-001', '234-567890-002', 'Grocery or Retail Purchases'),
+('2024-11-15', 95.00, '234-567890-002', '345-678901-003', 'Grocery or Retail Purchases'),
+('2024-12-10', 110.50, '345-678901-003', '456-789012-004', 'Grocery or Retail Purchases'),
+('2025-02-05', 120.25, '456-789012-004', '567-890123-005', 'Grocery or Retail Purchases'),
+('2025-02-15', 130.00, '567-890123-005', '123-456789-001', 'Grocery or Retail Purchases'),
+('2025-02-20', 140.75, '123-456789-001', '234-567890-002', 'Grocery or Retail Purchases'),
+
+-- ATM Withdrawals or Cash Deposits
+('2024-10-23', 300.00, '456-789012-004', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2024-11-05', 450.00, '567-890123-005', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2024-12-18', 500.00, '123-456789-001', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2025-02-10', 400.00, '234-567890-002', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2025-02-18', 350.00, '345-678901-003', NULL, 'ATM Withdrawals or Cash Deposits'),
+('2025-02-22', 50.00, '123-456789-001', NULL, 'ATM Withdrawals or Cash Deposits'),
+
+-- Online Shopping
+('2024-10-25', 50.00, '123-456789-001', '345-678901-003', 'Online Shopping'),
+('2024-11-14', 75.50, '234-567890-002', '456-789012-004', 'Online Shopping'),
+('2024-12-22', 100.00, '345-678901-003', '567-890123-005', 'Online Shopping'),
+('2025-02-07', 90.25, '456-789012-004', '123-456789-001', 'Online Shopping'),
+('2025-02-15', 110.75, '567-890123-005', '234-567890-002', 'Online Shopping'),
+('2025-02-20', 95.50, '123-456789-001', '345-678901-003', 'Online Shopping'),
+
+-- Medical or Healthcare Payments
+('2024-10-28', 220.75, '456-789012-004', '123-456789-001', 'Medical or Healthcare Payments'),
+('2024-11-20', 250.50, '567-890123-005', '234-567890-002', 'Medical or Healthcare Payments'),
+('2024-12-08', 300.00, '123-456789-001', '345-678901-003', 'Medical or Healthcare Payments'),
+('2025-02-10', 350.25, '234-567890-002', '456-789012-004', 'Medical or Healthcare Payments'),
+('2025-02-18', 400.00, '345-678901-003', '567-890123-005', 'Medical or Healthcare Payments'),
+('2025-02-22', 450.75, '456-789012-004', '123-456789-001', 'Medical or Healthcare Payments'),
+
+-- Others
+('2024-10-30', 300.00, '123-456789-001', '234-567890-002', 'Others'),
+('2024-11-25', 400.50, '234-567890-002', '345-678901-003', 'Others'),
+('2024-12-15', 200.00, '345-678901-003', '567-890123-005', 'Others'),
+('2025-02-12', 350.75, '456-789012-004', '123-456789-001', 'Others'),
+('2025-02-18', 450.25, '567-890123-005', '234-567890-002', 'Others'),
+('2025-02-22', 500.00, '123-456789-001', '345-678901-003', 'Others'),
+
+-- Uncategorised
+('2024-10-31', 100.00, '123-456789-001', '234-567890-002', 'Uncategorised'),
+('2024-11-30', 200.50, '234-567890-002', '345-678901-003', 'Uncategorised'),
+('2024-12-20', 150.00, '345-678901-003', '567-890123-005', 'Uncategorised'),
+('2025-02-14', 250.75, '456-789012-004', '123-456789-001', 'Uncategorised'),
+('2025-02-18', 300.25, '567-890123-005', '234-567890-002', 'Uncategorised'),
+('2025-02-22', 350.00, '123-456789-001', '345-678901-003', 'Uncategorised');
+
 
 INSERT INTO ForeignExchangeTransaction (TransactNo, FromCurrency, ToCurrency, ExchangeRate, ConvertedAmount)
 VALUES (6, 'SGD', 'INR', 63.67, 6367.00);
@@ -277,3 +355,31 @@ VALUES
 (3, 'David Brown', 'Use keyboard shortcuts to navigate quickly.');
 
 
+-- Insert values for RewardsHistory
+INSERT INTO RewardsHistory (RewardDescription, RewardType, RewardAmount, RewardDate, AccNum)
+VALUES
+('Receive 5$ cashback', 'Cashback', 5.00, '2024-10-20', '123-456789-001'),
+('Receive 5$ cashback', 'Cashback', 5.00, '2024-11-20', '123-456789-001'),
+('Receive 5$ cashback', 'Cashback', 5.00, '2024-12-20', '123-456789-001');
+
+-- Insert values for Budget
+INSERT INTO Budget (BudgetAmount, BudgetCategory, AccNum)
+VALUES
+(500.00, 'Grocery or Retail Purchases', '123-456789-001'),
+(300.00, 'Online Shopping', '123-456789-001'),
+(100.00, 'ATM Withdrawals or Cash Deposits', '123-456789-001'),
+(400.00, 'Others', '123-456789-001');
+
+SELECT * FROM RewardsHistory WHERE AccNum = '123-456789-001'
+select * from BankTransaction
+
+SELECT r.* FROM RewardsHistory r
+INNER JOIN Account a on r.AccNum = a.AccNum
+INNER JOIN Profile p on a.ProfileId = p.ProfileId
+WHERE p.ProfileId = 1
+
+
+--insert into BankTransaction(TransactDate, TransactAmount, AccSender, AccReceiver, TransactPurpose, TransactType) values('2024-02-01', 5, null, '123-456789-001', 'Bank Reward Claim', 'Local Transfer');
+--insert into RewardsHistory(RewardDescription, RewardType, RewardAmount, AccNum) values('Testing', 'Cashback', 5, '123-456789-001')
+select * from BankTransaction
+select * from Profile

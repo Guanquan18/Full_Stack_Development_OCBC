@@ -1,4 +1,4 @@
-<!--Created By: Sairam (S10259930H)!-->
+<!--Created By: Guan Quan (S10257825A)!-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,37 +40,47 @@
         .financial-header {
             padding: 20px;
             text-align: center;
+            margin: 20px auto;
         }
         .financial-header h1 {
             margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #e74d3c;
         }
 
-        /* Account Card */
-        .account-card {
-            background: #e74c3c;
-            color: white;
-            border-radius: 10px;
-            padding: 20px;
+        .acount-balance-container {
+            width: 100%;
+            height: fit-content;
             margin: 20px auto;
             text-align: center;
+            color: white;
         }
 
-        .account-card h3 {
-            margin: 0 0 10px;
+        .account-balance-container h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #626262;
         }
 
-        .account-card .account-type {
-            font-size: 1.2rem;
-            margin: 10px 0;
+        .account-balance {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
         }
 
-        .account-card .balance span,
-        .account-card .debit-card span {
-            font-weight: bold;
+        .account-balance-month {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+            color: #626262;
         }
+
 
         /* Charts Section */
         .charts-section {
+            width: 100%;
             margin: 20px auto;
             text-align: center;
             color: white;
@@ -79,79 +89,310 @@
         .chart-placeholder {
             width: 100%;
             height: fit-content;
-            /* Gradient Background */
-            padding: 10px 5px;
+            padding: 20px 0;
             margin-bottom: 20px;
             
             display: flex;
             align-items: center;
             justify-content: center;
             
+            border: 1px solid #e74d3c;
             border-radius: 10px;
         }
 
-        #pie-chart {
-            background: linear-gradient(45deg, #e74d3c06, #e74d3c8d);
-            border-radius: 10px;
+        .rewards-button {
+            width: 100%;
+            height: fit-content;
+            padding: 1rem 0;
+            margin: 20px auto;
+            
+            font-size: 1.25rem;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            color: white;
+            background-color: #f03c3c;
+            
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            border: none;
         }
 
-        .chart-placeholder p {
+        #rewards-eligibility, #budget-setting {
+            background-color: #ffffff;
+            color: black;
+            font-size: 400;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .rewards-about {
+            width: 100%;
+            height: fit-content;
+            margin: 20px auto 40px;
+            text-align: center;
+            color: rgb(0, 0, 0);
+        }
+
+        .rewards-about h3, .rewards-about p {
+            width: 100%;
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            text-align: left;
+        }
+        .rewards-about h3 , .rewards-eligible-criteria h3 {
+            font-weight: 700;
+            font-size: 30px;
+            color: #303030;
+            margin-bottom: 20px ;
+        }
+        .rewards-about p {
+            margin-bottom: 30px;
+            font-weight: 500;
+            font-size: 20px;
+            color: #3d3d3d;
+        }
+
+        .rewards-eligible-criteria ul{
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            gap: 20px;
+        }
+
+        .rewards-eligible-criteria ul li {
+            font-size: 20px;
+            font-weight: 500;
+            color: #3d3d3d;
+        }
+
+        .financial-header {
+            display: flex;
+            justify-content:flex-start;
+            align-items: center;
+            padding: 0;
+            gap: 10px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            padding-top: 5px;
+        }
+
+        #budget-container {
+            width: 100%;
+            margin: 20px auto;
+            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .back-button img {
+            height: 25px;
+            margin-right: 5px;
+        }
+
+        .budget-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .budget-header {
+            font-size: 18px;
+            font-weight: bolder;
+            margin-bottom: 5px;
+        }
+
+        .amount-spent {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .budget-section {
+            background: #fce8e8;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .budget-section span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .budget-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .budget-input {
+            display: none;
+            font-size: 18px;
+            font-weight: bold;
+            width: 80px;
+            text-align: right;
+            border: none;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .budget-actions {
+            display: none;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .budget-actions button {
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: #ffdd57;
             color: black;
         }
 
-        .chart-placeholder img {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-            margin: 0 auto;
-            border-radius: 10px;
-            display: block;
+        .change-btn {
+            background: #e74d3c;
+            color: white;
         }
-
 
     </style>
 </head>
 <body>
     <article class="expenses-wrapper">
-        <!-- Financial Overview Header -->
-        <header class="financial-header">
-            <h1>Financial Overview</h1>
-        </header>
+        <section id="expenses-content">
+            <!-- Financial Overview Header -->
+            <header class="financial-header">
+                <a href="javascript:void(0);" class="back-button" onclick="goBack()">
+                    <img src="../images/back-icon.png" alt="Back">
+                </a>
+                <h1>Financial Overview</h1>
+            </header>
+        
+            <!-- Account Details Card -->
+            <div class="account-balance-container">
+                <h3></h3>
+                <p class="account-balance"></p>
+                <p class="account-balance-month">May 2024</p>
+            </div>
+        
+            <!-- Embedded Charts Section -->
+            <div class="charts-section">
     
-        <!-- Account Details Card -->
-        <div class="account-card">
-            <h3>OCBC Bank</h3>
-            <p class="account-type">Statement Savings Account</p>
-            <p class="balance">Available Balance: <span>$23,540.00</span></p>
-            <p class="debit-card">Debit Card No: <span>1234 5678 9876 5432</span></p>
-        </div>
+                <!-- Line Chart -->
+                <div class="chart-placeholder">
+                    <canvas id="line-chart" width="400" height="400"></canvas>
+                </div>
     
-        <!-- Embedded Charts Section -->
-        <div class="charts-section">
+                <!-- Pie Chart -->
+                <div class="chart-placeholder">
+                    <canvas id="pie-chart" style="width: 100%; height: auto;"></canvas>
+                </div>
+    
+            </div>
+    
+            <button type="button" id="rewards-eligibility" class="rewards-button" onclick="showContent('rewards-content');hideContent('expenses-content')">Rewards Eligibility</button>
+            <button type="button" id="budget-setting" class="rewards-button" onclick="showContent('budget-management-contnet');hideContent('expenses-content')">Budget Management</button>
 
-            <!-- Line Chart -->
-        <div class="chart-placeholder">
-            <canvas id="line-chart" width="400" height="200"></canvas>
-        </div>
+        </section>
 
-        <!-- Pie Chart -->
-        <div class="chart-placeholder">
-            <canvas id="pie-chart" width="400" height="200"></canvas>
-        </div>
+        <section id="rewards-content" style="display: none;">
+            <!-- Rewards Eligibility Content -->
+            <header class="financial-header">
+                <a href="javascript:void(0);" class="back-button" onclick="showContent('expenses-content');hideContent('rewards-content')">
+                    <img src="../images/back-icon.png" alt="Back">
+                </a>
+                <h1>Rewards Eligibility</h1>
+            </header>
 
+            <div class="rewards-about">
+                <h3>About</h3>
+                <p>
+                    Claim <strong>$5</strong> reward for using more cashless transactions.
+                </p>
+                <p>
+                    Our bank wants to encourage customers to use more cashless payments instead of withdrawing and using cash. 
+                    To support this, we have introduced a Cashless Rewards Program. 
+                    This program rewards customers who rely more on digital transactions like card payments, mobile payments, or online transfers.
+                </p>
+                <p>
+                    Each month, we will check the percentage of cash withdrawals compared to all transactions made. 
+                    If the amount of cash withdrawn is below a certain percentage, the customer will be eligible for the reward. 
+                    This way, the more you use digital payments, the higher your chances of receiving a reward.
+                </p>
+            </div>
+
+            <div class="rewards-eligible-criteria">
+                <h3>Rewards Eligibility Criteria</h3>
+                <ul>
+                    <li>Users must ensure that their total cash withdrawals account for less than <strong>15%</strong> of their total monthly account transactions.</li>
+                    <li>Users should perform at least <strong>2</strong> transactions <strong><em>(e.g., card payments, mobile payments, or online transfers, cash redrawal)</em></strong> within the same month.</li>
+                    <li>Users must comply with all terms and conditions of the bank, including adhering to any anti-fraud and responsible usage policies.
+                    </li>
+                </ul>
+            </div>
             
-        </div>
+            <button type="submit" id="reward-claim-button" class="rewards-button" >Claim Reward</button>
+        </section>
+
+        <section id="budget-management-contnet" style="display: none;">
+            <!-- Rewards Eligibility Content -->
+            <header class="financial-header">
+                <a href="javascript:void(0);" class="back-button" onclick="showContent('expenses-content');hideContent('budget-management-contnet')">
+                    <img src="../images/back-icon.png" alt="Back">
+                </a>
+                <h1>Budget Management</h1>
+            </header>
+
+            <div id="budget-container">
+                <!-- Budget cards will be inserted dynamically -->
+            </div>
+
+        </section>
+
     </article>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
     <script src="../scripts/script.js"></script>
     <script>
+
+        function goBack() {
+            window.location.href = "../homepage/homepage.html";
+        }
+        function showContent(contentId){
+            document.getElementById(contentId).style.display = 'block';
+        }
+        function hideContent(contentId){
+            document.getElementById(contentId).style.display = 'none';
+        }
         
-        // Fetch data and display Expenses
+        document.addEventListener("DOMContentLoaded", displayAccDetails);
         document.addEventListener("DOMContentLoaded", displayExpenses);
+        document.addEventListener("DOMContentLoaded", getRewardsEligibility);
+        document.addEventListener("DOMContentLoaded", displayBudgetManagement);
+
+        claimReward();
 
     </script>
 </body>

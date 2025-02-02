@@ -77,9 +77,9 @@ const addRecipient = async (req, res) => {
 
 // Performing a transfer to the recipient (kesh)
 const performTransfer = async (req, res) => {
-    const { accSender, accReceiver, amount } = req.body;
+    const { accSender, accReceiver, amount , transactPurpose} = req.body;
     try {
-        const result = await Transaction.performTransfer(accSender, accReceiver, amount);
+        const result = await Transaction.performTransfer(accSender, accReceiver, amount, transactPurpose);
         res.status(200).json(result);
     } catch (error) {
         console.error("Error performing transfer:", error);

@@ -131,6 +131,10 @@
                 <span>Recipient No:</span>
                 <span id="accountNumber"></span>
             </div>
+            <div class="details-section">
+                <span>Transaction Purpose:</span>
+                <span id="transactPurpose" style="text-align: right;"></span>
+            </div>            
         </div>
 
         <button class="next-button" onclick="makeAnotherTransfer()">MAKE ANOTHER TRANSFER</button>
@@ -148,6 +152,7 @@
             const transferAmount = parseFloat(sessionStorage.getItem("transferAmount"));
             const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
+            const transactPurpose = sessionStorage.getItem("transactPurpose") || "Not specified";
 
             try {
                 const response = await fetch(`/account/${profileId}`,{
@@ -174,7 +179,13 @@
             } else {
                 console.error("No recipient data found in sessionStorage.");
             }
+
+            // Display transaction purpose
+            document.getElementById("transactPurpose").textContent = transactPurpose;
+
+            // Remove stored data
             sessionStorage.removeItem("recipientData");
+            sessionStorage.removeItem("transactPurpose");
         });
     </script>
 </body>
