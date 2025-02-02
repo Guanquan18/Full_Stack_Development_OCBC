@@ -465,8 +465,8 @@
             </div>
             <div class="col-4">
                 <div id = 'insurance' class="feature">
-                    <img class="feature-icon" src="../images/homepage/insurance.png" alt="Insurance Icon">
-                    <h2 class="feature-title">Insurance</h2>
+                    <img class="feature-icon" src="../images/homepage/Expenses.png" alt="Insurance Icon" style="transform: scale(0.6);">
+                    <h2 class="feature-title">Expense Tracking</h2>
                 </div>
             </div>
             <div class="col-4">
@@ -828,6 +828,10 @@
         // if click on pay bill, bring to view bill page
         document.getElementById('paying-bill').onclick = function() {
             window.location.href = '../pay-bills/view-bills.html';
+        }
+
+        document.getElementById('insurance').onclick = function() {
+            window.location.href = '../expenses/expenses.html';
         }
     </script>
 </body>
