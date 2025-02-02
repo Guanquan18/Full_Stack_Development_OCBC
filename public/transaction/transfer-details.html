@@ -96,7 +96,7 @@
             color: #3f4347;
             font-weight: bold;
             font-size: 16px; 
-            text-align: left;
+            text-align: right;
             word-wrap: break-word; 
         }
 
@@ -156,12 +156,17 @@
                     <span class="label">When:</span>
                     <span class="value" id="transactionDate"></span>
                 </div>
+                <div class="details-item">
+                    <span class="label">Transaction Purpose:</span>
+                    <span class="value" id="transactPurpose"></span>
+                </div>                
             </div>
         </div>
 
         <button class="next-button" onclick="confirmTransfer()">CONFIRM TRANSFER</button>
     </div>
-
+    
+    <script src="../scripts/script.js"></script>
     <script>
         function goBack() {
             window.history.back();
@@ -170,6 +175,7 @@
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
             const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
             const transferAmount = sessionStorage.getItem("transferAmount");
+            const transactPurpose = sessionStorage.getItem("transactPurpose") || "Not specified";
 
             // Display recipient data and transfer amount
             if (recipientData) {
@@ -177,6 +183,7 @@
                 document.getElementById("recipientNo").textContent = recipientData.accNum;
             }
             document.getElementById("transferAmount").textContent = parseFloat(transferAmount).toFixed(2);
+            document.getElementById("transactPurpose").textContent = transactPurpose;
 
             // Display the current date
             const currentDate = new Date().toLocaleDateString("en-GB", {
@@ -218,6 +225,7 @@
             const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
             const transferAmount = parseFloat(sessionStorage.getItem("transferAmount"));
             const senderaccNum = sessionStorage.getItem('AccNum');
+            const transactPurpose = sessionStorage.getItem("transactPurpose");
 
             try {
                 const response = await fetch("/transfer", {
@@ -229,22 +237,109 @@
                     body: JSON.stringify({
                         accSender: senderaccNum,
                         accReceiver: recipientData.accNum,
-                        amount: transferAmount
+                        amount: transferAmount,
+                        transactPurpose: transactPurpose,
                     })
                 });
 
                 if (response.ok) {
                     alert("Transfer successful!");
+
+                    // Fetch expesnes data and budget to see if it is exceeded
+                    const expenses = await getExpenses();
+                    const budget = await fetchUserBudget();
+
+                    // Check if budget is exceeded
+                    checkBudgetExceeded(expenses, budget, transactPurpose);
+
                     // Redirect to confirmation-transfer.html
                     window.location.href = "confirmation-transfer.html";
                 } else {
                     alert("Transfer failed. Please try again.");
                 }
+
             } catch (error) {
                 console.error("Error performing transfer:", error);
                 alert("An error occurred while processing the transfer.");
             }
         }
+
+        async function checkBudgetExceeded(expenses, budgetData, currentCategory) {
+            let spendingByCategory = {};
+            
+            // Get the current month and year
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-based
+            const currentYear = currentDate.getFullYear();
+
+            // Filter transactions for the current month and year
+            const filteredExpenses = expenses.filter(transaction => {
+                const [day, month, year] = transaction.TransactDate.split('-'); // Split date format (e.g., "22-February-2025")
+                const transactionMonth = new Date(`${month} 1, ${year}`).getMonth() + 1; // Convert month name to number
+                const transactionYear = parseInt(year);
+
+                return transactionMonth === currentMonth && transactionYear === currentYear;
+            });
+
+            console.log("Filtered Expenses for Current Month:", filteredExpenses);
+
+            // Aggregate spending only for the category of the last transaction
+            filteredExpenses.forEach(transaction => {
+                if (transaction.TransactPurpose === currentCategory) {
+                    const amount = transaction.TransactAmount;
+                    if (!spendingByCategory[currentCategory]) {
+                        spendingByCategory[currentCategory] = 0;
+                    }
+                    spendingByCategory[currentCategory] += amount;
+                }
+            });
+
+            console.log("Spending for Current Transaction Category:", spendingByCategory);
+
+            // Check budget for the transaction category
+            const budgetEntry = budgetData.find(budget => budget.BudgetCategory === currentCategory);
+            
+            if (budgetEntry) {
+                const budgetLimit = budgetEntry.BudgetAmount;
+                const totalSpent = spendingByCategory[currentCategory] || 0;
+
+                console.log(`Category: ${currentCategory}, Budget: ${budgetLimit}, Spent: ${totalSpent}`);
+
+                if (totalSpent > budgetLimit) {
+                    await sendBudgetAlert(currentCategory, totalSpent, budgetLimit);
+                }
+            } else {
+                console.log(`No budget set for category: ${currentCategory}`);
+            }
+        }
+
+
+
+        async function sendBudgetAlert(category, totalSpent, budgetLimit) {
+            alert(`Budget Alert! 🚨\nYou have exceeded your budget for ${category}.\nBudget: $${budgetLimit.toFixed(2)}\nSpent: $${totalSpent.toFixed(2)}`);
+            
+            // Send a notification to the user
+            const response = await fetch("/expense/budget-alert", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+                },
+                body: JSON.stringify({
+                    category: category,
+                    amountSpent: totalSpent,
+                    budgetLimit: budgetLimit
+                })
+            });
+
+            if (response.ok) {
+                console.log("Budget alert sent successfully.");
+            } else {
+                console.error("Failed to send budget alert.");
+            }
+        }
+
+
     </script>
 </body>
 </html>

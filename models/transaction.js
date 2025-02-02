@@ -134,7 +134,7 @@ class Transaction {
     }
 
     // Method to perform a transfer to the recipient (kesh)
-    static async performTransfer(accSender, accReceiver, amount) {
+    static async performTransfer(accSender, accReceiver, amount, transactPurpose) {
         const connection = await sql.connect(dbConfig);
         let transaction; // Declare transaction outside the try block
         try {
@@ -177,18 +177,29 @@ class Transaction {
                 .query(addQuery);
     
             // Create transaction record with TransactDate as the current date
-            const transactionQuery = `
+            const transactionQuery1 = `
                 INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver)
                 VALUES (@TransactDate, @Amount, @AccSender, @AccReceiver)
             `;
-            await transaction.request()
-                .input("TransactDate", sql.DateTime, new Date())  // Set the current date
-                .input("Amount", sql.Float, amount)
-                .input("AccSender", sql.VarChar(20), accSender)
-                .input("AccReceiver", sql.VarChar(20), accReceiver)
-                .query(transactionQuery);
-    
+            const transactionQuery2 = `
+                INSERT INTO BankTransaction (TransactDate, TransactAmount, AccSender, AccReceiver, TransactPurpose)
+                VALUES (@TransactDate, @Amount, @AccSender, @AccReceiver, @TransactPurpose)
+            `;
+            const request = transaction.request();
+            request.input("TransactDate", sql.DateTime, new Date());
+            request.input("Amount", sql.Float, amount);
+            request.input("AccSender", sql.VarChar(20), accSender);
+            request.input("AccReceiver", sql.VarChar(20), accReceiver);
+
+            if (transactPurpose) {
+                request.input("TransactPurpose", sql.NVarChar(255), transactPurpose);
+                await request.query(transactionQuery2);
+            }else{
+                await request.query(transactionQuery1);
+            }
+
             await transaction.commit();
+    
             return { message: "Transfer successful" };
         } catch (error) {
             console.error("Error performing transfer:", error);
@@ -255,7 +266,6 @@ class Transaction {
                 ORDER BY bt.TransactDate DESC, bt.TransactNo DESC;
             `;
     
-            console.log("Executing SQL Query:", sqlQuery);
     
             // Run the query
             const request = connection.request();
@@ -264,7 +274,6 @@ class Transaction {
             request.input("EndDate", sql.DateTime, calculatedEndDate);
     
             const result = await request.query(sqlQuery);
-            console.log("SQL Query Result:", result.recordset); // Debugging
     
             if (result.recordset.length === 0) {
                 console.log("No transactions found.");
