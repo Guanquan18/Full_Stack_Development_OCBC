@@ -152,7 +152,7 @@
             const transferAmount = parseFloat(sessionStorage.getItem("transferAmount"));
             const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
-            const transactPurpose = sessionStorage.getItem("transactPurpose") || "Not specified";
+            const transactPurpose = sessionStorage.getItem("transactPurpose") || "Others";
 
             try {
                 const response = await fetch(`/account/${profileId}`,{

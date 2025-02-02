@@ -175,7 +175,8 @@
             const profileId = JSON.parse(sessionStorage.getItem("profileId"));
             const recipientData = JSON.parse(sessionStorage.getItem("recipientData"));
             const transferAmount = sessionStorage.getItem("transferAmount");
-            const transactPurpose = sessionStorage.getItem("transactPurpose") || "Not specified";
+            const transactPurpose = sessionStorage.getItem("transactPurpose") || "Others";
+        
 
             // Display recipient data and transfer amount
             if (recipientData) {
