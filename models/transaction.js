@@ -451,6 +451,83 @@ class Transaction {
             connection.close();
         }
     }
+    static async getTransactionHistoryPastMonth(accNum) {
+        await sql.close(); // Close any existing connections
+        const connection = await sql.connect(dbConfig); // Reconnect to avoid stale connections
+    
+        try {
+            let startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 1); // Move back 1 month
+            startDate.setHours(0, 0, 0, 0); // Start from midnight
+    
+            let endDate = new Date();
+            endDate.setHours(23, 59, 59, 999); // End of today
+    
+            console.log("Fetching transactions from:", startDate, "to", endDate);
+    
+            // SQL Query
+            const sqlQuery = `
+                SELECT 
+                    bt.TransactNo, 
+                    FORMAT(bt.TransactDate, 'dd MMMM yyyy') AS TransactDate,
+                    bt.TransactAmount, 
+                    bt.AccSender, 
+                    senderProfile.FullName AS SenderName, 
+                    bt.AccReceiver, 
+                    receiverProfile.FullName AS ReceiverName,
+                    bt.BillerAccNum, 
+                    biller.BillerName AS BillerName,
+                    bt.TransactType
+                FROM BankTransaction bt
+                LEFT JOIN Account sender ON bt.AccSender = sender.AccNum
+                LEFT JOIN Profile senderProfile ON sender.ProfileId = senderProfile.ProfileId
+                LEFT JOIN Account receiver ON bt.AccReceiver = receiver.AccNum
+                LEFT JOIN Profile receiverProfile ON receiver.ProfileId = receiverProfile.ProfileId
+                LEFT JOIN Biller biller ON bt.BillerAccNum = biller.BillerAccNum
+                WHERE (bt.AccSender = @AccNum OR bt.AccReceiver = @AccNum OR bt.BillerAccNum IS NOT NULL)
+                AND CAST(bt.TransactDate AS DATE) BETWEEN @StartDate AND @EndDate
+                ORDER BY bt.TransactDate DESC, bt.TransactNo DESC;
+            `;
+    
+            console.log("Executing SQL Query:", sqlQuery);
+    
+            // Run the query
+            const request = connection.request();
+            request.input("AccNum", sql.VarChar(20), accNum);
+            request.input("StartDate", sql.DateTime, startDate);
+            request.input("EndDate", sql.DateTime, endDate);
+    
+            const result = await request.query(sqlQuery);
+            console.log("SQL Query Result:", result.recordset); // Debugging
+    
+            if (result.recordset.length === 0) {
+                console.log("No transactions found for the past month.");
+                return [];
+            }
+    
+            // Map SQL results to Transaction objects
+            return result.recordset.map(row => {
+                return new Transaction(
+                    row.TransactNo,
+                    row.TransactDate,
+                    row.TransactAmount,
+                    row.AccSender,
+                    row.AccSender === accNum ? "You" : row.SenderName,
+                    row.AccReceiver || row.BillerAccNum,  // If AccReceiver is NULL, use BillerAccNum
+                    row.AccReceiver
+                        ? (row.AccReceiver === accNum ? "You" : row.ReceiverName)
+                        : row.BillerName,  // If AccReceiver is NULL, use BillerName
+                    row.TransactType
+                );
+            });
+        } catch (error) {
+            console.error("Error retrieving past month transaction history:", error);
+            throw error;
+        } finally {
+            await sql.close(); // Close the connection after execution
+        }
+    }
+    
 }
 
 module.exports = Transaction;

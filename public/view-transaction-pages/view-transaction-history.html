@@ -349,7 +349,24 @@
             margin-bottom: 5px;
         }
 
-
+        .e-statement-container {
+            position: fixed;
+            bottom: 90px;
+            right: 10px;
+            z-index: 10;
+            width: 60px;
+            height: 60px;
+            background-color: #f03c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+        .e-statement{
+            width: 80%;
+            height: 80%;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -402,6 +419,11 @@
         <img src="../images/homepage/microphone.webp" alt="Microphone Icon" class="mic-image">
     </div>
 
+    <!-- E-Statement Icon -->
+    <div id="e-statement-button" class="e-statement-container">
+        <img src="../images/download.png" alt="e-statement" class="e-statement">
+    </div>
+
     <!-- Stop Button -->
     <div id="stop-button" class="stop-button" onclick="stopTranscription()">
         <p>Stop</p>
@@ -425,6 +447,11 @@
     </div>
     <script src = "../scripts/script.js"></script>
     <script src = "../scripts/stt.js"></script>
+    <script type="module" src="../scripts/logo.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script>
         const searchButton = document.querySelector('.search-button');
         // Function to toggle the custom date range visibility
@@ -569,6 +596,303 @@
                 showProgress: true,      
         }).start();
     }
+
+    document.getElementById("e-statement-button").addEventListener("click", async function () {
+        console.log("Generating E-Statement...");
+
+        // Get user details from sessionStorage
+        const accNum = sessionStorage.getItem("AccNum");
+        const fullName = sessionStorage.getItem("FullName");
+        const token = sessionStorage.getItem("token");
+        const address1 = "123, ABC Street";
+        const address2 = "Singapore 123456";
+
+        // Ensure required details are available
+        if (!accNum || !fullName || !token) {
+            console.error("Missing user details or token.");
+            alert("Session expired. Please log in again.");
+            return;
+        }
+
+        try {
+        // Retrieve transactions from sessionStorage
+        const transactions = JSON.parse(sessionStorage.getItem("transactions")) || [];
+        const startDate = sessionStorage.getItem("startDate") || "N/A";
+        const endDate = sessionStorage.getItem("endDate") || "N/A";
+
+        // Function to format date as "1 Dec 2024"
+        function formatDate(dateStr) {
+            if (!dateStr) return "N/A"; // Handle empty or invalid dates
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        // Convert startDate and endDate before using them
+        const formattedStartDate = formatDate(startDate);
+        const formattedEndDate = formatDate(endDate);        
+
+        console.log(transactions, startDate, endDate);
+        if (transactions.length === 0) {
+            alert("No transactions available.");
+            return;
+        }
+
+            // Generate PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: "p",
+                unit: "pt",
+                format: "a4",
+            });
+
+            // Set margins and page properties
+            const marginLeft = 50;
+            const marginRight = 50;
+            const marginTop = 20;
+            const marginBottom = 50;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // Load Image (Bank Logo)
+            const bankLogo = "../images/ocbc.png";
+            doc.addImage(bankLogo, "PNG", marginLeft, marginTop, 100, 27); // Adjust X, Y, height, width
+            
+            let yOffset = marginTop;
+
+            // Add Bank Header
+            yOffset += 10; // Space before bank header
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(12);
+            let xOffset= 90 ;
+            doc.setTextColor(238,22,31);
+            doc.text("OCBC Bank", pageWidth / 2, yOffset, { align: "left" });
+            doc.setTextColor(0, 0, 0)
+            doc.setFont("Helvetica", "normal");
+            doc.text("65 Chulia Street, OCBC Centre", pageWidth / 2, yOffset + 20, { align: "left" });
+            doc.text("Singapore 049513", pageWidth / 2, yOffset + 35, { align: "left" });
+            yOffset += 60;
+            xOffset = 0;
+
+            // User Details Section
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+            const userDetails = [
+                `${fullName}`,
+                `${address1}`,
+                `${address2}`,
+            ];
+
+            // Print user details line by line
+            userDetails.forEach((line) => {
+                if (yOffset + 15 > pageHeight - marginBottom) {
+                    doc.addPage();
+                    yOffset = marginTop;
+                }
+                doc.text(line, marginLeft, yOffset);
+                yOffset += 15;
+            });            
+
+            yOffset += 40; // Space before transaction section
+
+            // Title: "E-Statement"
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("STATEMENT SAVINGS", marginLeft, yOffset);
+            doc.setLineWidth(0.5);
+            yOffset += 15;
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(`Account No. ${accNum}`, marginLeft, yOffset);
+
+            // Transaction History Header
+            // Get text width of the date range to position it correctly
+            const dateRangeText = `${formattedStartDate} to ${formattedEndDate}`;
+            const textWidth = doc.getTextWidth(dateRangeText); // Measure text width
+
+            // Date Range (Right-Aligned)
+            doc.text(dateRangeText, pageWidth - marginRight - textWidth, yOffset); // Align to right
+            yOffset += 20;
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+
+            doc.autoTable({
+                startY: yOffset,
+                head: [["Date", "Transaction No", "Amount ($)", "From", "To", "Type"]],
+                body: transactions.map(t => [
+                    t.TransactDate,
+                    t.TransactNo,
+                    t.TransactAmount.toFixed(2),
+                    `${t.SenderName} (${t.AccSender})`,
+                    `${t.ReceiverName} (${t.AccReceiver})`,
+                    t.TransactType
+                ]),
+                    theme: 'plain', // Removes default table styles
+                    headStyles: { 
+                        fillColor: [255, 255, 255], // No background color
+                        textColor: [0, 0, 0], // Black text
+                        fontStyle: 'bold',
+                        lineWidth: 0, // Only for top/bottom borders
+                        lineColor: [0, 0, 0] // Black lines for header row
+                    },
+                    styles: { 
+                        fontSize: 10, 
+                        cellPadding: 5, 
+                        lineWidth: 0, // Removes vertical lines and row borders
+                        textColor: [0, 0, 0]
+                    },
+                    didDrawCell: function (data) {
+                        if (data.row.index === 0) { // Ensure only header row has borders
+                            doc.setDrawColor(0, 0, 0);
+                            doc.setLineWidth(1);
+                            doc.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y); // Top border
+                        }
+                    },
+                    margin: { left: marginLeft, right: marginRight }
+            });
+
+            let insightsDataRaw = await generateTransactionInsights(transactions);
+            let insightsData;
+
+            try {
+                // If insightsDataRaw.insights is a string, parse it into an object
+                insightsData = typeof insightsDataRaw.insights === "string" 
+                    ? JSON.parse(insightsDataRaw.insights) 
+                    : insightsDataRaw;
+
+                console.log("Parsed Insights Data:", insightsData);
+            } catch (error) {
+                console.error("Error parsing insights JSON:", error);
+                insightsData = { totalIncome: 0, totalExpense: 0, insights: ["No insights available."] };
+            }
+
+            // Footer
+            doc.setFontSize(10);
+            doc.text("This statement is computer-generated and does not require a signature.", marginLeft, pageHeight - 30);
+            doc.text("For assistance, call 1800-123-4567 or visit www.ocbc.com", marginLeft, pageHeight - 15);
+
+            const totalIncome = insightsData.totalIncome ?? 0;
+            const totalExpense = insightsData.totalExpense ?? 0;
+            const insightsList = insightsData.insights || ["No insights available."];
+
+            console.log("view-transaction-history" + insightsData);
+            console.log(totalIncome, totalExpense, insightsList);
+
+            // Generate Pie Chart
+            const canvas = document.createElement("canvas");
+            canvas.width = 250; // Smaller width
+            canvas.height = 250; // Smaller height
+
+            const ctx = canvas.getContext("2d");
+
+            // Calculate percentage values
+            const total = insightsData.totalIncome + insightsData.totalExpense;
+            const incomePercentage = ((insightsData.totalIncome / total) * 100).toFixed(1);
+            const expensePercentage = ((insightsData.totalExpense / total) * 100).toFixed(1);
+
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Income", "Expenses"],
+                    datasets: [{
+                        data: [insightsData.totalIncome, insightsData.totalExpense],
+                        backgroundColor: ["#4f772d", "#E74C3C"], 
+                        borderWidth: 0 
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: { display: true, position: "bottom" },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    let value = tooltipItem.raw;
+                                    let percentage = ((value / total) * 100).toFixed(1);
+                                    return `${tooltipItem.label}: $${value} (${percentage}%)`;
+                                }
+                            }
+                        },
+                        // This plugin adds labels inside the chart
+                        datalabels: {
+                            color: "#fff",
+                            font: { weight: "bold", size: 14 },
+                            formatter: (value, context) => {
+                                let percentage = ((value / total) * 100).toFixed(1);
+                                return `${percentage}%`; // Show percentage inside the pie slices
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels] // Required for percentage labels inside the chart
+            });
+
+            doc.addPage();
+            yOffset = 60;
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(238, 22, 31);
+            doc.text("Transaction Insights", pageWidth / 2, yOffset, { align: "center" });
+
+            doc.setTextColor(0, 0, 0);
+            yOffset += 40;
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Summary", marginLeft, yOffset);
+            yOffset += 20;
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+            doc.text(`Total Income: $${insightsData.totalIncome}`, marginLeft, yOffset);
+            yOffset += 20;
+            doc.text(`Total Expenses: $${insightsData.totalExpense}`, marginLeft, yOffset);
+            yOffset += 20;
+
+            yOffset += 200; // Move down after pie chart
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Insights", marginLeft, yOffset);
+            yOffset += 20;
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+
+            insightsData.insights.forEach((insight, index) => {
+                const wrappedText = doc.splitTextToSize(`${index + 1}. ${insight}`, pageWidth - marginLeft - marginRight);
+                doc.text(wrappedText, marginLeft, yOffset);
+                yOffset += 15 + (wrappedText.length * 10);
+            });
+
+
+            setTimeout(() => {
+            // Add new page for insights
+            // Check available space before adding the pie chart
+            // Convert the chart into an image
+            yOffset = 150; // Reset Y offset
+            const imgData = canvas.toDataURL("image/png");
+
+            // Center-align the chart
+            const imgWidth = 140;
+            const imgHeight = 140;
+            const centerX = (doc.internal.pageSize.getWidth() - imgWidth) / 2;
+
+            doc.addImage(imgData, "PNG", centerX, yOffset + 20, imgWidth, imgHeight);
+            canvas.style.display = "none"; // Hide canvas
+
+            // Save PDF
+            doc.save(`E-Statement_${startDate}_${endDate}.pdf`);
+            alert("E-Statement downloaded successfully!");
+        }, 1000)
+
+        
+    } catch (error) {
+        console.error("Error fetching transaction history:", error);
+        alert("Failed to fetch transaction history. Please try again.");
+    }
+});
     </script>
 </body>
 </html>
