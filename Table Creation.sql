@@ -369,17 +369,3 @@ VALUES
 (300.00, 'Online Shopping', '123-456789-001'),
 (100.00, 'ATM Withdrawals or Cash Deposits', '123-456789-001'),
 (400.00, 'Others', '123-456789-001');
-
-SELECT * FROM RewardsHistory WHERE AccNum = '123-456789-001'
-select * from BankTransaction
-
-SELECT r.* FROM RewardsHistory r
-INNER JOIN Account a on r.AccNum = a.AccNum
-INNER JOIN Profile p on a.ProfileId = p.ProfileId
-WHERE p.ProfileId = 1
-
-
---insert into BankTransaction(TransactDate, TransactAmount, AccSender, AccReceiver, TransactPurpose, TransactType) values('2024-02-01', 5, null, '123-456789-001', 'Bank Reward Claim', 'Local Transfer');
---insert into RewardsHistory(RewardDescription, RewardType, RewardAmount, AccNum) values('Testing', 'Cashback', 5, '123-456789-001')
-select * from BankTransaction
-select * from Profile
